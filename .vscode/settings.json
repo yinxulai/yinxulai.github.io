@@ -1,0 +1,8 @@
+{
+  "files.exclude": {
+    "node_modules": true,
+    "db.json": true,
+    ".vscode": true,
+  },
+  "git.ignoreLimitWarning": true
+}
