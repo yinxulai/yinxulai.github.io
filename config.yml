@@ -14,7 +14,7 @@ timezone: ''
 # URL
 ## If your site is put in a subdirectory, set url as 'http://yoursite.com/child' and root as '/child/'
 url: http://yinxulai.com
-root: /public
+root: /dist
 permalink: :year/:month/:day/:title/
 permalink_defaults:
 pretty_urls:
@@ -22,12 +22,13 @@ pretty_urls:
   trailing_html: true # Set to false to remove trailing '.html' from permalinks
 
 # Directory
-source_dir: source
-public_dir: public
 tag_dir: tags
+dist_dir: dist # 靜態檔案資料夾，這個資料夾用於存放建立完畢的檔案
+source_dir: source # 原始檔案資料夾，這個資料夾用於存放您的內容
 archive_dir: archives
 category_dir: categories
 code_dir: downloads/code
+
 i18n_dir: :lang
 skip_render:
 
