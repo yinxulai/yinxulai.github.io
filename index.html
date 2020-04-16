@@ -13,6 +13,11 @@
     padding: 0;
     width: 100vw;
     height: 100vh;
+
+    background: rgb(255,255,255); /* Old browsers */
+    background: -moz-radial-gradient(center, ellipse cover,  rgba(255,255,255,1) 30%, rgba(0,0,0,0.3) 100%); /* FF3.6-15 */
+    background: -webkit-radial-gradient(center, ellipse cover,  rgba(255,255,255,1) 30%,rgba(0,0,0,0.3) 100%); /* Chrome10-25,Safari5.1-6 */
+    background: radial-gradient(ellipse at center,  rgba(255,255,255,1) 30%,rgba(0,0,0,0.3) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
   }
 
   .content {
@@ -36,12 +41,14 @@
     font-weight: bold;
   }
 
-  .footer {
-    color: #555;
+  .footer, a {
+    color: #777;
     font-size: 13px;
     user-select: none;
     line-height: 50px;
     text-align: center;
+    outline: none;
+    text-decoration: none;
   }
 
 </style>
