@@ -4,5 +4,8 @@
     "db.json": true,
     ".vscode": true,
   },
-  "git.ignoreLimitWarning": true
+  "git.ignoreLimitWarning": true,
+  "cSpell.words": [
+    "Wechat"
+  ]
 }
