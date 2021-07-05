@@ -20,18 +20,20 @@
     "sourceMap": true,
     "forceConsistentCasingInFileNames": true,
     "resolveJsonModule": true,
-    "paths": {
-      "@pages": [
-        "pages/*"
-      ],
-      "@server": [
-        "server/*"
-      ],
-      "@utils": [
-        "utils/*"
-      ]
-    }
+    "typeRoots": [
+      "./types"
+    ]
   },
-  "exclude": ["dist", ".next", "out", "next.config.js"],
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"]
+  "exclude": [
+    "dist",
+    ".next",
+    "out",
+    "next.config.js",
+    "jest.config.js"
+  ],
+  "include": [
+    "types/next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx"
+  ]
 }

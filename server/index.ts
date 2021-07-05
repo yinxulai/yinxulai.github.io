@@ -1,6 +1,6 @@
 import Koa from 'koa'
-import { config } from '@server/config'
-import { router } from '@server/routes/index'
+import { config } from './config'
+import { router } from './routes'
 
 const server = new Koa()
 server.use(router.routes())

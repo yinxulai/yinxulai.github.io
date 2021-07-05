@@ -25,7 +25,6 @@ const handle = nextServer.getRequestHandler()
 const pagesRouter = new Router().use(pagePrepare())
 
 pagesRouter.all('/', async (ctx) => {
-  console.log('render')
   await nextServer.render(ctx.req, ctx.res, '/')
 })
 
