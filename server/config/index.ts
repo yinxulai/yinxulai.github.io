@@ -1,3 +1,3 @@
 export const config = {
-  port: 80
+  port: 8000
 } as const
