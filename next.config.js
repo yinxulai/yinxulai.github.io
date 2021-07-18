@@ -1,4 +1,5 @@
 const constants = require('next/constants')
+const { resolve } = require('path')
 
 module.exports = (phase, { defaultConfig }) => {
   const webpack = (config, { buildId, dev, isServer, defaultLoaders, webpack }) => {

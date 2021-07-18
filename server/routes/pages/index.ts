@@ -1,9 +1,9 @@
 import next from 'next'
 import Router, { Middleware } from '@koa/router'
 
-import { isDev } from '../../../utils/env'
+import { isDev } from '../../env'
 
-export function pagePrepare(): Middleware {
+function pagePrepare(): Middleware {
   let isPrepared = false
   let preparePromise: Promise<void>
 
@@ -24,13 +24,26 @@ const nextServer = next({ dev: isDev })
 const handle = nextServer.getRequestHandler()
 const pagesRouter = new Router().use(pagePrepare())
 
-pagesRouter.all('/', async (ctx) => {
+pagesRouter.get('/', async (ctx) => {
+  await nextServer.render(ctx.req, ctx.res, '/')
+})
+
+pagesRouter.get('/user', async (ctx) => {
+  await nextServer.render(ctx.req, ctx.res, '/')
+})
+
+pagesRouter.get('/user', async (ctx) => {
   await nextServer.render(ctx.req, ctx.res, '/')
 })
 
 pagesRouter.all('(.*)', async (ctx) => {
   await handle(ctx.req, ctx.res)
   ctx.respond = false
+})
+
+pagesRouter.use(async (ctx, next) => {
+  ctx.res.statusCode = 200
+  await next()
 })
 
 export { pagesRouter }
