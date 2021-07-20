@@ -1,4 +1,5 @@
 import Router from '@koa/router'
+import { getLogger } from '../../logger'
 import { send } from '../../utils/restful'
 import * as database from '../../dbase/article'
 
@@ -34,6 +35,9 @@ articleRouter.get('/:id', async (ctx) => {
 })
 
 articleRouter.post('/', async (ctx) => {
+  const logger = getLogger('文章')
+  logger?.warn('新的创建文章请求', ctx.body)
+
   await database.createArticle(ctx.body)
   send(ctx, null, 200)
 })

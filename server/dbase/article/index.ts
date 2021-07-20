@@ -1,5 +1,7 @@
 import { getStatementMap } from './statement'
 
+
+
 export async function createArticle(content: string) {
   const statementMap = await getStatementMap()
   const statement = statementMap.get('CreateArticle')!

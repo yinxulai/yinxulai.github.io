@@ -34,3 +34,6 @@ yarn-error.log*
 .vercel
 
 .server
+
+:memory
+local-test.db

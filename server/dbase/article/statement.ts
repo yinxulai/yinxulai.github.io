@@ -2,10 +2,10 @@ import { Statement } from 'sqlite'
 import { getDatabase } from '../../utils/database'
 
 export const getStatementMap = (() => {
-
   type StatementName =
+    | 'ExistTable'
+    | 'ResetTable'
     | 'CreateTable'
-    | 'TruncateTable'
     | 'CreateArticle'
     | 'UpdateArticleById'
     | 'DeleteArticleById'
@@ -21,22 +21,29 @@ export const getStatementMap = (() => {
   >()
 
   statementStringMap.set('CreateTable', [
-    "CREATE TABLE IF NOT EXISTS `article` (",
-    "`id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',",
-    "`content` varchar(128) NOT NULL COMMENT '文章内容',",
-    "`deletedTime` datetime DEFAULT NULL COMMENT '删除时间',",
-    "`createdTime` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',",
-    "`updatedTime` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',",
-    "PRIMARY KEY (`id`)",
-    ") ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4;",
+    "CREATE TABLE `article` (",
+    "`title` VARCHAR NOT NULL,",
+    "`content` TEXT NOT NULL,",
+    "`deletedTime` DATETIME DEFAULT NULL,",
+    "`createdTime` DATETIME DEFAULT CURRENT_TIMESTAMP,",
+    "`updatedTime` DATETIME DEFAULT CURRENT_TIMESTAMP,",
+    "`id` INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT",
+    ")",
   ].join(' '))
 
-  statementStringMap.set("TruncateTable", [
-    "truncate table `article`;"
+  // 检查表是否存在
+  statementStringMap.set("ExistTable", [
+    "SELECT COUNT(*) FROM `sqlite_master`",
+    "WHERE",
+    "type=`table`",
+    "AND",
+    "name='article';"
   ].join(' '))
 
-  statementStringMap.set("TruncateTable", [
-    "truncate table `article`;"
+  // 重置表（主要用于测试）
+  statementStringMap.set("ResetTable", [
+    "DELETE FROM `article`;",
+    "UPDATE sqlite_sequence SET seq = 0 WHERE name = 'article';"
   ].join(' '))
 
   statementStringMap.set("CreateArticle", [
