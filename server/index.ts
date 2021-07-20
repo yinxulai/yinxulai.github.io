@@ -3,7 +3,7 @@ console.log(process.cwd())
 
 import Koa from 'koa'
 import { config } from './config'
-import { router } from './routes'
+import { router } from './router'
 
 const server = new Koa()
 server.use(router.routes())

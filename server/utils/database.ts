@@ -1,9 +1,7 @@
 import sqlite3 from 'sqlite3'
 import { open, Database } from 'sqlite'
 
-console.log(process.cwd())
-
-import { isProd } from '../env'
+import { isProd } from './env'
 import { config } from '../config'
 
 export const getDatabase = (() => {

@@ -1,7 +1,6 @@
 import next from 'next'
 import Router, { Middleware } from '@koa/router'
-
-import { isDev } from '../../env'
+import { isDev } from '../../utils/env'
 
 function pagePrepare(): Middleware {
   let isPrepared = false

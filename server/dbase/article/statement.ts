@@ -1,5 +1,5 @@
 import { Statement } from 'sqlite'
-import { getDatabase } from '../utils'
+import { getDatabase } from '../../utils/database'
 
 export const getStatementMap = (() => {
 
@@ -11,7 +11,6 @@ export const getStatementMap = (() => {
     | 'DeleteArticleById'
     | 'QueryArticleById'
     | 'QueryArticleList'
-
 
   const statementMap = new Map<
     StatementName, Statement

@@ -1,5 +1,5 @@
 import Router from '@koa/router'
-import { send } from '../utils/restful'
+import { send } from '../../utils/restful'
 import * as database from '../../dbase/article'
 
 export const articleRouter = new Router()
