@@ -1,35 +1,50 @@
-import { getStatementMap } from './statement'
+import { getStatement } from './statement'
 
+export const autoCreateArticleTable = (() => {
+  let isExistTable: boolean = false
+  let createPromise: Promise<any>
 
+  return async (): Promise<void> => {
+    if (isExistTable == true) return
+    if (createPromise != null) return await createPromise
+
+    const existTable = await (await getStatement('ExistTable')).all()
+    if (existTable[0] != null && existTable[0].count > 0) {
+      isExistTable = true; return
+    }
+
+    createPromise = (await getStatement('CreateTable')).run()
+    return createPromise
+  }
+})()
 
 export async function createArticle(content: string) {
-  const statementMap = await getStatementMap()
-  const statement = statementMap.get('CreateArticle')!
+  await autoCreateArticleTable()
+  const statement = await getStatement('CreateArticle')
   await statement.run({ ":content": content })
 }
 
 export async function deleteArticle(id: number): Promise<void> {
-  const statementMap = await getStatementMap()
-  const statement = statementMap.get('DeleteArticleById')!
+  await autoCreateArticleTable()
+  const statement = await getStatement('DeleteArticleById')
   await statement.run({ ":id": id })
 }
 
 export async function queryArticleById(id: number) {
-  const statementMap = await getStatementMap()
-  const statement = statementMap.get("QueryArticleById")!
-  const result = await statement.get({ ":id": id })
-  statement.finalize()
-  return result
+  await autoCreateArticleTable()
+  const statement = await getStatement('QueryArticleById')
+  const result = await statement.all({ ":id": id })
+  return result[0]
 }
 
 export async function queryArticleList(offset: number, limit: number) {
-  const statementMap = await getStatementMap()
-  const statement = statementMap.get('QueryArticleList')!
-  return await statement.all({ ':offset': offset, ':limit': limit })
+  await autoCreateArticleTable()
+  const statement = await getStatement('QueryArticleList')
+  await statement.all({ ':offset': offset, ':limit': limit })
 }
 
 export async function updateArticle(id: number, content: string) {
-  const statementMap = await getStatementMap()
-  const statement = statementMap.get('UpdateArticleById')!
+  await autoCreateArticleTable()
+  const statement = await getStatement('UpdateArticleById')
   await statement.run({ ':id': id, ':content': content })
 }

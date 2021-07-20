@@ -1,7 +1,7 @@
 import { Statement } from 'sqlite'
 import { getDatabase } from '../../utils/database'
 
-export const getStatementMap = (() => {
+export const getStatement = (() => {
   type StatementName =
     | 'ExistTable'
     | 'ResetTable'
@@ -33,9 +33,9 @@ export const getStatementMap = (() => {
 
   // 检查表是否存在
   statementStringMap.set("ExistTable", [
-    "SELECT COUNT(*) FROM `sqlite_master`",
+    "SELECT COUNT(*) as 'count' FROM 'sqlite_master'",
     "WHERE",
-    "type=`table`",
+    "type='table'",
     "AND",
     "name='article';"
   ].join(' '))
@@ -82,14 +82,13 @@ export const getStatementMap = (() => {
     "LIMIT :limit OFFSET :offset"
   ].join(' '))
 
-  return async function prepareStatement(): Promise<Map<StatementName, Statement>> {
-    if (statementMap.size === 0) {
+  return async function prepareStatement(name: StatementName): Promise<Statement> {
+    if (statementMap.size === 0 || statementMap.get(name) == null) {
       const database = await getDatabase()
-      Array.from(statementStringMap.entries()).forEach(async ([name, statementString]) => {
-        statementMap.set(name, await database.prepare(statementString))
-      })
+      const statementString = statementStringMap.get(name)!
+      statementMap.set(name, await database.prepare(statementString))
     }
 
-    return statementMap
+    return statementMap.get(name)!
   }
 })()

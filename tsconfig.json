@@ -25,7 +25,8 @@
     "typeRoots": [
       "types",
       "node_modules/@types"
-    ]
+    ],
+    "isolatedModules": true
   },
   "exclude": [
     "out",
