@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "cross-env": "^7.0.2",
+    "kleur": "^4.1.4",
     "koa-body": "^4.2.0",
     "next": "latest",
     "react": "^17.0.2",

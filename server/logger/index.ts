@@ -1,3 +1,5 @@
+import kleur from 'kleur'
+
 class Logger {
   constructor(private name: string) {
     this.info = this.info.bind(this)
@@ -6,15 +8,15 @@ class Logger {
   }
 
   info(...messages: any[]) {
-    console.info(`[${this.name}]`, ...messages)
+    console.info(kleur.bold().cyan(`[${this.name}]`), ...messages)
   }
 
   warn(...messages: any[]) {
-    console.warn(`[${this.name}]`, ...messages)
+    console.warn(kleur.bold().yellow(`[${this.name}]`), ...messages)
   }
 
   error(...error: any[]) {
-    console.error(`[${this.name}]`, ...error)
+    console.error(kleur.bold().red(`[${this.name}]`), ...error)
   }
 }
 

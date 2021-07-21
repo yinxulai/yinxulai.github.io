@@ -11,6 +11,7 @@
     "Wechat",
     "datetime",
     "dbase",
+    "kleur",
     "varchar"
   ]
 }

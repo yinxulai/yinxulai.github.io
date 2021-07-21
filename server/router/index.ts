@@ -6,20 +6,19 @@ import { apisRouter } from './apis'
 function loggerMiddleware(module: string): Middleware {
   let startTime: number
 
-
   return async (ctx, next) => {
     startTime = Date.now()
     const logger = getLogger(module)
-    logger.info('请求开始:', ctx.url, ctx.method)
+    logger.info('请求开始:', ctx.method, ctx.url)
 
     return next().finally(() => {
       const time = Date.now() - startTime
-      logger.info('请求结束:', ctx.url, ctx.method, `${time} ms`)
+      logger.info('请求结束:', ctx.method, ctx.status, `${time} ms`, ctx.url,)
     })
   }
 }
 
 const router = new Router()
-router.use('/api', loggerMiddleware('API'), apisRouter.routes())
-router.use('/', loggerMiddleware('PAGE'), pagesRouter.routes())
+router.use('/api', loggerMiddleware('接口'), apisRouter.routes())
+router.use('/', loggerMiddleware('页面'), pagesRouter.routes())
 export { router }

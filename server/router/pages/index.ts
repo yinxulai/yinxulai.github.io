@@ -21,7 +21,7 @@ function pagePrepare(): Middleware {
 
 const nextServer = next({ dev: isDev })
 const handle = nextServer.getRequestHandler()
-const pagesRouter = new Router().use(pagePrepare())
+export const pagesRouter = new Router().use(pagePrepare())
 
 pagesRouter.get('/', async (ctx) => {
   await nextServer.render(ctx.req, ctx.res, '/')
@@ -31,18 +31,6 @@ pagesRouter.get('/user', async (ctx) => {
   await nextServer.render(ctx.req, ctx.res, '/')
 })
 
-pagesRouter.get('/user', async (ctx) => {
-  await nextServer.render(ctx.req, ctx.res, '/')
-})
-
-pagesRouter.all('(.*)', async (ctx) => {
+pagesRouter.get('(.*)', async (ctx) => {
   await handle(ctx.req, ctx.res)
-  ctx.respond = false
 })
-
-pagesRouter.use(async (ctx, next) => {
-  ctx.res.statusCode = 200
-  await next()
-})
-
-export { pagesRouter }
