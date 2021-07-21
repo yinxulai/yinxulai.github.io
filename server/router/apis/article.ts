@@ -1,5 +1,5 @@
 import Router from '@koa/router'
-import { send } from '../../utils/restful'
+import { send } from '../../utils/api'
 import * as database from '../../dbase/article'
 
 import type { WithLogger } from '..'
