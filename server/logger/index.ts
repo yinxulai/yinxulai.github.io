@@ -1,5 +1,9 @@
-export class Logger {
-  constructor(private name: string) { }
+class Logger {
+  constructor(private name: string) {
+    this.info = this.info.bind(this)
+    this.warn = this.warn.bind(this)
+    this.error = this.error.bind(this)
+  }
 
   info(...messages: any[]) {
     console.info(`[${this.name}]`, ...messages)
@@ -20,6 +24,7 @@ export const getLogger = (() => {
     if (loggerMap.get(module) == null) {
       loggerMap.set(module, new Logger(module))
     }
-    return loggerMap.get(module)
+
+    return loggerMap.get(module)!
   }
 })()

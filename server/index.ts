@@ -1,6 +1,3 @@
-console.log(process.cwd())
-
-
 import Koa from 'koa'
 import { config } from './config'
 import { router } from './router'
