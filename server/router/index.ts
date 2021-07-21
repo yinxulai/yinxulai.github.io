@@ -1,24 +1,43 @@
+import KoaBody from 'koa-body'
 import Router, { Middleware } from '@koa/router'
-import { getLogger } from '../logger'
+
+import { getLogger, Logger } from '../logger'
 import { pagesRouter } from './pages'
 import { apisRouter } from './apis'
 
-function loggerMiddleware(module: string): Middleware {
+export type WithLogger<T = {}> = T & {
+  logger: Logger
+}
+
+function loggerMiddleware(module: string) {
   let startTime: number
 
-  return async (ctx, next) => {
+  const ware: Middleware<any, WithLogger> = async (ctx, next) => {
     startTime = Date.now()
-    const logger = getLogger(module)
-    logger.info('请求开始:', ctx.method, ctx.url)
+    ctx.logger = getLogger(module)
+    ctx.logger.info('请求开始:', ctx.method, ctx.url)
 
     return next().finally(() => {
       const time = Date.now() - startTime
-      logger.info('请求结束:', ctx.method, ctx.status, `${time} ms`, ctx.url,)
+      ctx.logger.info('请求结束:', ctx.method, ctx.status, `${time} ms`, ctx.url,)
     })
   }
+
+  return ware
 }
 
-const router = new Router()
-router.use('/api', loggerMiddleware('接口'), apisRouter.routes())
+export type WithBody<T = {}, B = {}> = T & {
+  body: B
+}
+
+function bodyMiddleware() {
+  return KoaBody({
+    multipart: false, // 支持文件上传
+    encoding: 'gzip'
+  })
+}
+
+const router = new Router<any, WithLogger>()
+router.use('/api', loggerMiddleware('接口'), bodyMiddleware(), apisRouter.routes())
 router.use('/', loggerMiddleware('页面'), pagesRouter.routes())
 export { router }

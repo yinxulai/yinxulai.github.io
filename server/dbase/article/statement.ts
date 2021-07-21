@@ -1,7 +1,10 @@
-import { Statement } from 'sqlite'
-import { getDatabase } from '../../utils/database'
+import { pareStatement } from '../../utils/sqlite3'
 
 export const getStatement = (() => {
+  const statementStringMap = new Map<
+    StatementName, string
+  >()
+
   type StatementName =
     | 'ExistTable'
     | 'ResetTable'
@@ -12,13 +15,6 @@ export const getStatement = (() => {
     | 'QueryArticleById'
     | 'QueryArticleList'
 
-  const statementMap = new Map<
-    StatementName, Statement
-  >()
-
-  const statementStringMap = new Map<
-    StatementName, string
-  >()
 
   statementStringMap.set('CreateTable', [
     "CREATE TABLE `article` (",
@@ -56,6 +52,7 @@ export const getStatement = (() => {
   statementStringMap.set("UpdateArticleById", [
     "UPDATE `article`",
     "SET",
+    "`title`=:title,",
     "`content`=:content",
     "WHERE",
     "`id`=:id;",
@@ -82,13 +79,7 @@ export const getStatement = (() => {
     "LIMIT :limit OFFSET :offset"
   ].join(' '))
 
-  return async function prepareStatement(name: StatementName): Promise<Statement> {
-    if (statementMap.size === 0 || statementMap.get(name) == null) {
-      const database = await getDatabase()
-      const statementString = statementStringMap.get(name)!
-      statementMap.set(name, await database.prepare(statementString))
-    }
-
-    return statementMap.get(name)!
+  return async (name: StatementName) => {
+    return pareStatement(statementStringMap.get(name)!)
   }
 })()

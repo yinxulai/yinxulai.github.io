@@ -1,16 +1,10 @@
-import KoaBody from 'koa-body'
-import Router, { Middleware } from '@koa/router'
+import Router from '@koa/router'
 
 import { userRouter } from './user'
 import { articleRouter } from './article'
+import type { WithLogger } from '..'
 
-function bodyMiddleware(): Middleware {
-  return KoaBody({
-    multipart: false, // 支持文件上传
-    encoding: 'gzip'
-  })
-}
 
-export const apisRouter = new Router().use(bodyMiddleware())
+export const apisRouter = new Router<any, WithLogger>()
 apisRouter.use('/article', articleRouter.routes())
 apisRouter.use('/user', userRouter.routes())

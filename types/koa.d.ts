@@ -1,0 +1,1 @@
+type ContextWithBody<T> = ParameterizedContext<>
