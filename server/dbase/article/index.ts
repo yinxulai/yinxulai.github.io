@@ -60,13 +60,13 @@ export async function queryArticleById(data: {
 }
 
 export async function queryArticleList(data: {
-  limit: number
-  offset: number
+  size: number
+  page: number
 }): Promise<void> {
   await autoCreateArticleTable()
-  const { offset, limit } = data || {}
+  const { size, page } = data || {}
   const statement = await getStatement('QueryArticleList')
-  await statement.all({ ':offset': offset, ':limit': limit })
+  await statement.all({ ':offset': size * page, ':limit': size })
 }
 
 export async function updateArticle(data: {

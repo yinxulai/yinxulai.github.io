@@ -23,11 +23,7 @@ articleRouter.get('/list/:size/:page', async (ctx) => {
   let data
 
   try {
-    data = await database
-    .queryArticleList(
-      sizeNum * pageNum,
-      sizeNum
-    )
+    data = await database.queryArticleList()
   } catch (error) {
     send(ctx, null, 500, '获取文章列表失败！')
     ctx.logger.error(error)
