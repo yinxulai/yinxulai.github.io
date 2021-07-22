@@ -17,7 +17,9 @@ export const getDatabase = (() => {
       })
 
       // 添加性能监听
-      database.on('profile', getLogger('DATABASE:PROFILE').info)
+      database.on('profile', (sql: string, time: number) => {
+        getLogger('数据库:性能').info(`${time} ms`, sql)
+      })
     }
 
     return database

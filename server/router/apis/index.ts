@@ -1,10 +1,9 @@
 import Router from '@koa/router'
 
-import { userRouter } from './user'
+import { WithBody, WithLogger } from '../middlewares'
 import { articleRouter } from './article'
-import type { WithLogger } from '..'
+import { userRouter } from './user'
 
-
-export const apisRouter = new Router<any, WithLogger>()
+export const apisRouter = new Router<any, WithLogger<WithBody>>()
 apisRouter.use('/article', articleRouter.routes())
 apisRouter.use('/user', userRouter.routes())

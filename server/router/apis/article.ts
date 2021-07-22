@@ -2,9 +2,9 @@ import Router from '@koa/router'
 import { send } from '../../utils/api'
 import * as database from '../../dbase/article'
 
-import type { WithLogger } from '..'
+import type { WithBody, WithLogger } from '../middlewares'
 
-export const articleRouter = new Router<any, WithLogger>()
+export const articleRouter = new Router<any, WithLogger<WithBody>>()
 
 articleRouter.get('/list/:size/:page', async (ctx) => {
   const { size, page } = ctx.params
@@ -112,9 +112,7 @@ articleRouter.get('/:id', async (ctx) => {
   let data
 
   try {
-    data = await database.queryArticleById(
-      Number(id)
-    )
+    data = await database.queryArticleById(Number(id))
   } catch (error) {
     send(ctx, null, 500, '获取文章失败！')
     ctx.logger.error(error)
@@ -137,7 +135,7 @@ articleRouter.post('/', async (ctx) => {
   }
 
   if (body.title == null) {
-    send(ctx, null, 400, '文章标题必填!')
+    send(ctx, null, 400, '文章标题不能为空!')
     return
   }
 
@@ -147,10 +145,7 @@ articleRouter.post('/', async (ctx) => {
   }
 
   try {
-    await database.createArticle(
-      body.title,
-      body.content
-    )
+    await database.createArticle(body.title, body.content)
   } catch (error) {
     ctx.logger.error(error)
     send(ctx, null, 500, '保存文章失败！')
