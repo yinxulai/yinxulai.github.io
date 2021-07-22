@@ -2,9 +2,9 @@ import Router from '@koa/router'
 import { send } from '../../utils/api'
 import * as database from '../../dbase/article'
 
-import type { WithBody, WithLogger } from '../middlewares'
+import type { WithAuth, WithBody, WithLogger } from '../middlewares'
 
-export const articleRouter = new Router<any, WithLogger<WithBody>>()
+export const articleRouter = new Router<WithAuth, WithLogger<WithBody>>()
 
 articleRouter.get('/list/:size/:page', async (ctx) => {
   const { size, page } = ctx.params

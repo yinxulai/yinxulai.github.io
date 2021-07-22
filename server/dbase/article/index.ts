@@ -30,33 +30,52 @@ export async function resetArticleTable() {
   await statement.run()
 }
 
-export async function createArticle(title: string, content: string) {
+export async function createArticle(data: {
+  title: string
+  content: string
+}): Promise<void> {
   await autoCreateArticleTable()
+  const { content, title } = data || {}
   const statement = await getStatement('CreateArticle')
   await statement.run({ ":content": content, ':title': title })
 }
 
-export async function deleteArticle(id: number): Promise<void> {
+export async function deleteArticle(data: {
+  id: number
+}): Promise<void> {
+  const { id } = data || {}
   await autoCreateArticleTable()
   const statement = await getStatement('DeleteArticleById')
   await statement.run({ ":id": id })
 }
 
-export async function queryArticleById(id: number) {
+export async function queryArticleById(data: {
+  id: number
+}): Promise<void> {
+  const { id } = data || {}
   await autoCreateArticleTable()
   const statement = await getStatement('QueryArticleById')
   const result = await statement.all({ ":id": id })
   return result[0]
 }
 
-export async function queryArticleList(offset: number, limit: number) {
+export async function queryArticleList(data: {
+  limit: number
+  offset: number
+}): Promise<void> {
   await autoCreateArticleTable()
+  const { offset, limit } = data || {}
   const statement = await getStatement('QueryArticleList')
   await statement.all({ ':offset': offset, ':limit': limit })
 }
 
-export async function updateArticle(id: number, title: string, content: string) {
+export async function updateArticle(data: {
+  id: number
+  title: string
+  content: string
+}): Promise<void> {
   await autoCreateArticleTable()
+  const { id, title, content } = data || {}
   const statement = await getStatement('UpdateArticleById')
   await statement.run({ ':id': id, ':title': title, ':content': content })
 }

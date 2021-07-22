@@ -1,5 +1,5 @@
 import KoaBody from 'koa-body'
-import { Middleware } from '@koa/router'
+import { Middleware, RouterParamContext } from '@koa/router'
 import { getLogger, Logger } from '../logger'
 
 ///// NextJS 服务中间件 /////
@@ -7,7 +7,7 @@ import { getLogger, Logger } from '../logger'
 
 ///// 日志中间件 /////
 
-export type WithLogger<T = {}> = T & {
+export type WithLogger<T = RouterParamContext> = T & {
   logger: Logger
 }
 
@@ -29,7 +29,7 @@ export function loggerMiddleware(module: string): Middleware {
 
 ///// 请求 body 解析中间件 /////
 
-export type WithBody<T = {}, B = {}> = T & {
+export type WithBody<B = {}, T = RouterParamContext> = T & {
   body: B
 }
 
@@ -42,7 +42,7 @@ export function bodyMiddleware(): Middleware {
 
 ///// 鉴权中间件 /////
 
-export type WithAuth<T = {}> = T & {
+export type WithAuth<T = RouterParamContext> = T & {
   user: number
 }
 
