@@ -1,6 +1,18 @@
-import { getStatement } from './statement'
+import { parseStatement, toStatementParams } from '../../utils/sqlite3'
 
-export const autoCreateArticleTable = (() => {
+interface Article {
+  id: number
+  title: string
+  content: string
+}
+
+interface DataMeta {
+  deletedTime: string
+  createdTime: string
+  updatedTime: string
+}
+
+const autoCreateArticleTable = (() => {
   let isExistTable = false
   let createPromise: Promise<any>
 
@@ -13,50 +25,92 @@ export const autoCreateArticleTable = (() => {
       return await createPromise
     }
 
-    const existTable = await (await getStatement('ExistTable')).all()
+    const countTable = [
+      "SELECT COUNT(*) as 'count' FROM 'sqlite_master'",
+      "WHERE",
+      "type='table'",
+      "AND",
+      "name='article';"
+    ].join(" ")
+
+    const existTable = await (await parseStatement(countTable)).all()
     if (existTable[0] != null && existTable[0].count > 0) {
       isExistTable = true
       return
     }
 
-    createPromise = (await getStatement('CreateTable')).run()
-    return createPromise
+    const createSql = [
+      "CREATE TABLE `article` (",
+      "`title` VARCHAR NOT NULL,",
+      "`content` TEXT NOT NULL,",
+      "`deletedTime` DATETIME DEFAULT NULL,",
+      "`createdTime` DATETIME DEFAULT CURRENT_TIMESTAMP,",
+      "`updatedTime` DATETIME DEFAULT CURRENT_TIMESTAMP,",
+      "`id` INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT",
+      ")",
+    ].join(" ")
+
+    const statement = await parseStatement(createSql)
+    statement.run()
   }
 })()
 
 export async function resetArticleTable() {
   await autoCreateArticleTable()
-  const statement = await getStatement('ResetTable')
-  await statement.run()
+
+  const sql = [
+    "DELETE FROM `article`;",
+    "UPDATE sqlite_sequence SET seq = 0 WHERE name = 'article';"
+  ].join(" ")
+
+  const statement = await parseStatement(sql)
+  statement.run()
 }
 
-export async function createArticle(title: string, content: string) {
+type CreateOptions = Omit<Article, 'id'>
+export async function createArticle(options: CreateOptions) {
   await autoCreateArticleTable()
-  const statement = await getStatement('CreateArticle')
-  await statement.run({ ":content": content, ':title': title })
+  const sql = "INSERT INTO `article` (`title`,`content`);"
+  const statement = await parseStatement(sql)
+  statement.run(toStatementParams(options))
 }
 
-export async function deleteArticle(id: number): Promise<void> {
+type DeleteOptions = Pick<Article, 'id'>
+export async function deleteArticle(options: DeleteOptions): Promise<void> {
   await autoCreateArticleTable()
-  const statement = await getStatement('DeleteArticleById')
-  await statement.run({ ":id": id })
+  const sql = "UPDATE `article` SET `deletedTime`= NOW() WHERE `id`=:id;"
+  const statement = await parseStatement(sql)
+  statement.run(toStatementParams(options))
 }
 
-export async function queryArticleById(id: number) {
-  await autoCreateArticleTable()
-  const statement = await getStatement('QueryArticleById')
-  const result = await statement.all({ ":id": id })
-  return result[0]
+interface QueryOptions {
+  limit: number
+  offset: number
+  filter: Partial<Pick<Article, 'id'>>
 }
 
-export async function queryArticleList(offset: number, limit: number) {
+export async function queryArticle(options: QueryOptions): Promise<Array<Article & DataMeta>> {
   await autoCreateArticleTable()
-  const statement = await getStatement('QueryArticleList')
-  await statement.all({ ':offset': offset, ':limit': limit })
+  const sql = ["SELECT * FROM `article`"]
+  if (options.filter.id != null) sql.push("`id`=:id")
+  sql.push("AND `deletedTime` IS NULL")
+
+  if (options.limit != null) sql.push("LIMIT :limit")
+  if (options.offset != null) sql.push("OFFSET :OFFSET;")
+
+  const statement = await parseStatement(sql.join(' '))
+  return statement.all(toStatementParams(options))
 }
 
-export async function updateArticle(id: number, title: string, content: string) {
+type UpdateOptions = Partial<Article> & Pick<Article, 'id'>
+export async function updateArticle(options: UpdateOptions) {
   await autoCreateArticleTable()
-  const statement = await getStatement('UpdateArticleById')
-  await statement.run({ ':id': id, ':title': title, ':content': content })
+
+  const sql = ["UPDATE `article` SET"]
+  if (options.title != null) sql.push("`title`=:title,")
+  if (options.content != null) sql.push("`content`=:content")
+  sql.push("WHERE `id` =:id;")
+
+  const statement = await parseStatement(sql.join(' '))
+  await statement.run(toStatementParams(options))
 }

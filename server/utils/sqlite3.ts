@@ -3,6 +3,8 @@ import { open, Database, Statement } from 'sqlite'
 
 import { getLogger } from '../logger'
 import { config } from '../config'
+
+import { ObjectKeys } from './object'
 import { isProd } from './env'
 
 export const getDatabase = (() => {
@@ -24,7 +26,7 @@ export const getDatabase = (() => {
   }
 })()
 
-export const pareStatement = (() => {
+export const parseStatement = (() => {
   const statementMap = new Map<string, Statement>()
 
   return async (sql: string): Promise<Statement> => {
@@ -36,3 +38,10 @@ export const pareStatement = (() => {
     return statementMap.get(sql)!
   }
 })()
+
+export function toStatementParams<T extends object>(target: T): object {
+  return ObjectKeys(target).reduce((acc, key) => {
+    acc[`:${key}`] = target[key]
+    return acc
+  }, {} as any)
+}

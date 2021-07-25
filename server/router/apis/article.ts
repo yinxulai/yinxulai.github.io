@@ -6,9 +6,84 @@ import type { WithLogger } from '..'
 
 export const articleRouter = new Router<any, WithLogger>()
 
-articleRouter.get('/list/:size/:page', async (ctx) => {
-  const { size, page } = ctx.params
-  const [sizeNum, pageNum] = [size, page].map(Number)
+articleRouter.post('/', async (ctx) => {
+  if (ctx.body == null) {
+    send(ctx, null, 400, '无效的参数!')
+    return
+  }
+
+  const { title, content } = ctx.body
+
+  if (title == null) {
+    send(ctx, null, 400, '文章标题必填!')
+    return
+  }
+
+  if (content == null) {
+    send(ctx, null, 400, '文章内容不能为空!')
+    return
+  }
+
+  try {
+    await database.createArticle({ title, content })
+  } catch (error) {
+    ctx.logger.error(error)
+    send(ctx, null, 500, '保存文章失败！')
+    return
+  }
+
+  send(ctx, null, 200)
+})
+
+articleRouter.delete('/:id', async (ctx) => {
+  const { id } = ctx.params
+
+  if (isFinite(Number(id))) {
+    send(ctx, null, 400, '无效的文章 ID!')
+    return
+  }
+
+  try {
+    await database.deleteArticle({ id: Number(id) })
+  } catch (error) {
+    ctx.logger.error(error)
+    send(ctx, null, 500, '删除文章失败！')
+    return
+  }
+
+  send(ctx, null, 200)
+})
+
+articleRouter.patch('/:id', async (ctx) => {
+  const id = Number(ctx.params.id)
+
+  if (isFinite(id)) {
+    send(ctx, null, 400, '无效的文章 ID!')
+    return
+  }
+
+  if (ctx.body == null) {
+    send(ctx, null, 400, '无效的参数!')
+    return
+  }
+
+  const title: string = ctx.body.title
+  const content: string = ctx.body.content
+
+  try {
+    await database.updateArticle({ id, title, content })
+  } catch (error) {
+    ctx.logger.error(error)
+    send(ctx, null, 500, '更新文章失败！')
+    return
+  }
+
+  send(ctx, null, 200)
+})
+
+articleRouter.get('/', async (ctx) => {
+  const { id, size, page } = ctx.query
+  const [idNum, sizeNum, pageNum] = [id, size, page].map(Number)
 
   if (isFinite(sizeNum)) {
     send(ctx, null, 400, '无效的分页尺寸!')
@@ -23,11 +98,11 @@ articleRouter.get('/list/:size/:page', async (ctx) => {
   let data
 
   try {
-    data = await database
-    .queryArticleList(
-      sizeNum * pageNum,
-      sizeNum
-    )
+    data = await database.queryArticle({
+      limit: sizeNum,
+      filter: { id: idNum },
+      offset: sizeNum * pageNum,
+    })
   } catch (error) {
     send(ctx, null, 500, '获取文章列表失败！')
     ctx.logger.error(error)
@@ -35,127 +110,4 @@ articleRouter.get('/list/:size/:page', async (ctx) => {
   }
 
   send(ctx, data, 200)
-})
-
-articleRouter.delete('/:id', async (ctx) => {
-  const { id } = ctx.params
-
-  if (isFinite(Number(id))) {
-    send(ctx, null, 400, '无效的文章 ID!')
-    return
-  }
-
-  try {
-    await database.deleteArticle(Number(id))
-  } catch (error) {
-    ctx.logger.error(error)
-    send(ctx, null, 500, '删除文章失败！')
-    return
-  }
-
-  send(ctx, null, 200)
-})
-
-interface UpdateArticleBody {
-  title: string,
-  content: string
-}
-
-articleRouter.patch('/:id', async (ctx) => {
-  const { id } = ctx.params
-  const body = ctx.body as UpdateArticleBody
-
-  if (isFinite(Number(id))) {
-    send(ctx, null, 400, '无效的文章 ID!')
-    return
-  }
-
-  if (body == null) {
-    send(ctx, null, 400, '无效的参数!')
-    return
-  }
-
-  if (body.title == null) {
-    send(ctx, null, 400, '文章标题必填!')
-    return
-  }
-
-  if (body.content == null) {
-    send(ctx, null, 400, '文章内容不能为空!')
-    return
-  }
-
-  try {
-    await database.updateArticle(
-      Number(id),
-      body.title,
-      body.content
-    )
-  } catch (error) {
-    ctx.logger.error(error)
-    send(ctx, null, 500, '更新文章失败！')
-    return
-  }
-
-  send(ctx, null, 200)
-})
-
-
-articleRouter.get('/:id', async (ctx) => {
-  const { id } = ctx.params
-
-  if (isFinite(Number(id))) {
-    send(ctx, null, 400, '无效的文章 ID!')
-    return
-  }
-
-  let data
-
-  try {
-    data = await database.queryArticleById(
-      Number(id)
-    )
-  } catch (error) {
-    send(ctx, null, 500, '获取文章失败！')
-    ctx.logger.error(error)
-    return
-  }
-
-  send(ctx, data, 200)
-})
-
-interface CreateArticleBody {
-  title: string,
-  content: string
-}
-
-articleRouter.post('/', async (ctx) => {
-  const body = ctx.body as CreateArticleBody
-  if (body == null) {
-    send(ctx, null, 400, '无效的参数!')
-    return
-  }
-
-  if (body.title == null) {
-    send(ctx, null, 400, '文章标题必填!')
-    return
-  }
-
-  if (body.content == null) {
-    send(ctx, null, 400, '文章内容不能为空!')
-    return
-  }
-
-  try {
-    await database.createArticle(
-      body.title,
-      body.content
-    )
-  } catch (error) {
-    ctx.logger.error(error)
-    send(ctx, null, 500, '保存文章失败！')
-    return
-  }
-
-  send(ctx, null, 200)
 })

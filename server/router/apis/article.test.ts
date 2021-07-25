@@ -10,7 +10,7 @@ describe('api/article test', () => {
     return new Promise<void>((resolve, reject) => {
       request(app.callback()).post('/').expect(200).end(function (err, res) {
           if (err) return reject(err)
-          expect(res.body).toBeNull()
+        expect(res.body).toBeNull()
           resolve()
         })
     })
