@@ -12,6 +12,7 @@
     "datetime",
     "dbase",
     "kleur",
+    "middlewares",
     "stmts",
     "varchar"
   ]

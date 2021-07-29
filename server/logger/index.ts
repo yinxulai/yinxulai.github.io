@@ -1,7 +1,7 @@
 import kleur from 'kleur'
 
 export class Logger {
-  constructor(private name: string) {
+  constructor(public name: string) {
     this.info = this.info.bind(this)
     this.warn = this.warn.bind(this)
     this.error = this.error.bind(this)

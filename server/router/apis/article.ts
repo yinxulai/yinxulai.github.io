@@ -2,17 +2,18 @@ import Router from '@koa/router'
 import { send } from '../../utils/api'
 import * as database from '../../dbase/article'
 
-import type { WithLogger } from '..'
+import { WithBody } from '../middle/body'
+import { WithLogger } from '../middle/logger'
 
-export const articleRouter = new Router<any, WithLogger>()
+export const articleRouter = new Router<{}, WithLogger & WithBody>()
 
 articleRouter.post('/', async (ctx) => {
-  if (ctx.body == null) {
+  if (ctx.request.body == null) {
     send(ctx, null, 400, '无效的参数!')
     return
   }
 
-  const { title, content } = ctx.body
+  const { title, content } = ctx.request.body
 
   if (title == null) {
     send(ctx, null, 400, '文章标题必填!')
@@ -38,7 +39,7 @@ articleRouter.post('/', async (ctx) => {
 articleRouter.delete('/:id', async (ctx) => {
   const { id } = ctx.params
 
-  if (isFinite(Number(id))) {
+  if (!isFinite(Number(id))) {
     send(ctx, null, 400, '无效的文章 ID!')
     return
   }
@@ -57,18 +58,18 @@ articleRouter.delete('/:id', async (ctx) => {
 articleRouter.patch('/:id', async (ctx) => {
   const id = Number(ctx.params.id)
 
-  if (isFinite(id)) {
+  if (!isFinite(id)) {
     send(ctx, null, 400, '无效的文章 ID!')
     return
   }
 
-  if (ctx.body == null) {
+  if (ctx.request.body == null) {
     send(ctx, null, 400, '无效的参数!')
     return
   }
 
-  const title: string = ctx.body.title
-  const content: string = ctx.body.content
+  const title: string = ctx.request.body.title
+  const content: string = ctx.request.body.content
 
   try {
     await database.updateArticle({ id, title, content })
@@ -84,25 +85,40 @@ articleRouter.patch('/:id', async (ctx) => {
 articleRouter.get('/', async (ctx) => {
   const { id, size, page } = ctx.query
   const [idNum, sizeNum, pageNum] = [id, size, page].map(Number)
+  const mode = (idNum <= 0 || !isFinite(idNum)) ? 'multiple' as const : 'single' as const
 
-  if (isFinite(sizeNum)) {
-    send(ctx, null, 400, '无效的分页尺寸!')
-    return
+  // 如果没有指定 id 则必须存在 page、size
+  if (mode === 'multiple') {
+    if (!isFinite(pageNum)) {
+      send(ctx, null, 400, '无效的翻页数!')
+      return
+    }
+
+    if (!isFinite(sizeNum) || sizeNum <= 0) {
+      send(ctx, null, 400, '无效的分页尺寸!')
+      return
+    }
   }
 
-  if (isFinite(pageNum)) {
-    send(ctx, null, 400, '无效的翻页数!')
-    return
+  // 单条查询
+  if (mode === 'single') {
+    if (!isFinite(idNum) || idNum <= 0) {
+      send(ctx, null, 400, '无效的文章 ID!')
+      return
+    }
   }
 
   let data
+  const queryData = mode === 'multiple' ? {
+    filter: {},
+    limit: sizeNum,
+    offset: sizeNum * pageNum,
+  } : {
+    filter: { id: idNum },
+  }
 
   try {
-    data = await database.queryArticle({
-      limit: sizeNum,
-      filter: { id: idNum },
-      offset: sizeNum * pageNum,
-    })
+    data = await database.queryArticle(queryData)
   } catch (error) {
     send(ctx, null, 500, '获取文章列表失败！')
     ctx.logger.error(error)

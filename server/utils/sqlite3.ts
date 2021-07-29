@@ -15,11 +15,27 @@ export const getDatabase = (() => {
       database = await open({
         // 开发与测试情况使用内存作为数据存储介质
         filename: isProd ? config.sqlite.filePath : ':memory:',
-        driver: isProd ? sqlite3.cached.Database : sqlite3.verbose().cached.Database
+        driver: isProd ? sqlite3.cached.Database : sqlite3.verbose().Database
       })
 
+      const instance = database.getDatabaseInstance()
+
+      instance.on('open', () => {
+        getLogger('数据库:打开').info(null)
+      })
+      instance.on('close', () => {
+        getLogger('数据库:关闭').info(null)
+      })
+      instance.on('trace', (sql: string) => {
+        getLogger('数据库:追踪').info(sql)
+      })
+      instance.on('error', (error: Error) => {
+        getLogger('数据库:错误').info(error.message)
+      })
       // 添加性能监听
-      database.on('profile', getLogger('DATABASE:PROFILE').info)
+      instance.on('profile', (sql: string, time: number) => {
+        getLogger('数据库:性能').info(`${time} ms`, sql)
+      })
     }
 
     return database

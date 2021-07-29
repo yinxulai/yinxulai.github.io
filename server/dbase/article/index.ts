@@ -47,7 +47,7 @@ const autoCreateArticleTable = (() => {
       "`createdTime` DATETIME DEFAULT CURRENT_TIMESTAMP,",
       "`updatedTime` DATETIME DEFAULT CURRENT_TIMESTAMP,",
       "`id` INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT",
-      ")",
+      ");",
     ].join(" ")
 
     const statement = await parseStatement(createSql)
@@ -70,7 +70,7 @@ export async function resetArticleTable() {
 type CreateOptions = Omit<Article, 'id'>
 export async function createArticle(options: CreateOptions) {
   await autoCreateArticleTable()
-  const sql = "INSERT INTO `article` (`title`,`content`);"
+  const sql = "INSERT INTO `article` (`title`,`content`) VALUES (:title, :content);"
   const statement = await parseStatement(sql)
   statement.run(toStatementParams(options))
 }
@@ -78,28 +78,31 @@ export async function createArticle(options: CreateOptions) {
 type DeleteOptions = Pick<Article, 'id'>
 export async function deleteArticle(options: DeleteOptions): Promise<void> {
   await autoCreateArticleTable()
-  const sql = "UPDATE `article` SET `deletedTime`= NOW() WHERE `id`=:id;"
+  const sql = "UPDATE `article` SET `deletedTime`=:deletedTime WHERE `id`=:id;"
   const statement = await parseStatement(sql)
-  statement.run(toStatementParams(options))
+  statement.run(toStatementParams({ ...options, deletedTime: Date.now() }))
 }
 
 interface QueryOptions {
-  limit: number
-  offset: number
+  limit?: number
+  offset?: number
   filter: Partial<Pick<Article, 'id'>>
 }
 
 export async function queryArticle(options: QueryOptions): Promise<Array<Article & DataMeta>> {
   await autoCreateArticleTable()
-  const sql = ["SELECT * FROM `article`"]
-  if (options.filter.id != null) sql.push("`id`=:id")
-  sql.push("AND `deletedTime` IS NULL")
+  const { filter: { id }, limit, offset } = options
 
-  if (options.limit != null) sql.push("LIMIT :limit")
-  if (options.offset != null) sql.push("OFFSET :OFFSET;")
+  const sql = ["SELECT * FROM `article` WHERE"]
+  if (id != null) sql.push("`id`=:id AND")
+  sql.push("`deletedTime` IS NULL")
+
+  if (limit != null) sql.push("LIMIT :limit")
+  if (offset != null) sql.push("OFFSET :offset")
+  sql.push(';')
 
   const statement = await parseStatement(sql.join(' '))
-  return statement.all(toStatementParams(options))
+  return statement.all(toStatementParams({ id, limit, offset }))
 }
 
 type UpdateOptions = Partial<Article> & Pick<Article, 'id'>

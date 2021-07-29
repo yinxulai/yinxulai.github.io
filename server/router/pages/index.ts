@@ -1,6 +1,8 @@
 import next from 'next'
 import Router, { Middleware } from '@koa/router'
+
 import { isDev } from '../../utils/env'
+import { use } from '../../utils/koa2'
 
 function pagePrepare(): Middleware {
   let isPrepared = false
@@ -19,15 +21,16 @@ function pagePrepare(): Middleware {
   }
 }
 
+export const pagesRouter = new Router()
 const nextServer = next({ dev: isDev })
 const handle = nextServer.getRequestHandler()
-export const pagesRouter = new Router().use(pagePrepare())
+const withMiddleRouter = use(pagesRouter, pagePrepare())
 
-pagesRouter.get('/', async (ctx) => {
+withMiddleRouter.get('/', async (ctx) => {
   await nextServer.render(ctx.req, ctx.res, '/')
 })
 
-pagesRouter.get('/user', async (ctx) => {
+withMiddleRouter.get('/user', async (ctx) => {
   await nextServer.render(ctx.req, ctx.res, '/')
 })
 
