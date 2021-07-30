@@ -86,32 +86,42 @@ export async function deleteArticle(options: DeleteOptions): Promise<void> {
 interface QueryOptions {
   limit?: number
   offset?: number
-  filter: Partial<Pick<Article, 'id'>>
+  filter: Partial<Pick<Article, 'id'>> & {
+    deleted?: boolean // 是否包含已删除的条目，默认 false
+  }
 }
 
 export async function queryArticle(options: QueryOptions): Promise<Array<Article & DataMeta>> {
   await autoCreateArticleTable()
-  const { filter: { id }, limit, offset } = options
+  const { filter: { id, deleted = false }, limit, offset } = options
 
   const sql = ["SELECT * FROM `article` WHERE"]
-  if (id != null) sql.push("`id`=:id AND")
-  sql.push("`deletedTime` IS NULL")
+
+  const where = []
+  if (deleted === false) where.push("`deletedTime` IS NULL")
+  if (id != null) where.push("`id`=:id")
+  sql.push(where.join(" AND "))
 
   if (limit != null) sql.push("LIMIT :limit")
   if (offset != null) sql.push("OFFSET :offset")
   sql.push(';')
 
+  console.log(options, sql.join(' '))
   const statement = await parseStatement(sql.join(' '))
   return statement.all(toStatementParams({ id, limit, offset }))
 }
 
-type UpdateOptions = Partial<Article> & Pick<Article, 'id'>
+type UpdateOptions = Article
 export async function updateArticle(options: UpdateOptions) {
   await autoCreateArticleTable()
 
   const sql = ["UPDATE `article` SET"]
-  if (options.title != null) sql.push("`title`=:title,")
-  if (options.content != null) sql.push("`content`=:content")
+
+  const fields: string[] = []
+  if (options.title != null) fields.push("`title`=:title")
+  if (options.content != null) fields.push("`content`=:content")
+  sql.push(fields.join(","))
+
   sql.push("WHERE `id` =:id;")
 
   const statement = await parseStatement(sql.join(' '))

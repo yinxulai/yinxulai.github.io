@@ -57,7 +57,9 @@ export const parseStatement = (() => {
 
 export function toStatementParams<T extends object>(target: T): object {
   return ObjectKeys(target).reduce((acc, key) => {
-    acc[`:${key}`] = target[key]
+    if (target[key] !== undefined) {
+      acc[`:${key}`] = target[key]
+    }
     return acc
   }, {} as any)
 }

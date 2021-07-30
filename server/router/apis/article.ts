@@ -1,6 +1,6 @@
 import Router from '@koa/router'
 import { send } from '../../utils/api'
-import * as database from '../../dbase/article'
+import * as dbase from '../../dbase/article'
 
 import { WithBody } from '../middle/body'
 import { WithLogger } from '../middle/logger'
@@ -26,7 +26,7 @@ articleRouter.post('/', async (ctx) => {
   }
 
   try {
-    await database.createArticle({ title, content })
+    await dbase.createArticle({ title, content })
   } catch (error) {
     ctx.logger.error(error)
     send(ctx, null, 500, '保存文章失败！')
@@ -45,7 +45,7 @@ articleRouter.delete('/:id', async (ctx) => {
   }
 
   try {
-    await database.deleteArticle({ id: Number(id) })
+    await dbase.deleteArticle({ id: Number(id) })
   } catch (error) {
     ctx.logger.error(error)
     send(ctx, null, 500, '删除文章失败！')
@@ -72,7 +72,7 @@ articleRouter.patch('/:id', async (ctx) => {
   const content: string = ctx.request.body.content
 
   try {
-    await database.updateArticle({ id, title, content })
+    await dbase.updateArticle({ title, content, id })
   } catch (error) {
     ctx.logger.error(error)
     send(ctx, null, 500, '更新文章失败！')
@@ -89,7 +89,7 @@ articleRouter.get('/', async (ctx) => {
 
   // 如果没有指定 id 则必须存在 page、size
   if (mode === 'multiple') {
-    if (!isFinite(pageNum)) {
+    if (!isFinite(pageNum) || pageNum <= 0) {
       send(ctx, null, 400, '无效的翻页数!')
       return
     }
@@ -109,16 +109,20 @@ articleRouter.get('/', async (ctx) => {
   }
 
   let data
-  const queryData = mode === 'multiple' ? {
-    filter: {},
-    limit: sizeNum,
-    offset: sizeNum * pageNum,
-  } : {
-    filter: { id: idNum },
-  }
+  const queryData = mode === 'multiple'
+    ? {
+      filter: {},
+      limit: sizeNum,
+      offset: sizeNum * (pageNum - 1),
+    }
+    : {
+      limit: 1,
+      offset: 0,
+      filter: { id: idNum },
+    }
 
   try {
-    data = await database.queryArticle(queryData)
+    data = await dbase.queryArticle(queryData)
   } catch (error) {
     send(ctx, null, 500, '获取文章列表失败！')
     ctx.logger.error(error)
