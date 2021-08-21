@@ -10,13 +10,13 @@
       <span class="ipc">
         <a target="_black" href="https://beian.miit.gov.cn">皖ICP备19004644号-1</a>
       </span>
-        <span class="power">
+      <span class="power">
         Power by <a target="_black" href="//vuepress.vuejs.org">@vuepress</a>
       </span>
     </div>
-    <div class="rignt">
-      <a href="/">首页</a> ｜ 
-      <a href="/about">关于</a> ｜
+    <div class="right">
+      <a href="/">首页</a>｜
+      <a href="/about.html">关于</a>｜
       <a target="_black" href="//github.com/yinxulai">Github</a>
     </div>
   </div>
@@ -25,6 +25,7 @@
 <style lang="less" scoped>
 .footer {
   display: flex;
+  flex-wrap: nowrap;
   flex-direction: row;
   justify-content: space-between;
 
@@ -35,9 +36,10 @@
   padding-bottom: 20px;
   font-family: "Menlo", monospace;
   color: rgba(255, 255, 255, 0.5);
-  
-  .left {
-    >* {
+
+  .left,
+  .right {
+    > * {
       margin-right: 0.5rem;
     }
   }

@@ -22,7 +22,7 @@
 }
 </style>
 <script lang="ts" setup>
-import { watchEffect, reactive, toRaw } from "vue";
+import { watchEffect, reactive } from "vue";
 import { PageData, usePagesData } from "@vuepress/client";
 
 interface Props {
@@ -70,7 +70,5 @@ watchEffect(async () => {
       if (props.category == null || props.category == "") return true;
       return page.frontmatter.category === props.category;
     });
-
-  console.log(toRaw(viewData.pageList));
 });
 </script>
