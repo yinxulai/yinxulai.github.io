@@ -1,10 +1,10 @@
 <template>
   <div class="layout">
-    <Navbar />
+    <navbar />
     <div class="content">
       <Content />
     </div>
-    <Footbar />
+    <footbar />
   </div>
 </template>
 <style lang="less">
@@ -42,8 +42,3 @@ a {
   }
 }
 </style>
-
-<script lang="ts" setup>
-import Navbar from "../components/navbar/index.vue";
-import Footbar from "../components/footbar/index.vue";
-</script>

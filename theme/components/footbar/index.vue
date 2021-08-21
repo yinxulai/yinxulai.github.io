@@ -8,16 +8,16 @@
         Copyright © 2021-{{ new Date().getFullYear() }}
       </span>
       <span class="ipc">
-        <a href="https://beian.miit.gov.cn">皖ICP备19004644号-1</a>
+        <a target="_black" href="https://beian.miit.gov.cn">皖ICP备19004644号-1</a>
       </span>
         <span class="power">
-        Power by <a href="//vuepress.vuejs.org">@vuepress</a>
+        Power by <a target="_black" href="//vuepress.vuejs.org">@vuepress</a>
       </span>
     </div>
     <div class="rignt">
       <a href="/">首页</a> ｜ 
       <a href="/about">关于</a> ｜
-      <a href="//github.com/yinxulai">Github</a>
+      <a target="_black" href="//github.com/yinxulai">Github</a>
     </div>
   </div>
 </template>
@@ -41,6 +41,5 @@
       margin-right: 0.5rem;
     }
   }
-
 }
 </style>
