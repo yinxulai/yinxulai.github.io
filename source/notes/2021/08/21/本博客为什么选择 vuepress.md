@@ -4,7 +4,8 @@ title: 本博客为什么选择 vuepress
 description: 本博客为什么选择 vuepress
 ---
 
-总结起来有三点：
+开始写博客的第一件事就是需要有一个博客，所以迎来了第一个问题：选择哪个框架？最终我觉定使用 `vuepress`, 总结起来原因有三点：
+
 - 尝试 `vue@3`
 - 支持 `Markdown`
 - 允许在 `Markdown` 中直接插入 `JavaScript` 代码
