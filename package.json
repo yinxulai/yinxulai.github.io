@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "dev": "vuepress dev --config config.ts source",
-    "build": "vuepress build --config config.ts source"
+    "dev": "vuepress dev --config vuepress-config.ts source",
+    "build": "vuepress build --config vuepress-config.ts source"
   },
   "repository": "git@github.com:yinxulai/yinxulai.github.io.git",
   "author": "yinxulai <yinxulai@hotmail.com>",

@@ -8,17 +8,17 @@
   </div>
 </template>
 <style lang="less">
-@import "@vuepress/plugin-palette/style";
-@import "@vuepress/plugin-palette/palette";
+@import '@vuepress/plugin-palette/style';
+@import '@vuepress/plugin-palette/palette';
 
 a {
   color: inherit;
   text-decoration: none;
-  border-bottom: 1px solid rgba(255,255,255,.2);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
 
   &:hover {
     color: @color-primary;
-    border-bottom: 1px solid  @color-primary;
+    border-bottom: 1px solid @color-primary;
   }
 }
 

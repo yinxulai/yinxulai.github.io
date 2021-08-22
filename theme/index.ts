@@ -3,7 +3,7 @@ import type { ThemeFunction, ThemeObject } from '@vuepress/core'
 import { PluginFunction, PluginObject } from 'vuepress'
 
 function getComponentName(file: string) {
-  // 支持 Name/index.vue 的形式
+  // 支持 {ComponentName}/index.vue 的形式
   if (path.basename(file) === 'index.vue') {
     const paths = path.dirname(file).split('/')
     return paths[paths.length - 1]

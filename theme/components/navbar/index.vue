@@ -1,9 +1,5 @@
-<script lang="ts" setup>
-</script>
-
 <template>
-  <div class="navbar">
-  </div>
+  <div class="navbar"></div>
 </template>
 
 <style lang="less" scoped>
@@ -14,3 +10,5 @@
   padding-bottom: 20px;
 }
 </style>
+<script lang="ts" setup>
+</script>

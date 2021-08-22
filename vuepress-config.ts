@@ -7,10 +7,20 @@ const globalStyle = `
     background-color: #181818;
   }
 
+  @keyframes fade-in {
+    0% {
+      opacity: 0;
+    }
+    10% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
+    }
+  }
+
   body {
-    opacity: 0;
-    transition-duration: 0.3s;
-    transition-property: opacity;
+    animation: fade-in 0.6s linear 0s 1 normal;
   }
 `
 
