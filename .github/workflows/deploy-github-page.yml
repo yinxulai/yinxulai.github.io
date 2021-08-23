@@ -7,7 +7,7 @@ on:
     branches: [ main ]
 
 jobs:
-  deploy:
+  deploy-web:
     runs-on: ubuntu-latest
 
     steps:
@@ -21,19 +21,19 @@ jobs:
         node-version: 16
 
     - name: Install dependencies
-      run: npm install
+      run: cd web && npm install
       
     - name: Build pages
-      run: npm run build
+      run: cd web && npm run build
       
     - name: Create CNAME
-      run: echo -e 'www.yinxulai.com\nyinxulai.com' > .output/dest/CNAME
+      run: echo -e 'www.yinxulai.com\nyinxulai.com' > web/.output/dest/CNAME
 
     - name: Push branch
       uses: crazy-max/ghaction-github-pages@v2
       with:
         target_branch: gh-pages
-        build_dir: .output/dest
+        build_dir: web/.output/dest
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 

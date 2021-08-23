@@ -4,5 +4,9 @@
     "CNAME",
     "frontmatter",
     "vuepress"
-  ]
+  ],
+  "files.exclude": {
+    ".git*": true,
+    ".github": true
+  }
 }
