@@ -26,6 +26,9 @@ jobs:
     - name: Build pages
       run: npm run build
       
+    - name: Create CNAME
+      run: echo -e 'www.yinxulai.com\nyinxulai.com' > .output/dest/CNAME
+
     - name: Push branch
       uses: crazy-max/ghaction-github-pages@v2
       with:
