@@ -1,5 +1,7 @@
 <template>
-  <button @click="onClick">开始播放绘制轨迹</button>
+  <button @click="onClick">
+    <slot></slot>
+  </button>
 </template>
 <script lang="ts" setup>
 import { controllerSymbol } from './controller-symbol'

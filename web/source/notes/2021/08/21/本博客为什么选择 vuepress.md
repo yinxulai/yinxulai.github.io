@@ -1,7 +1,7 @@
 ---
 lang: zh-CN
-title: 本博客为什么选择 vuepress
-description: 本博客为什么选择 vuepress
+title: 本博客为什么选择 vuepress?
+description: 本博客为什么选择 vuepress?
 ---
 
 开始写博客的第一件事就是需要有一个博客，所以迎来了第一个问题：选择哪个框架？最终我觉定使用 `vuepress`, 总结起来原因有三点：
@@ -43,7 +43,8 @@ description: 本博客为什么选择 vuepress
 
 <canvas-draw />
 
-你还可以 <clear-history/>、<stop-play-history/>，或者 <start-play-history/> 和 <clear-canvas/>，你也可以自己随意画点什么。
+你还可以 <clear-canvas>清空画布</clear-canvas>、<start-play-history>回放历史轨迹</start-play-history>，<stop-play-history>停止回放历史轨迹</stop-play-history>，
+或者<clear-history>清空历史轨迹</clear-history>，你也可以自己随意画点什么（或许可以试试在播放轨迹的同时画点什么）。
 
 ### 结论
 
