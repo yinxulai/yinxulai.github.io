@@ -1,5 +1,5 @@
 <template>
-  <button @click="onClick">停止播放历史记录</button>
+  <button @click="onClick">停止播放绘制轨迹</button>
 </template>
 <script lang="ts" setup>
 import { controllerSymbol } from './controller-symbol'
