@@ -41,7 +41,7 @@ description: 本博客为什么选择 vuepress
 
 就像这样：
 
-<drawing />
+<canvas-draw />
 
 你还可以 <clear-history/>、<stop-play-history/>，或者 <start-play-history/> 和 <clear-canvas/>，你也可以自己随意画点什么。
 
