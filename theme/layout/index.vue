@@ -33,9 +33,9 @@ a {
 
   box-sizing: border-box;
   min-height: 100%;
-  max-width: 50rem;
   padding: 0 1rem;
   margin: 0 auto;
+  width: 50rem;
 
   .content {
     flex: 1;
