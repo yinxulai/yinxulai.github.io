@@ -34,4 +34,5 @@ export default defineUserConfig<DefaultThemeOptions>({
   temp: path.resolve(__dirname, '.output/temp'),
   cache: path.resolve(__dirname, '.output/cache'),
   head: [['style', { type: 'text/css' }, globalStyle]],
+  plugins: [['@vuepress/plugin-google-analytics', { id: 'G-PPVXN8YZWL' }]]
 })

@@ -10,6 +10,7 @@
   "author": "yinxulai <yinxulai@hotmail.com>",
   "license": "MIT",
   "devDependencies": {
+    "@vuepress/plugin-google-analytics": "^2.0.0-beta.24",
     "@vuepress/plugin-palette": "^2.0.0-beta.24",
     "@vuepress/plugin-register-components": "^2.0.0-beta.24",
     "less": "^4.1.1",
