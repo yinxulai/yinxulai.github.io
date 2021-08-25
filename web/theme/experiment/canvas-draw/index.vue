@@ -1,21 +1,10 @@
 <template>
   <div class="drawing">
-    <canvas class="canvas" ref="canvasRef" />
+    <canvas ref="canvasRef" class="canvas" />
   </div>
 </template>
-<style lang="less" scoped>
-.drawing,
-.canvas {
-  width: 50rem;
-  height: 30rem;
-  overflow: hidden;
-  background: white;
-  border-radius: 10px;
-}
-</style>
-
 <script lang="ts" setup>
-import { computed, ref, watch, onMounted } from 'vue'
+import { ref, watch, onMounted } from 'vue'
 import { controllerSymbol } from './controller-symbol'
 import { useHistory } from './use-history'
 import { useDraw } from './use-draw'
@@ -49,3 +38,13 @@ onMounted(() => {
   }
 })
 </script>
+<style lang="less" scoped>
+.drawing,
+.canvas {
+  width: 50rem;
+  height: 30rem;
+  overflow: hidden;
+  background: white;
+  border-radius: 10px;
+}
+</style>

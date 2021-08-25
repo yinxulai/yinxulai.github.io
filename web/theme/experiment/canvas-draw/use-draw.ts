@@ -1,5 +1,4 @@
 import { ref, Ref, watch, computed } from 'vue'
-
 export interface Position {
   x: number
   y: number

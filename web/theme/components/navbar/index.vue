@@ -1,7 +1,8 @@
 <template>
-  <div class="navbar"></div>
+  <div class="navbar" />
 </template>
-
+<script lang="ts" setup>
+</script>
 <style lang="less" scoped>
 .navbar {
   width: 100%;
@@ -10,5 +11,3 @@
   padding-bottom: 20px;
 }
 </style>
-<script lang="ts" setup>
-</script>

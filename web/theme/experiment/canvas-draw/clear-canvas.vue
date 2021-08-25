@@ -1,6 +1,6 @@
 <template>
   <button @click="onClick">
-    <slot></slot>
+    <slot />
   </button>
 </template>
 <script lang="ts" setup>

@@ -1,19 +1,8 @@
 <template>
   <div class="perlin-noise">
-    <canvas class="canvas" ref="canvasRef" />
+    <canvas ref="canvasRef" class="canvas" />
   </div>
 </template>
-<style lang="less" scoped>
-.perlin-noise,
-.canvas {
-  width: 40rem;
-  height: 24rem;
-  overflow: hidden;
-  background: white;
-  border-radius: 10px;
-}
-</style>
-
 <script lang="ts" setup>
 import { useNoise } from './use-noise'
 import { ref, watch, computed } from 'vue'
@@ -70,3 +59,13 @@ watch(
   }
 )
 </script>
+<style lang="less" scoped>
+.perlin-noise,
+.canvas {
+  width: 40rem;
+  height: 24rem;
+  overflow: hidden;
+  background: white;
+  border-radius: 10px;
+}
+</style>

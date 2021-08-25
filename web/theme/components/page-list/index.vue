@@ -1,21 +1,12 @@
 <template>
   <div class="page-list">
-    <section class="item" v-bind:key="page.key" v-for="page in viewData.pageList">
+    <section v-for="page in viewData.pageList" :key="page.key" class="item">
       <span class="date">{{ page.date }}</span>
-      <a class="title" v-bind:href="page.path">{{ page.title }}</a>
+      <a class="title" :href="page.path">{{ page.title }}</a>
     </section>
   </div>
 </template>
-<style lang="less" scoped>
-.item + .item {
-  margin-top: 6px;
-}
-.date {
-  font-size: 14px;
-  margin-right: 1rem;
-  color: rgba(255, 255, 255, 0.5);
-}
-</style>
+
 <script lang="ts" setup>
 import { watchEffect, reactive } from 'vue'
 import { PageData, usePagesData } from '@vuepress/client'
@@ -27,7 +18,7 @@ interface Props {
 
 const props = withDefaults(defineProps<Props>(), {
   category: undefined,
-  sort: 'asc',
+  sort: 'asc'
 })
 
 type ViewPageData =
@@ -42,7 +33,7 @@ interface ViewData {
 }
 
 const viewData = reactive<ViewData>({
-  pageList: [],
+  pageList: []
 })
 
 ///////////////// 处理数据 ///////////////////
@@ -75,3 +66,13 @@ watchEffect(async () => {
     })
 })
 </script>
+<style lang="less" scoped>
+.item + .item {
+  margin-top: 6px;
+}
+.date {
+  font-size: 14px;
+  margin-right: 1rem;
+  color: rgba(255, 255, 255, 0.5);
+}
+</style>
