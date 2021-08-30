@@ -86,5 +86,3 @@ const theme: ThemeFunction = () => {
 }
 
 export default theme
-
-console.log('2222')
