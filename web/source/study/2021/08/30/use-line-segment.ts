@@ -19,8 +19,8 @@ export function useLineSegment(canvas: Ref<HTMLCanvasElement | undefined>) {
 
   const drawLineSegment = (position: Position, angle: number, color:string) => {
     if (context.value == null) return null
-    const toX = position.x + Math.cos(angle) * 40
-    const toY = position.y + Math.sin(angle) * 40
+    const toX = position.x + Math.cos(angle) * 60
+    const toY = position.y + Math.sin(angle) * 60
 
     const linearGradient = context.value.createLinearGradient(position.x, position.y, toX, toY)
     linearGradient.addColorStop(0, 'hsla(0,0%,0%,0)')

@@ -1,6 +1,6 @@
 import path from 'path'
 import { defineUserConfig } from 'vuepress'
-import type { DefaultThemeOptions } from 'vuepress'
+import type { DefaultThemeOptions, PluginConfig } from 'vuepress'
 
 const globalStyle = `
   html {
@@ -24,6 +24,17 @@ const globalStyle = `
   }
 `
 
+function googleAnalyticsPlugin(id: string): PluginConfig {
+  return ['@vuepress/plugin-google-analytics', { id }]
+}
+
+function registerComponentsPlugin(dir: string): PluginConfig {
+  return ['@vuepress/register-components', {
+    componentsDir: path.resolve(__dirname, dir),
+    getComponentName: (file: string) => path.basename(file, '.vue')
+  }]
+}
+
 export default defineUserConfig<DefaultThemeOptions>({
   lang: 'zh-CN',
   title: 'Alain Blog',
@@ -34,5 +45,5 @@ export default defineUserConfig<DefaultThemeOptions>({
   temp: path.resolve(__dirname, '.output/temp'),
   cache: path.resolve(__dirname, '.output/cache'),
   head: [['style', { type: 'text/css' }, globalStyle]],
-  plugins: [['@vuepress/plugin-google-analytics', { id: 'G-PPVXN8YZWL' }]]
+  plugins: [googleAnalyticsPlugin('G-PPVXN8YZWL'), registerComponentsPlugin('./source')]
 })

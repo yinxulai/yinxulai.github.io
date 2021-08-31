@@ -1,10 +1,8 @@
 ---
 lang: zh-CN
-title: WIP 实现 MAC 的屏幕保护
-description: WIP 实现 MAC 的屏幕保护
+title: 70 行代码实现 MAC 内置的屏幕保护效果
+description: 70 行实现 MAC 内置的屏幕保护效果
 ---
-
-理论知识： WIP
 
 <screen-protect/>
 
