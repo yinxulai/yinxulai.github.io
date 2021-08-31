@@ -35,6 +35,10 @@ function registerComponentsPlugin(dir: string): PluginConfig {
   }]
 }
 
+function syntaxHighlightPlugin(): PluginConfig {
+  return ['@vuepress/plugin-shiki', { theme: 'dracula' }]
+}
+
 export default defineUserConfig<DefaultThemeOptions>({
   lang: 'zh-CN',
   title: 'Alain Blog',
@@ -45,5 +49,5 @@ export default defineUserConfig<DefaultThemeOptions>({
   temp: path.resolve(__dirname, '.output/temp'),
   cache: path.resolve(__dirname, '.output/cache'),
   head: [['style', { type: 'text/css' }, globalStyle]],
-  plugins: [googleAnalyticsPlugin('G-PPVXN8YZWL'), registerComponentsPlugin('./source')]
+  plugins: [googleAnalyticsPlugin('G-PPVXN8YZWL'), registerComponentsPlugin('./source'), syntaxHighlightPlugin()]
 })
