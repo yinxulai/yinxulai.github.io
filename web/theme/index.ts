@@ -41,24 +41,8 @@ const parsePageDatePlugin: PluginFunction = (_config, _app): PluginObject => {
   }
 }
 
-// 将一些公共的必要的样式注入到生成的 html 中（不是 link）
-const globalStylePlugin: PluginFunction = (_config, _app) => {
-  return {
-    multiple: true,
-    name: 'globalStylePlugin',
-    onPrepared: app => {
-      // console.log(app)
-    },
-    onGenerated: app => {
-      // app.pluginApi.registerHooks
-      // console.log(app)
-    }
-  }
-}
-
 const theme: ThemeFunction = () => {
   const plugins: ThemeObject['plugins'] = [
-    globalStylePlugin,
     parsePageDatePlugin,
     parsePageCategoryPlugin,
     ['@vuepress/plugin-palette', {

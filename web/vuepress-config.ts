@@ -49,5 +49,6 @@ export default defineUserConfig<DefaultThemeOptions>({
   temp: path.resolve(__dirname, '.output/temp'),
   cache: path.resolve(__dirname, '.output/cache'),
   head: [['style', { type: 'text/css' }, globalStyle]],
+  alias: { '@hooks':  path.resolve(__dirname, './hooks') },
   plugins: [googleAnalyticsPlugin('G-PPVXN8YZWL'), registerComponentsPlugin('./source'), syntaxHighlightPlugin()]
 })

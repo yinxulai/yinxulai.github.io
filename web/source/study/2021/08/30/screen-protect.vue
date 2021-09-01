@@ -22,23 +22,13 @@ const drawFrame = (canvas: HTMLCanvasElement) => {
   requestAnimationFrame(() => drawFrame(canvas))
 }
 
-watch(
-  () => canvasRef.value,
-  () => {
-    if (canvasRef.value != null) {
-      drawFrame(canvasRef.value)
-    }
+watch([canvasRef], () => {
+  if (canvasRef.value != null) {
+    drawFrame(canvasRef.value)
+    resetSize(canvasRef.value)
   }
-)
+})
 
-watch(
-  () => canvasRef.value,
-  () => {
-    if (canvasRef.value != null) {
-      resetSize(canvasRef.value)
-    }
-  }
-)
 </script>
 <style lang="less" scoped>
 .screen-protect,

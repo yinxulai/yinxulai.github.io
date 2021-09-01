@@ -92,37 +92,35 @@ export function useDraw(canvas: Ref<HTMLCanvasElement | undefined>) {
     clear(0.01)
   }
 
-  watch(
-    () => [canvas.value, canvasContext.value],
-    () => {
-      if (canvas.value == null) return
-      if (canvasContext.value == null) return
+  watch([canvas, canvasContext], () => {
+    if (canvas.value == null) return
+    if (canvasContext.value == null) return
 
-      resetSize()
+    resetSize()
 
-      canvas.value.addEventListener('mouseup', close)
-      canvas.value.addEventListener('mouseout', close)
-      canvas.value.addEventListener('mousedown', start)
-      canvas.value.addEventListener('mouseleave', close)
+    canvas.value.addEventListener('mouseup', close)
+    canvas.value.addEventListener('mouseout', close)
+    canvas.value.addEventListener('mousedown', start)
+    canvas.value.addEventListener('mouseleave', close)
 
-      canvas.value.addEventListener('mousemove', (event) => {
-        event.preventDefault()
-        if (isStartDraw.value == false) return
+    canvas.value.addEventListener('mousemove', (event) => {
+      event.preventDefault()
+      if (isStartDraw.value == false) return
 
-        const { clientX, clientY } = event
-        const lastPosition = lastDrawPosition.value
-        const nowPosition = toRelativePosition({
-          time: Date.now(),
-          x: clientX,
-          y: clientY
-        })
-
-        drawStroke([lastPosition, nowPosition])
-        if (drawCallbackList.value.length > 0) {
-          drawCallbackList.value.forEach(v => v(nowPosition))
-        }
+      const { clientX, clientY } = event
+      const lastPosition = lastDrawPosition.value
+      const nowPosition = toRelativePosition({
+        time: Date.now(),
+        x: clientX,
+        y: clientY
       })
-    }
+
+      drawStroke([lastPosition, nowPosition])
+      if (drawCallbackList.value.length > 0) {
+        drawCallbackList.value.forEach(v => v(nowPosition))
+      }
+    })
+  }
   )
 
   const addDrawCallback = (callback: DrawCallback) => {

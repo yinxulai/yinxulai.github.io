@@ -4,35 +4,18 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { ref, watch } from 'vue'
+import { ref } from 'vue'
 import { useColorPlane } from './use-gray-plane'
 import { useCurvedPlane } from './use-curved-plane'
+import { useCanvasRenderer } from '@hooks/use-canvas-renderer'
+
 const canvasRef = ref<HTMLCanvasElement>()
+const canvasRenderer = useCanvasRenderer(canvasRef, '2d')
 
 const colorPlane = useColorPlane(canvasRef)
 const curvedPlane = useCurvedPlane(canvasRef)
+canvasRenderer.setRender((ctx) => colorPlane.render())
 
-const resetSize = (canvas: HTMLCanvasElement) => {
-  if (canvas == null) return
-  const clientRect = canvas.getBoundingClientRect()
-  canvas.height = clientRect.height
-  canvas.width = clientRect.width
-}
-
-const drawFrame = (canvas: HTMLCanvasElement) => {
-  if (canvas != null) curvedPlane.render()
-  requestAnimationFrame(() => drawFrame(canvas))
-}
-
-watch(
-  () => canvasRef.value,
-  () => {
-    if (canvasRef.value != null) {
-      resetSize(canvasRef.value)
-      drawFrame(canvasRef.value)
-    }
-  }
-)
 </script>
 <style lang="less" scoped>
 .perlin-noise,
