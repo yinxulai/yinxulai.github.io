@@ -26,6 +26,7 @@ export function useWindowsSize() {
   }
 
   onMounted(() => {
+    module.hot?.accept([], updateSize)
     window.addEventListener('load', updateSize)
     window.addEventListener('resize', updateSize)
   })

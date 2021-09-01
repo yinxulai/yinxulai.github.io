@@ -6,7 +6,8 @@ type ReturnType<T> = {
   setRender: (func: RenderFunc<T>) => void
 }
 
-type RenderFunc<T> = (ctx: T) => void
+type Size = { width: number, height: number }
+type RenderFunc<T> = (ctx: T, size: Size) => void
 type CanvasRef = Ref<HTMLCanvasElement | undefined>
 
 export function useCanvasRenderer(canvas: CanvasRef, contextId: 'webgl', options?: WebGLContextAttributes): ReturnType<WebGLRenderingContext>
@@ -50,22 +51,23 @@ export function useCanvasRenderer(canvas: CanvasRef, contextId: string, options?
     requestAnimationFrame(() => startRequestFrame())
 
     if (drawFrame.value != null && context.value != null) {
-      drawFrame.value(context.value)
+      const { width, height } = context.value.canvas
+      drawFrame.value(context.value, { width, height })
     }
   }
 
   watch([canvasVisible], () => {
     startRequestFrame()
-  })
+  }, { immediate: true })
 
   watch([canvas], () => {
     updateContext()
     updateCanvasSize()
-  })
+  }, { immediate: true })
 
   watch([scale], () => {
     updateCanvasSize()
-  })
+  }, { immediate: true })
 
   return { setRender, setScale }
 }

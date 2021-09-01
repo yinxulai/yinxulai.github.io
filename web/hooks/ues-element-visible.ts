@@ -63,8 +63,7 @@ export function uesElementVisible(element: Ref<Element | undefined>) {
   watch([element], () => {
     updateRect()
     updateVisible()
-  }
-  )
+  }, { immediate: true })
 
   return visible
 }
