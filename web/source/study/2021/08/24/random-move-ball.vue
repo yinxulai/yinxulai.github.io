@@ -15,6 +15,7 @@ const canvasRenderer = useCanvasRenderer(canvasRef, '2d')
 const colorPlane = useColorPlane(canvasRef)
 const curvedPlane = useCurvedPlane(canvasRef)
 canvasRenderer.setRender((ctx) => colorPlane.render())
+canvasRenderer.setScale(0.3)
 
 </script>
 <style lang="less" scoped>

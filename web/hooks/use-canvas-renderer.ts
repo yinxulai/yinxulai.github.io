@@ -1,9 +1,13 @@
 import { Ref, ref, watch } from 'vue'
 import { uesElementVisible } from '@hooks/ues-element-visible'
 
+type ReturnType<T> = {
+  setScale: (v: number) => void
+  setRender: (func: RenderFunc<T>) => void
+}
+
 type RenderFunc<T> = (ctx: T) => void
 type CanvasRef = Ref<HTMLCanvasElement | undefined>
-type ReturnType<T> = { setRender: (func: RenderFunc<T>) => void }
 
 export function useCanvasRenderer(canvas: CanvasRef, contextId: 'webgl', options?: WebGLContextAttributes): ReturnType<WebGLRenderingContext>
 export function useCanvasRenderer(canvas: CanvasRef, contextId: 'webgl2', options?: WebGLContextAttributes): ReturnType<WebGL2RenderingContext>
@@ -11,6 +15,7 @@ export function useCanvasRenderer(canvas: CanvasRef, contextId: '2d', options?: 
 export function useCanvasRenderer(canvas: CanvasRef, contextId: 'bitmaprenderer', options?: ImageBitmapRenderingContextSettings): ReturnType<ImageBitmapRenderingContext>
 export function useCanvasRenderer(canvas: CanvasRef, contextId: string, options?: any): ReturnType<RenderingContext> {
 
+  const scale = ref(1)
   const canvasVisible = uesElementVisible(canvas)
   const context = ref<RenderingContext | null>(null)
   const drawFrame = ref<null | RenderFunc<RenderingContext>>(null)
@@ -19,8 +24,8 @@ export function useCanvasRenderer(canvas: CanvasRef, contextId: string, options?
     if (canvas.value == null) return
 
     const clientRect = canvas.value.getBoundingClientRect()
-    canvas.value.height = clientRect.height
-    canvas.value.width = clientRect.width
+    canvas.value.height = Math.fround(clientRect.height * scale.value)
+    canvas.value.width = Math.fround(clientRect.width * scale.value)
   }
 
   const updateContext = () => {
@@ -30,7 +35,10 @@ export function useCanvasRenderer(canvas: CanvasRef, contextId: string, options?
     }
 
     context.value = canvas.value.getContext(contextId, options)
-    
+  }
+
+  const setScale = (ratio = 1) => {
+    scale.value = ratio
   }
 
   const setRender = (newDraw: RenderFunc<RenderingContext>) => {
@@ -55,5 +63,9 @@ export function useCanvasRenderer(canvas: CanvasRef, contextId: string, options?
     updateCanvasSize()
   })
 
-  return { setRender: setRender }
+  watch([scale], () => {
+    updateCanvasSize()
+  })
+
+  return { setRender, setScale }
 }
