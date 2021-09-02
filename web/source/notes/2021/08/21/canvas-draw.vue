@@ -15,16 +15,13 @@ const draw = useDraw(canvasRef)
 const history = useHistory(draw.drawStroke)
 draw.addDrawCallback(history.drawCallback)
 
-watch(
-  () => canvasRef.value,
-  () => {
-    if (canvasRef.value != null) {
-      history.start()
-      return
-    }
-    history.stop()
+watch([canvasRef], () => {
+  if (canvasRef.value != null) {
+    history.start()
+    return
   }
-)
+  history.stop()
+})
 
 onMounted(() => {
   if (window != null) {
