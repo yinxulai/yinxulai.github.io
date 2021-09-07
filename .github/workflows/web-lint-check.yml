@@ -21,10 +21,10 @@ jobs:
         node-version: 16
 
     - name: Install dependencies
-      run: cd web && npm install
+      run: npm install
       
     - name: Run lint
-      run: cd web && npm run lint --quiet
+      run: npm run lint --quiet
 
     - name: Cache npm
       uses: actions/cache@v2
