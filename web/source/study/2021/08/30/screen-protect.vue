@@ -9,7 +9,6 @@ import { makeNoise3D } from 'fast-simplex-noise'
 import { useCanvasRenderer } from '@hooks/use-canvas-renderer'
 
 let zOffset = ref(0.01)
-let transparency = ref(0)
 const angleNoise = makeNoise3D()
 const colorNoise = makeNoise3D()
 const canvasRef = ref<HTMLCanvasElement>()
