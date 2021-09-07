@@ -20,7 +20,8 @@ const globalStyle = `
   }
 
   body {
-    animation: fade-in 0.6s linear 0s 1 normal;
+    opacity: 0;
+    animation: fade-in 0.6s linear 0s 1 forwards;
   }
 `
 

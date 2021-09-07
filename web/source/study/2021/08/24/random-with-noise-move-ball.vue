@@ -13,17 +13,18 @@ const noiseOffset = ref<number>(0)
 const canvasRef = ref<HTMLCanvasElement>()
 const canvasRenderer = useCanvasRenderer(canvasRef, '2d')
 
-canvasRenderer.setRender((ctx, size) => {
+canvasRenderer.setRender((ctx, { size }) => {
   ctx.clearRect(0, 0, size.width, size.height)
 
   ctx.beginPath()
   ctx.fillStyle = '#ffffff'
 
-  // 绘制随机位置的小球
+  // 左半侧的小球
   const randomX = Math.random() * (size.width / 2)
   const randomY = Math.random() * size.height
   ctx.arc(randomX, randomY, 10, 0, 360)
 
+  // 右半侧的小球
   noiseOffset.value += 0.001
   const noiseX = Math.abs(noise2D(10, noiseOffset.value)) * (size.width / 2) + size.width / 2
   const noiseY = Math.abs(noise2D(10000, noiseOffset.value)) * size.height

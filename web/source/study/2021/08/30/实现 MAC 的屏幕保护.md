@@ -4,79 +4,40 @@ title: 70 行代码实现 MAC 内置的屏幕保护效果
 description: 70 行实现 MAC 内置的屏幕保护效果
 ---
 
+最近无意中刷到了 `Perlin noise` 的内容，回到家看到电脑的内置屏保，突然想尝试一下使用 `Perlin noise` 来实现一下这个屏保的效果，于是有了这篇内容。
+
+我们先来看看最终的效果（出于性能只实现了核心效果）：
+
 <screen-protect/>
 
-### 代码
-
-```ts:no-line-numbers
-import { Ref, ref, computed } from 'vue'
-
-import { makeNoise3D } from 'fast-simplex-noise'
-
-interface Position {
-  x: number
-  y: number
-}
-
-export function useLineSegment(canvas: Ref<HTMLCanvasElement | undefined>) {
-  let zOffset = ref(0.01)
-  const angleNoise = makeNoise3D()
-  const colorNoise = makeNoise3D()
-
-  const context = computed(() => {
-    if (canvas.value == null) return null
-    return canvas.value.getContext('2d')
-  })
-
-  const drawLineSegment = (position: Position, angle: number, color:string) => {
-    if (context.value == null) return null
-    const toX = position.x + Math.cos(angle) * 60
-    const toY = position.y + Math.sin(angle) * 60
-
-    const linearGradient = context.value.createLinearGradient(position.x, position.y, toX, toY)
-    linearGradient.addColorStop(0, 'hsla(0,0%,0%,0)')
-    linearGradient.addColorStop(1, color)
-
-    context.value.strokeStyle = linearGradient
-
-    context.value.lineWidth = 6
-    context.value.lineCap = 'round'
-
-    context.value.beginPath()
-
-    context.value.moveTo(position.x, position.y)
-    context.value.lineTo(toX, toY)
-    context.value.stroke()
-  }
-
-  const clear = (alpha = 1) => {
-    if (canvas.value == null) return
-    if (context.value == null) return
-    context.value.fillStyle = `rgba(0,0,0,${alpha})`
-    const { width, height } = canvas.value
-    context.value.fillRect(0, 0, width, height)
-  }
-
-  const render = () => {
-    zOffset.value += 0.001
-    if (canvas.value == null) return
-    if (context.value == null) return
-    const { width, height } = canvas.value
-
-    clear(1)
-
-    for (let x = 0; x <= width; x += 20) {
-      for (let y = 0; y <= height; y += 20) {
-        const angle = angleNoise(x * 0.0005, y * 0.0005, zOffset.value) * 10
-        const color = colorNoise(x * 0.0005, y * 0.0005, zOffset.value) * 360
-        drawLineSegment({ x, y }, angle, `hsla(${color}, 50%,50%, 1)`)
-      }
-    }
-  }
-
-  return { render }
-}
-
-```
-
 当前刷新率 <view-fps />
+
+## 分析原版本效果的实现
+
+上原效果：
+
+![MAC 内置漂移屏保](./original-display.gif)
+
+整体效果虽然看起来比较复杂，但可以看出它是由一个个小线条的简单变化组合而成，我们从分析一个个的线条开始
+
+线条主要包含了以下几个主要处理：
+
+1. 随机变化切连续的角度 ✅
+2. 随机变化且连续的颜色 ✅
+3. 随机变化且连续的宽度 ✅
+4. 随机变化且连续的长度
+5. 随机且均匀的线条密度
+6. 随机且均匀的线条位置
+
+其中标记了 ✅  的为我们本次要实现的。
+
+仔细观察我们可以看出其中有几个核心的关键字：`连续`，`随机`, `均匀`，`随机` 和 `均匀` 相信大家很容易理解。
+那 `连续` 是什么？又如何实现呢？
+
+仔细观察，我们可以发现，不管是 `颜色`、还是 `角度`，虽然每个线条都不一样，但在整体上却又表现出连续：挨得越近的线条之间的差异越小。
+
+实际上这种规律在自然中普遍存在：无论是山脉起伏还是天气变化，总是通过连续的变化来达到整体状态的变换。
+
+如何在计算机中模拟这种变化？这就得看大佬们的了：
+
+`Ken Perlin` 首先提出了一种生成这种模拟自然随机状态的算法，按照惯例，这种算法自然就叫 `Perlin noise` 了。

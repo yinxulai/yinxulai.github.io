@@ -1,4 +1,4 @@
-import { Ref, ref, watch } from 'vue'
+import { Ref, ref, watch, onMounted, onUnmounted } from 'vue'
 import { uesElementVisible } from '@hooks/ues-element-visible'
 
 type ReturnType<T> = {
@@ -6,8 +6,10 @@ type ReturnType<T> = {
   setRender: (func: RenderFunc<T>) => void
 }
 
+type StopFunc = () => void
 type Size = { width: number, height: number }
-type RenderFunc<T> = (ctx: T, size: Size) => void
+type RenderFuncUtils = { size: Size, stop: StopFunc }
+type RenderFunc<T> = (ctx: T, utils: RenderFuncUtils) => void
 type CanvasRef = Ref<HTMLCanvasElement | undefined>
 
 export function useCanvasRenderer(canvas: CanvasRef, contextId: 'webgl', options?: WebGLContextAttributes): ReturnType<WebGLRenderingContext>
@@ -17,6 +19,8 @@ export function useCanvasRenderer(canvas: CanvasRef, contextId: 'bitmaprenderer'
 export function useCanvasRenderer(canvas: CanvasRef, contextId: string, options?: any): ReturnType<RenderingContext> {
 
   const scale = ref(1)
+  const stop = ref(false)
+  const isScrolling = ref(false)
   const canvasVisible = uesElementVisible(canvas)
   const context = ref<RenderingContext | null>(null)
   const drawFrame = ref<null | RenderFunc<RenderingContext>>(null)
@@ -42,18 +46,26 @@ export function useCanvasRenderer(canvas: CanvasRef, contextId: string, options?
     scale.value = ratio
   }
 
+  const stopRender = () => {
+    stop.value = true
+  }
+
   const setRender = (newDraw: RenderFunc<RenderingContext>) => {
     drawFrame.value = newDraw
   }
 
   const startRequestFrame = () => {
+    if (stop.value === true) return
     if (canvasVisible.value != true) return
     requestAnimationFrame(() => startRequestFrame())
 
-    if (drawFrame.value != null && context.value != null) {
-      const { width, height } = context.value.canvas
-      drawFrame.value(context.value, { width, height })
-    }
+    if (isScrolling.value === true) return
+    if (drawFrame.value == null) return
+    if (context.value == null) return
+
+    const { width, height } = context.value.canvas
+    const other = { size: { width, height }, stop: stopRender }
+    drawFrame.value(context.value, other)
   }
 
   watch([canvasVisible], () => {
@@ -68,6 +80,19 @@ export function useCanvasRenderer(canvas: CanvasRef, contextId: string, options?
   watch([scale], () => {
     updateCanvasSize()
   }, { immediate: true })
+
+  const handleWheel = () => {
+    isScrolling.value = true
+    setTimeout(() => { isScrolling.value = false }, 1000)
+  }
+
+  onMounted(() => {
+    window.addEventListener('wheel', handleWheel)
+  })
+
+  onUnmounted(() => {
+    window.removeEventListener('wheel', handleWheel)
+  })
 
   return { setRender, setScale }
 }

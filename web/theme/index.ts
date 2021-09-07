@@ -53,7 +53,7 @@ const theme: ThemeFunction = () => {
     ['@vuepress/register-components', {
       getComponentName,
       componentsDir: path.resolve(__dirname, './'),
-      componentsPatterns: ['components/**/*.vue', 'pages/**/*.vue']
+      componentsPatterns: ['common/**/*.vue', 'pages/**/*.vue']
     }],
   ]
 

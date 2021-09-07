@@ -6,7 +6,7 @@
   "author": "yinxulai <yinxulai@hotmail.com>",
   "repository": "git@github.com:yinxulai/yinxulai.github.io.git",
   "scripts": {
-    "lint": "eslint --ext .vue,.ts theme/",
+    "lint": "eslint --ext .vue,.ts ./",
     "dev": "vuepress dev --config vuepress-config.ts source",
     "build": "vuepress build --config vuepress-config.ts source"
   },
