@@ -5,7 +5,7 @@ import { useCanvasRenderer } from './use-canvas-renderer'
 type Size = { width: number, height: number }
 type RenderFuncUtils = { size: Size }
 type CanvasRef = Ref<HTMLCanvasElement | undefined>
-type RenderFunc = (scene: THREE.Scene, utils: RenderFuncUtils) => void
+type RenderFunc = (scene: THREE.Scene, camera: THREE.Camera, utils: RenderFuncUtils) => void
 export function useThreeRenderer(canvas: CanvasRef, options?: WebGLContextAttributes) {
   const context = useCanvasRenderer(canvas, 'webgl', options)
   const scene = new THREE.Scene()
@@ -28,8 +28,8 @@ export function useThreeRenderer(canvas: CanvasRef, options?: WebGLContextAttrib
 
   const setRender = (func: RenderFunc) => {
     context.setRender((_ctx, utils) => {
-      func(scene, utils)
       if (camera.value == null) return
+      func(scene, camera.value, utils)
       if (renderer.value == null) return
       renderer.value.render(scene, camera.value)
     })
