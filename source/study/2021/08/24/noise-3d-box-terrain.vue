@@ -9,7 +9,7 @@ import { ref, computed } from 'vue'
 import { makeNoise2D } from 'fast-simplex-noise'
 import { useThreeRenderer } from '@hooks/use-three-renderer'
 
-const boxSize = 10
+const boxSize = 20
 const noise2D = makeNoise2D()
 const noiseOffset = ref<number>(0)
 const canvasRef = ref<HTMLCanvasElement>()
@@ -22,16 +22,23 @@ const box = computed(() => {
 })
 
 threeRenderer.setRender((scene, camera, { size }) => {
-  scene.clear()
-  camera.position.z = 80
-  camera.position.x = size.width / 2
-  camera.lookAt(size.width / 2, size.height, 0)
-
   noiseOffset.value += 0.01
+
+  const mapWidth = size.width / 2
+  const mapHeigth = size.height * 2
+
+  scene.clear()
+  camera.position.z = 120
+  camera.position.y = 150
+  camera.position.x = mapWidth / 2
+
+  camera.rotation.x = Math.PI * 0.25
+
   if (box.value == null) return
-  for (let x = 0; x < size.width; x += boxSize) {
-    for (let y = 0; y < size.height; y += boxSize) {
-      const z = Math.floor((noise2D(x * 0.005, y * 0.005 + noiseOffset.value) * 400) / boxSize)
+  for (let x = 0; x < mapWidth; x += boxSize) {
+    for (let y = 0; y < mapHeigth; y += boxSize) {
+      const noiseValue = noise2D(x * 0.005, y * 0.005 + noiseOffset.value) * 80
+      const z = Math.floor(noiseValue - (noiseValue % boxSize))
       const currentBox = box.value.clone()
       currentBox.position.x = x
       currentBox.position.y = y

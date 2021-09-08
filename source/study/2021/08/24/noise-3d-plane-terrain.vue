@@ -18,31 +18,35 @@ const plane = computed(() => {
   if (canvasRef.value == null) return null
   const { width, height } = canvasRef.value
   const geometry = new THREE.PlaneGeometry(
-    width,
+    width * 2,
     height * 2,
-    Math.fround(width),
-    Math.fround(height * 2)
+    Math.fround(width / 6),
+    Math.fround(height / 6)
   )
+
   const material = new THREE.MeshNormalMaterial({ flatShading: true })
   return new THREE.Mesh(geometry, material)
 })
 
-threeRenderer.setRender((scene, _camera, { size }) => {
-  noiseOffset.value += 0.05
-  if (plane.value == null) return
+threeRenderer.setRender((scene, camera, { size }) => {
+  noiseOffset.value += 0.01
 
+  camera.position.y = 0
+  camera.position.z = size.height 
+
+  if (plane.value == null) return
   if (scene.getObjectById(plane.value.id) == null) {
+    plane.value.position.x = -size.width / 2
+    plane.value.position.y = -size.height / 2
     scene.add(plane.value)
-    plane.value.rotation.x = 5.1
-    plane.value.position.z = -400
   }
 
   const positions = plane.value.geometry.getAttribute('position')
   for (let i = 0; i < positions.count; i++) {
     const currentX = positions.getX(i)
     const currentY = positions.getY(i)
-    const z = noise2D(currentX * 0.005, currentY * 0.005 + noiseOffset.value)
-    positions.setZ(i, Math.fround(z * 40))
+    const z = noise2D(currentX * 0.002, currentY * 0.002 + noiseOffset.value)
+    positions.setZ(i, Math.fround(z * 70))
     positions.needsUpdate = true
   }
 })

@@ -1,6 +1,7 @@
 import * as THREE from 'three'
 import { Ref, computed, onUnmounted, watch } from 'vue'
 import { useCanvasRenderer } from './use-canvas-renderer'
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 
 type Size = { width: number, height: number }
 type RenderFuncUtils = { size: Size }
@@ -26,8 +27,15 @@ export function useThreeRenderer(canvas: CanvasRef, options?: WebGLContextAttrib
     return camera
   })
 
+  const orbit = computed(() => {
+    if (camera.value == null) return null
+    if (renderer.value == null) return null
+    return new OrbitControls(camera.value, renderer.value.domElement)
+  })
+
   const setRender = (func: RenderFunc) => {
     context.setRender((_ctx, utils) => {
+      orbit.value?.update()
       if (camera.value == null) return
       func(scene, camera.value, utils)
       if (renderer.value == null) return
@@ -65,5 +73,5 @@ export function useThreeRenderer(canvas: CanvasRef, options?: WebGLContextAttrib
     window.removeEventListener('keydown', handleKeyboard)
   })
 
-  return { setRender }
+  return { ...context, setRender }
 }
