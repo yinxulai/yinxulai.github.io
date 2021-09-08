@@ -1,7 +1,6 @@
 import * as THREE from 'three'
 import { Ref, computed, onUnmounted, watch } from 'vue'
 import { useCanvasRenderer } from './use-canvas-renderer'
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 
 type Size = { width: number, height: number }
 type RenderFuncUtils = { size: Size }
@@ -22,20 +21,11 @@ export function useThreeRenderer(canvas: CanvasRef, options?: WebGLContextAttrib
   const camera = computed(() => {
     if (canvas.value == null) return null
     const { width, height } = canvas.value
-    const camera = new THREE.PerspectiveCamera(30, width / height, 0.1, 1000)
-    camera.position.z = 5
-    return camera
-  })
-
-  const orbit = computed(() => {
-    if (camera.value == null) return null
-    if (renderer.value == null) return null
-    return new OrbitControls(camera.value, renderer.value.domElement)
+    return new THREE.PerspectiveCamera(30, width / height, 0.1, 1000)
   })
 
   const setRender = (func: RenderFunc) => {
     context.setRender((_ctx, utils) => {
-      orbit.value?.update()
       if (camera.value == null) return
       func(scene, camera.value, utils)
       if (renderer.value == null) return
@@ -45,6 +35,7 @@ export function useThreeRenderer(canvas: CanvasRef, options?: WebGLContextAttrib
 
   const handleKeyboard = (event: KeyboardEvent) => {
     if (camera.value == null) return
+    event.preventDefault()
 
     if (event.code === 'KeyW') {
       camera.value.translateZ(-10)
@@ -61,16 +52,32 @@ export function useThreeRenderer(canvas: CanvasRef, options?: WebGLContextAttrib
     if (event.code === 'KeyD') {
       camera.value.translateX(10)
     }
+
+    if (event.code === 'ArrowUp') {
+      camera.value.rotateX(Math.PI*0.1)
+    }
+
+    if (event.code === 'ArrowDown') {
+      camera.value.rotateX(-Math.PI*0.1)
+    }
+
+    if (event.code === 'ArrowLeft') {
+      camera.value.rotateY(-Math.PI*0.1)
+    }
+
+    if (event.code === 'ArrowRight') {
+      camera.value.rotateY(Math.PI*0.1)
+    }
   }
 
   watch([canvas], () => {
     if (canvas.value == null) return
-    window.addEventListener('keydown', handleKeyboard)
+    canvas.value.addEventListener('keydown', handleKeyboard)
   })
 
   onUnmounted(() => {
     if (canvas.value == null) return
-    window.removeEventListener('keydown', handleKeyboard)
+    canvas.value.removeEventListener('keydown', handleKeyboard)
   })
 
   return { ...context, setRender }

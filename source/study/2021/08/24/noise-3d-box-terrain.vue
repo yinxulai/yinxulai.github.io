@@ -16,7 +16,7 @@ const canvasRef = ref<HTMLCanvasElement>()
 const threeRenderer = useThreeRenderer(canvasRef)
 
 const box = computed(() => {
-  const geometry = new THREE.BoxGeometry(boxSize, boxSize, boxSize, 1, 1)
+  const geometry = new THREE.BoxGeometry(boxSize, boxSize, boxSize, 1, 1, 1)
   const material = new THREE.MeshBasicMaterial({ wireframe: true })
   return new THREE.Mesh(geometry, material)
 })
@@ -24,20 +24,19 @@ const box = computed(() => {
 threeRenderer.setRender((scene, camera, { size }) => {
   noiseOffset.value += 0.01
 
-  const mapWidth = size.width / 2
-  const mapHeigth = size.height * 2
+  const mapWidth = size.width * 2
+  const mapHeigth = size.height * 3
 
   scene.clear()
-  camera.position.z = 120
-  camera.position.y = 150
+  camera.position.y = 8
+  camera.position.z = 260
   camera.position.x = mapWidth / 2
-
-  camera.rotation.x = Math.PI * 0.25
+  camera.rotation.x = Math.PI * 0.3
 
   if (box.value == null) return
   for (let x = 0; x < mapWidth; x += boxSize) {
     for (let y = 0; y < mapHeigth; y += boxSize) {
-      const noiseValue = noise2D(x * 0.005, y * 0.005 + noiseOffset.value) * 80
+      const noiseValue = noise2D(x * 0.002, y * 0.002 + noiseOffset.value) * 80
       const z = Math.floor(noiseValue - (noiseValue % boxSize))
       const currentBox = box.value.clone()
       currentBox.position.x = x

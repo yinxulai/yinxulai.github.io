@@ -68,11 +68,20 @@ export function useCanvasRenderer(canvas: CanvasRef, contextId: string, options?
     drawFrame.value(context.value, other)
   }
 
+  const upgradeTabIndex = () => {
+    if (canvas.value == null) return
+    // 如果 tabIndex 为负数，
+    // 那么元素就不能使用tab键进行导航，
+    // 但还能获得焦点
+    canvas.value.tabIndex = -1
+  }
+
   watch([canvasVisible], () => {
     startRequestFrame()
   }, { immediate: true })
 
   watch([canvas], () => {
+    upgradeTabIndex()
     updateContext()
     updateCanvasSize()
   }, { immediate: true })
@@ -82,6 +91,10 @@ export function useCanvasRenderer(canvas: CanvasRef, contextId: string, options?
   }, { immediate: true })
 
   const handleWheel = () => {
+    if (document.activeElement === canvas.value) {
+      console.log('focus')
+    }
+
     isScrolling.value = true
     setTimeout(() => { isScrolling.value = false }, 1000)
   }
