@@ -2,44 +2,43 @@ name: Deploy github page
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
-    branches: [ main ]
+    branches: [main]
 
 jobs:
   deploy-web:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Checkout
+        uses: actions/checkout@v2
 
-    - name: Checkout
-      uses: actions/checkout@v2
-      
-    - name: Install node
-      uses: actions/setup-node@v1
-      with:
-        node-version: 16
+      - name: Install node
+        uses: actions/setup-node@v1
+        with:
+          node-version: 16
 
-    - name: Install dependencies
-      run: cd web && npm install
-      
-    - name: Build pages
-      run: cd web && npm run build
-      
-    - name: Create CNAME
-      run: echo -e 'www.yinxulai.com\nyinxulai.com' > web/.output/dest/CNAME
+      - name: Install dependencies
+        run: npm install
 
-    - name: Push branch
-      uses: crazy-max/ghaction-github-pages@v2
-      with:
-        target_branch: gh-pages
-        build_dir: web/.output/dest
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build pages
+        run: npm run build
 
-    - name: Cache npm
-      uses: actions/cache@v2
-      with:
-        path: ~/.npm
-        restore-keys: node-npm-cache@
-        key: node-npm-cache@${{ hashFiles('**/package-lock.json') }}
+      - name: Create CNAME
+        run: echo -e 'www.yinxulai.com\nyinxulai.com' > .output/dest/CNAME
+
+      - name: Push branch
+        uses: crazy-max/ghaction-github-pages@v2
+        with:
+          target_branch: gh-pages
+          build_dir: .output/dest
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Cache npm
+        uses: actions/cache@v2
+        with:
+          path: ~/.npm
+          restore-keys: node-npm-cache@
+          key: node-npm-cache@${{ hashFiles('**/package-lock.json') }}
