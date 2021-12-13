@@ -3,6 +3,7 @@ import { onMounted, onUnmounted, ref } from 'vue'
 
 export function useFPS() {
   const fps = ref<string>('0')
+  const frameRequest = ref<number>(0)
   const isUnmounted = ref<boolean>(false)
   const recentTimeList = ref<number[]>([])
 
@@ -25,7 +26,7 @@ export function useFPS() {
     }
 
     recentTimeList.value.push(now - last)
-    requestAnimationFrame(() => onFrame(now))
+    frameRequest.value = requestAnimationFrame(() => onFrame(now))
   }
 
   onMounted(() => {
@@ -36,6 +37,7 @@ export function useFPS() {
   
   onUnmounted(() => {
     isUnmounted.value = true
+    cancelAnimationFrame(frameRequest.value)
   })
 
   return fps
