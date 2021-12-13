@@ -3,7 +3,7 @@ import { uesElementVisible } from '@hooks/ues-element-visible'
 
 type ReturnType<T> = {
   setScale: (v: number) => void
-  setRender: (func: RenderFunc<T>) => void
+  onRender: (func: RenderFunc<T>) => void
 }
 
 type StopFunc = () => void
@@ -50,7 +50,7 @@ export function useCanvasRenderer(canvas: CanvasRef, contextId: string, options?
     stop.value = true
   }
 
-  const setRender = (newDraw: RenderFunc<RenderingContext>) => {
+  const onRender = (newDraw: RenderFunc<RenderingContext>) => {
     drawFrame.value = newDraw
   }
 
@@ -107,5 +107,5 @@ export function useCanvasRenderer(canvas: CanvasRef, contextId: string, options?
     window.removeEventListener('wheel', handleWheel)
   })
 
-  return { setRender, setScale }
+  return { onRender, setScale }
 }

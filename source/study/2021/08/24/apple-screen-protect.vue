@@ -14,11 +14,11 @@ const colorNoise = makeNoise3D()
 const canvasRef = ref<HTMLCanvasElement>()
 const canvasRenderer = useCanvasRenderer(canvasRef, '2d')
 
-const maxlineWidth = 5
+const maxLineWidth = 5
 const maxLineLength = 60
-const canvasPadding = maxLineLength + maxlineWidth / 2
+const canvasPadding = maxLineLength + maxLineWidth / 2
 
-canvasRenderer.setRender((cxt, { size }) => {
+canvasRenderer.onRender((cxt, { size }) => {
   zOffset.value += 0.001
   cxt.clearRect(0, 0, size.width, size.height)
 
@@ -34,7 +34,7 @@ canvasRenderer.setRender((cxt, { size }) => {
       linearGradient.addColorStop(0, 'hsla(0,0%,0%,0)')
       cxt.strokeStyle = linearGradient
 
-      cxt.lineWidth = maxlineWidth
+      cxt.lineWidth = maxLineWidth
       cxt.lineCap = 'round'
 
       cxt.beginPath()

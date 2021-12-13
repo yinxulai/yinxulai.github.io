@@ -16,7 +16,7 @@ const noiseOffset = ref<number>(0)
 const canvasRef = ref<HTMLCanvasElement>()
 const canvasRenderer = useCanvasRenderer(canvasRef, '2d')
 
-canvasRenderer.setRender((ctx, { size }) => {
+canvasRenderer.onRender((ctx, { size }) => {
   noiseOffset.value += 0.01
   ctx.clearRect(0, 0, size.width, size.height)
   for (let x = canvasPadding; x < size.width - canvasPadding; x += gridSize) {

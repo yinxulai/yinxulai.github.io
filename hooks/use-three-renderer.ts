@@ -24,8 +24,8 @@ export function useThreeRenderer(canvas: CanvasRef, options?: WebGLContextAttrib
     return new THREE.PerspectiveCamera(30, width / height, 0.1, 1000)
   })
 
-  const setRender = (func: RenderFunc) => {
-    context.setRender((_ctx, utils) => {
+  const onRender = (func: RenderFunc) => {
+    context.onRender((_ctx, utils) => {
       if (camera.value == null) return
       func(scene, camera.value, utils)
       if (renderer.value == null) return
@@ -88,5 +88,5 @@ export function useThreeRenderer(canvas: CanvasRef, options?: WebGLContextAttrib
     canvas.value.removeEventListener('keydown', handleKeyboard)
   })
 
-  return { ...context, setRender }
+  return { ...context, onRender }
 }

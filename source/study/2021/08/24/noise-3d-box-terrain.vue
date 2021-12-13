@@ -21,7 +21,7 @@ const box = computed(() => {
   return new THREE.Mesh(geometry, material)
 })
 
-threeRenderer.setRender((scene, camera, { size }) => {
+threeRenderer.onRender((scene, camera, { size }) => {
   noiseOffset.value += 0.01
 
   const mapWidth = size.width * 2
