@@ -54,19 +54,27 @@ export function useThreeRenderer(canvas: CanvasRef, options?: WebGLContextAttrib
     }
 
     if (event.code === 'ArrowUp') {
-      camera.value.rotateX(Math.PI*0.1)
+      camera.value.rotateX(Math.PI * 0.1)
     }
 
     if (event.code === 'ArrowDown') {
-      camera.value.rotateX(-Math.PI*0.1)
+      camera.value.rotateX(-Math.PI * 0.1)
     }
 
     if (event.code === 'ArrowLeft') {
-      camera.value.rotateY(-Math.PI*0.1)
+      camera.value.rotateY(-Math.PI * 0.1)
     }
 
     if (event.code === 'ArrowRight') {
-      camera.value.rotateY(Math.PI*0.1)
+      camera.value.rotateY(Math.PI * 0.1)
+    }
+
+    if (event.code === 'KeyQ') {
+      camera.value.focus += 1
+    }
+
+    if (event.code === 'KeyE') {
+      camera.value.focus -= 1
     }
   }
 
