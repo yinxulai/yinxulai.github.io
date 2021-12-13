@@ -48,9 +48,9 @@ watchEffect(async () => {
   viewData.pageList = (await Promise.all(loadPagePromiseList))
     .filter((page: any) => {
       // 过滤掉 WIP 的页面
-      if (page.filePath != null && page.filePath !== '') {
-        return page.filePath.indexOf('WIP') === -1
-      }
+      // if (page.filePath != null && page.filePath !== '') {
+      //   return page.filePath.indexOf('WIP') === -1
+      // }
       return true
     })
     .sort((f, l) => {
