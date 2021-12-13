@@ -53,11 +53,12 @@ threeRenderer.onRender((scene, camera, { size }) => {
 })
 </script>
 <style lang="less" scoped>
-.noise-3d-terrain,
-.canvas {
-  width: 50rem;
-  height: 16rem;
-  overflow: hidden;
-  border-radius: 10px;
+.noise-3d-terrain {
+  .canvas {
+    width: 50rem;
+    height: 16rem;
+    overflow: hidden;
+    border-radius: 10px;
+  }
 }
 </style>

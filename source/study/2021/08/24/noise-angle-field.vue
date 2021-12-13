@@ -36,11 +36,12 @@ canvasRenderer.onRender((ctx, { size }) => {
 })
 </script>
 <style lang="less" scoped>
-.noise-angle-field,
-.canvas {
-  width: 50rem;
-  height: 16rem;
-  overflow: hidden;
-  border-radius: 10px;
+.noise-angle-field {
+  .canvas {
+    width: 50rem;
+    height: 16rem;
+    overflow: hidden;
+    border-radius: 10px;
+  }
 }
 </style>

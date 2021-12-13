@@ -8,9 +8,6 @@ import { ref } from 'vue'
 import { makeNoise3D } from 'fast-simplex-noise'
 import { useCanvasRenderer } from '@hooks/use-canvas-renderer'
 
-const gridSize = 20
-const lineLength = 10
-const canvasPadding = 20
 const noise3D = makeNoise3D()
 const noiseOffset = ref<number>(0)
 const canvasRef = ref<HTMLCanvasElement>()
@@ -44,11 +41,12 @@ canvasRenderer.onRender((ctx, { size }) => {
 })
 </script>
 <style lang="less" scoped>
-.noise-line-afterimage,
-.canvas {
-  width: 50rem;
-  height: 16rem;
-  overflow: hidden;
-  border-radius: 10px;
+.noise-line-afterimage {
+  .canvas {
+    width: 50rem;
+    height: 16rem;
+    overflow: hidden;
+    border-radius: 10px;
+  }
 }
 </style>

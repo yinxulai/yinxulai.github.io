@@ -25,7 +25,7 @@ threeRenderer.onRender((scene, camera, { size }) => {
   noiseOffset.value += 0.01
 
   const mapWidth = size.width * 2
-  const mapHeigth = size.height * 3
+  const mapHeight = size.height * 3
 
   scene.clear()
   camera.position.y = 8
@@ -35,7 +35,7 @@ threeRenderer.onRender((scene, camera, { size }) => {
 
   if (box.value == null) return
   for (let x = 0; x < mapWidth; x += boxSize) {
-    for (let y = 0; y < mapHeigth; y += boxSize) {
+    for (let y = 0; y < mapHeight; y += boxSize) {
       const noiseValue = noise2D(x * 0.002, y * 0.002 + noiseOffset.value) * 80
       const z = Math.floor(noiseValue - (noiseValue % boxSize))
       const currentBox = box.value.clone()
@@ -48,11 +48,12 @@ threeRenderer.onRender((scene, camera, { size }) => {
 })
 </script>
 <style lang="less" scoped>
-.noise-3d-terrain,
-.canvas {
-  width: 50rem;
-  height: 16rem;
-  overflow: hidden;
-  border-radius: 10px;
+.noise-3d-terrain {
+  .canvas {
+    width: 50rem;
+    height: 16rem;
+    overflow: hidden;
+    border-radius: 10px;
+  }
 }
 </style>

@@ -14,18 +14,18 @@ const colorNoise = makeNoise3D()
 const canvasRef = ref<HTMLCanvasElement>()
 const canvasRenderer = useCanvasRenderer(canvasRef, '2d')
 
-const maxLineWidth = 5
-const maxLineLength = 60
-const canvasPadding = maxLineLength + maxLineWidth / 2
+const maxLineWidth = 4
+const maxLineLength = 30
+const canvasPadding = 0 // maxLineLength + maxLineWidth / 2
 
 canvasRenderer.onRender((cxt, { size }) => {
-  zOffset.value += 0.001
+  zOffset.value += 0.0003
   cxt.clearRect(0, 0, size.width, size.height)
 
   for (let x = canvasPadding; x <= size.width - canvasPadding; x += 20) {
     for (let y = canvasPadding; y <= size.height - canvasPadding; y += 20) {
-      const angle = angleNoise(x * 0.0005, y * 0.0005, zOffset.value) * 5
-      const color = colorNoise(x * 0.0002, y * 0.0002, zOffset.value) * 360
+      const angle = angleNoise(x * 0.001, y * 0.001, zOffset.value * 10) * 5
+      const color = colorNoise(x * 0.001, y * 0.001, zOffset.value) * 300
       const toX = x + Math.cos(angle) * maxLineLength
       const toY = y + Math.sin(angle) * maxLineLength
 
@@ -46,11 +46,13 @@ canvasRenderer.onRender((cxt, { size }) => {
 })
 </script>
 <style lang="less" scoped>
-.screen-protect,
-.canvas {
-  width: 50rem;
-  height: 30rem;
-  overflow: hidden;
-  border-radius: 10px;
+.screen-protect {
+  .canvas {
+    width: 50rem;
+    height: 30rem;
+    overflow: hidden;
+    border-radius: 10px;
+    background-color: black;
+  }
 }
 </style>
