@@ -1,5 +1,5 @@
 import * as THREE from 'three'
-import { Ref, computed, onUnmounted, watch } from 'vue'
+import { Ref, computed, watchEffect } from 'vue'
 import { useCanvasRenderer } from './use-canvas-renderer'
 
 type Size = { width: number, height: number }
@@ -78,14 +78,13 @@ export function useThreeRenderer(canvas: CanvasRef, options?: WebGLContextAttrib
     }
   }
 
-  watch([canvas], () => {
+  watchEffect((onInvalidate) => {
     if (canvas.value == null) return
     canvas.value.addEventListener('keydown', handleKeyboard)
-  })
-
-  onUnmounted(() => {
-    if (canvas.value == null) return
-    canvas.value.removeEventListener('keydown', handleKeyboard)
+    onInvalidate(() => {
+      if (canvas.value == null) return
+      canvas.value.removeEventListener('keydown', handleKeyboard)
+    })
   })
 
   return { ...context, onRender }
