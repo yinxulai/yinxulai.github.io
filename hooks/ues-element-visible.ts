@@ -38,7 +38,7 @@ export function uesElementVisible(element: Ref<Element | undefined>) {
       return
     }
 
-    if (rect.value.top > windowSize.value.innerHeight) {
+    if ((rect.value.top - window.scrollY) > windowSize.value.innerHeight) {
       visible.value = false
       return
     }
@@ -47,23 +47,27 @@ export function uesElementVisible(element: Ref<Element | undefined>) {
   }
 
   onMounted(() => {
-    window.addEventListener('scroll', updateRect)
+    // TODO: 每掉用一次就添加一系列 Listener 有待优化
     window.addEventListener('load', updateVisible)
+    window.addEventListener('scroll', updateVisible)
     window.addEventListener('scroll', updateVisible)
     window.addEventListener('resize', updateVisible)
   })
 
   onUnmounted(() => {
-    window.removeEventListener('scroll', updateRect)
     window.removeEventListener('load', updateVisible)
+    window.removeEventListener('scroll', updateVisible)
     window.removeEventListener('scroll', updateVisible)
     window.removeEventListener('resize', updateVisible)
   })
 
-  watch([element], () => {
+  watch(element, () => {
     updateRect()
     updateVisible()
-  }, { immediate: true })
+  }, {
+    flush: 'post',
+    immediate: true
+  })
 
   return visible
 }

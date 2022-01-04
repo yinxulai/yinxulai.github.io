@@ -8,8 +8,8 @@ type ReturnType<T> = {
 
 type StopFunc = () => void
 type Size = { width: number, height: number }
-type RenderFuncUtils = { size: Size, stop: StopFunc }
-type RenderFunc<T> = (ctx: T, utils: RenderFuncUtils) => void
+type RenderFuncParams<T> = {context: T, size: Size, stop: StopFunc }
+type RenderFunc<T> = (params: RenderFuncParams<T>) => void
 type CanvasRef = Ref<HTMLCanvasElement | undefined>
 
 export function useCanvasRenderer(canvas: CanvasRef, contextId: 'webgl', options?: WebGLContextAttributes): ReturnType<WebGLRenderingContext>
@@ -64,37 +64,19 @@ export function useCanvasRenderer(canvas: CanvasRef, contextId: string, options?
     if (context.value == null) return
 
     const { width, height } = context.value.canvas
-    const other = { size: { width, height }, stop: stopRender }
-    drawFrame.value(context.value, other)
+    const params = {context: context.value,  size: { width, height }, stop: stopRender }
+    drawFrame.value(params)
   }
 
   const upgradeTabIndex = () => {
     if (canvas.value == null) return
     // 如果 tabIndex 为负数，
-    // 那么元素就不能使用tab键进行导航，
+    // 那么元素就不能使用 tab 键进行导航，
     // 但还能获得焦点
     canvas.value.tabIndex = -1
   }
 
-  watch([canvasVisible], () => {
-    startRequestFrame()
-  }, { immediate: true })
-
-  watch([canvas], () => {
-    upgradeTabIndex()
-    updateContext()
-    updateCanvasSize()
-  }, { immediate: true })
-
-  watch([scale], () => {
-    updateCanvasSize()
-  }, { immediate: true })
-
   const handleWheel = () => {
-    if (document.activeElement === canvas.value) {
-      console.log('focus')
-    }
-
     isScrolling.value = true
     setTimeout(() => { isScrolling.value = false }, 1000)
   }
@@ -105,6 +87,30 @@ export function useCanvasRenderer(canvas: CanvasRef, contextId: string, options?
 
   onUnmounted(() => {
     window.removeEventListener('wheel', handleWheel)
+  })
+
+
+  watch(canvasVisible, () => {
+    startRequestFrame()
+  }, {
+    flush: 'post',
+    immediate: true
+  })
+
+  watch(scale, () => {
+    updateCanvasSize()
+  }, {
+    flush: 'post',
+    immediate: true
+  })
+
+  watch(canvas, () => {
+    updateCanvasSize()
+    upgradeTabIndex()
+    updateContext()
+  }, {
+    flush: 'post',
+    immediate: true
   })
 
   return { onRender, setScale }

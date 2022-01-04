@@ -1,4 +1,4 @@
-import { Ref, ref, watchEffect } from 'vue'
+import { Ref, ref, watchPostEffect } from 'vue'
 
 type ElementRef = Ref<HTMLElement | undefined>
 
@@ -15,7 +15,7 @@ export function useMousePosition(element: ElementRef): Ref<MousePosition> {
     point.value = { offsetX, offsetY }
   }
 
-  watchEffect((onInvalidate) => {
+  watchPostEffect((onInvalidate) => {
     if (element.value == null) return
     element.value.addEventListener('mousemove', updatePoint)
     onInvalidate(() => {

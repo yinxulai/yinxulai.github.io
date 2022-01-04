@@ -6,22 +6,8 @@ const globalStyle = `
   html {
     background-color: #181818;
   }
-
-  @keyframes fade-in {
-    0% {
-      opacity: 0;
-    }
-    10% {
-      opacity: 0;
-    }
-    100% {
-      opacity: 1;
-    }
-  }
-
   body {
     opacity: 0;
-    animation: fade-in 0.6s linear 0s 1 forwards;
   }
 `
 
