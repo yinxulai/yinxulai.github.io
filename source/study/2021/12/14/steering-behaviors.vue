@@ -10,38 +10,26 @@ import { useCanvasRenderer } from '@hooks/use-canvas-renderer'
 import { Agent } from './libs/agent'
 import { Vector2D } from './libs/vector'
 
-const agent = new Agent(100, 100)
-
 const noise3D = makeNoise3D()
+const agent = ref<Agent>()
 const noiseOffset = ref<number>(0)
 const canvasRef = ref<HTMLCanvasElement>()
 const canvasRenderer = useCanvasRenderer(canvasRef, '2d')
 
-const renderAgent = (context: CanvasRenderingContext2D, agent: Agent) => {
-  if (!Number.isSafeInteger(agent.position.x)) {
-    console.log('zale')
+canvasRenderer.onRender(({ context, size }) => {
+  if (agent.value == null) {
+    agent.value = new Agent(size.width / 2, size.height / 2)
   }
 
-  context.beginPath()
-  context.lineWidth = 1
-  context.strokeStyle = 'rgba(0,0,0,.3)'
-  context.arc(agent.position.x, agent.position.y, 10, 0, Math.PI * 2, false)
-  context.stroke()
-
-  context.fillStyle = 'rgba(0,0,0,.08)'
-  context.fill()
-}
-
-canvasRenderer.onRender(({ context, size }) => {
   noiseOffset.value += 0.01
   const { width, height } = size
+  context.fillStyle = 'rgb(255,255,255)'
+  context.fillRect(0, 0, width, height)
+
   const x = noise3D(0, 0, noiseOffset.value + 10)
   const y = noise3D(10, 10, noiseOffset.value + 100)
 
-  agent.applyAcceleration(new Vector2D(x, y))
-  context.fillStyle = 'rgb(255,255,255)'
-  context.fillRect(0, 0, width, height)
-  renderAgent(context, agent)
+  agent.value.applyAcceleration(new Vector2D(x, y)).update().render(context)
 })
 </script>
 <style lang="less">

@@ -1,10 +1,20 @@
 export class Vector2D {
   constructor(public x: number, public y: number) { }
 
+  private isFinite() {
+    if (!Number.isFinite(this.x)) {
+      throw new Error(`x 不是一个有效的值: ${this.x}`)
+    }
+    if (!Number.isFinite(this.y)) {
+      throw new Error(`y 不是一个有效的值: ${this.y}`)
+    }
+  }
+
   /**
    * @param  {Vector2D} vector
    */
   add(vector: Vector2D) {
+    this.isFinite()
     this.x += vector.x
     this.y += vector.y
     return this
@@ -14,6 +24,7 @@ export class Vector2D {
    * @param  {number} num
    */
   mult(num: number) {
+    this.isFinite()
     this.x *= num;
     this.y *= num;
     return this
@@ -23,7 +34,11 @@ export class Vector2D {
    * @param  {number} num
    */
   div(num: number) {
-    if (num == 0) console.warn('0 不能作为被除数')
+    if (num == 0) {
+      throw new Error('0 不能作为被除数:')
+    }
+
+    this.isFinite()
     this.x /= num;
     this.y /= num;
     return this
@@ -44,19 +59,23 @@ export class Vector2D {
   /**
    * @param  {number} max
    */
-  limit(max: number) {
-    // 二维空间的求两点距离公式
-    const magSq = this.x * this.x + this.y * this.y
+  limitMag(max: number) {
+    const magSq = this.magSq()
     if (magSq > max * max) {
-      console.log('input', this.x, this.y, magSq)
       const length = Math.sqrt(magSq)
-      this.div(1 / length).mult(max)
-      console.log('result', length, this.x, this.y)
+      if (length === 0) return this
+      this.div(length).mult(max)
     }
 
     return this
   }
-}
 
-// input -9.771784160969357 -3.7048825598900574 109.21392047114911
-// result 10.45054641974041 -1021.2048397789437 -387.1804717181772
+  heading() {
+    return Math.atan2(this.y, this.x)
+  }
+
+  limitHeading(max: number) {
+  
+    return this
+  }
+}
