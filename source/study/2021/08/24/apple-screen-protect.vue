@@ -18,9 +18,9 @@ const maxLineWidth = 4
 const maxLineLength = 30
 const canvasPadding = 0 // maxLineLength + maxLineWidth / 2
 
-canvasRenderer.onRender((cxt, { size }) => {
+canvasRenderer.onRender(( {context, size }) => {
   zOffset.value += 0.0003
-  cxt.clearRect(0, 0, size.width, size.height)
+  context.clearRect(0, 0, size.width, size.height)
 
   for (let x = canvasPadding; x <= size.width - canvasPadding; x += 20) {
     for (let y = canvasPadding; y <= size.height - canvasPadding; y += 20) {
@@ -29,18 +29,18 @@ canvasRenderer.onRender((cxt, { size }) => {
       const toX = x + Math.cos(angle) * maxLineLength
       const toY = y + Math.sin(angle) * maxLineLength
 
-      const linearGradient = cxt.createLinearGradient(x, y, toX, toY)
+      const linearGradient = context.createLinearGradient(x, y, toX, toY)
       linearGradient.addColorStop(1, `hsla(${color}, 40%,40%, 1)`)
       linearGradient.addColorStop(0, 'hsla(0,0%,0%,0)')
-      cxt.strokeStyle = linearGradient
+      context.strokeStyle = linearGradient
 
-      cxt.lineWidth = maxLineWidth
-      cxt.lineCap = 'round'
+      context.lineWidth = maxLineWidth
+      context.lineCap = 'round'
 
-      cxt.beginPath()
-      cxt.moveTo(x, y)
-      cxt.lineTo(toX, toY)
-      cxt.stroke()
+      context.beginPath()
+      context.moveTo(x, y)
+      context.lineTo(toX, toY)
+      context.stroke()
     }
   }
 })

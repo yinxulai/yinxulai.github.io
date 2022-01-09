@@ -75,7 +75,11 @@ export class Vector2D {
   }
 
   limitHeading(max: number) {
-  
+    // TODO: WIP
+    const heading = this.heading()
+    if (heading <= max) return this
+    this.x = Math.cos(heading)
+    this.y = Math.sin(heading)
     return this
   }
 }

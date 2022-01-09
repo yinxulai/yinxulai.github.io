@@ -26,7 +26,7 @@ export class Agent {
     if (acceleration.magSq() <= 0) return this
 
     this.velocity
-      .add(acceleration.limitMag(this.maxForce))
+      .add(acceleration.limitMag(this.maxForce).limitHeading(Math.PI * 0.1))
       .limitMag(this.maxSpeed)
 
     return this
