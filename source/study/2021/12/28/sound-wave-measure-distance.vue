@@ -1,5 +1,5 @@
 <template>
-  <canvas id="canvas"></canvas>
+  <canvas id="canvas" />
 </template>
 <script lang="ts" setup>
 
@@ -9,5 +9,6 @@ async function getSoundInput() {
   audioNode.numberOfOutputs
   // audioNode.addEventListener('') 
 }
-getSoundInput()
+
+// getSoundInput()
 </script>
