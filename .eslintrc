@@ -16,6 +16,7 @@
         "@typescript-eslint"
     ],
     "rules": {
+        "vue/html-self-closing": false,
         "vue/max-attributes-per-line": [
             "error",
             {
