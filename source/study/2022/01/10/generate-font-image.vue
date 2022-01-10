@@ -1,21 +1,22 @@
 <template>
-  <input v-model="fontList">
-  <canvas id="canvas" />
+  <input v-model="fontList" />
+  <p>{{ result }}</p>
 </template>
 <script lang="ts" setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 
+const result = ref<string>('')
 const fontList = ref<string>('')
-const fontGrayscaleMap = ref<Map<string, number>>()
-const imageGrayscaleTable = ref<Map<string, number>>()
 
-// 计算字体灰度表
-function computeFrontGrayscale() {}
+const fontGrayscaleMap = computed(() => {
+  const map = new Map<number, string>()
+  if (!fontList.value) return map
 
-// 计算图片灰度
-function computeImageTable() {}
+  return map
+})
 
+const imageGrayscaleTable = computed(() => {
 
-
+})
 
 </script>
