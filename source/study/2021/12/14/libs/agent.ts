@@ -25,15 +25,18 @@ export class Agent {
   applyAcceleration(acceleration: Vector2D) {
     if (acceleration.magSq() <= 0) return this
 
+    acceleration
+      .limitMag(this.maxForce)
+      // .limitHeading(Math.PI * 0.1) 限制转向速度
+
     this.velocity
-      .add(acceleration.limitMag(this.maxForce).limitHeading(Math.PI * 0.1))
+      .add(acceleration)
       .limitMag(this.maxSpeed)
 
     return this
   }
 
   update() {
-    console.log('magSq', this.velocity.magSq())
     if (this.velocity.magSq() > 0) {
       this.position.add(this.velocity)
     }
@@ -43,7 +46,6 @@ export class Agent {
   private renderSight(context: CanvasRenderingContext2D) {
     const size = 10
     const angle = this.velocity.heading()
-    console.log('angle', angle)
     const toX = this.position.x + Math.cos(angle) * size
     const toY = this.position.y + Math.sin(angle) * size
 

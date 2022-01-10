@@ -52,6 +52,10 @@ export class Vector2D {
     return this
   }
 
+  mag(): number {
+    return Math.sqrt(this.magSq())
+  }
+
   magSq(): number {
     return this.x * this.x + this.y * this.y
   }
@@ -75,11 +79,11 @@ export class Vector2D {
   }
 
   limitHeading(max: number) {
-    // TODO: WIP
     const heading = this.heading()
     if (heading <= max) return this
-    this.x = Math.cos(heading)
-    this.y = Math.sin(heading)
+    const mag = this.mag()
+    this.x = Math.cos(max) * mag
+    this.y = Math.sin(max) * mag
     return this
   }
 }
