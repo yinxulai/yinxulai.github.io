@@ -3,10 +3,36 @@ import { Vector2D } from './vector'
 
 // 脑子
 export class Brain {
-
+  // 追踪静态的目标
+  Seek() { }
+  // 逃离静态目标
+  Flee() { }
+  // 追踪动态目标
+  Pursuit() { }
+  // 逃离动态目标
+  Evasion() { }
+  // 躲避障碍
+  ObstacleAvoidance() { }
+  // 漫步
+  Wander() { }
+  // 路径跟踪
+  PathFollowing() { }
+  // 流场跟踪
+  FlowFieldFollowing() { }
+  // 领袖跟踪
+  LeaderFollowing() { }
+  // 避免与任意代理发生碰撞
+  UnalignedCollisionAvoidance() { }
+  // 与其他代理保持距离
+  Separation() { }
+  // 与其他代理保持方向大致相同
+  Alignment() { }
+  // 与其他代理不要距离太远
+  Cohesion() { }
 }
 
 export class Agent {
+  private brain: Brain
   private maxSpeed: number
   private maxForce: number
 
@@ -19,6 +45,8 @@ export class Agent {
     this.maxForce = 1
     this.velocity = new Vector2D(0, 0)
     this.position = new Vector2D(x, y)
+
+    this.brain = new Brain()
   }
 
   // 应用加速度
@@ -27,7 +55,7 @@ export class Agent {
 
     acceleration
       .limitMag(this.maxForce)
-      // .limitHeading(Math.PI * 0.1) 限制转向速度
+    // .limitHeading(Math.PI * 0.1) 限制转向速度
 
     this.velocity
       .add(acceleration)
