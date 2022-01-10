@@ -1,5 +1,6 @@
 <template>
   <input v-model="fontList" />
+  <input type="file" @change="changeflie" accept="image/*" />
   <p>{{ result }}</p>
 </template>
 <script lang="ts" setup>
@@ -15,8 +16,5 @@ const fontGrayscaleMap = computed(() => {
   return map
 })
 
-const imageGrayscaleTable = computed(() => {
-
-})
-
+const imageGrayscaleTable = computed(() => {})
 </script>
