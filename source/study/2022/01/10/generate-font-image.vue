@@ -2,7 +2,6 @@
   <input v-model.lazy="column" placeholder="请输入填充字符" />
   <input v-model.lazy="characterList" placeholder="请输入填充字符" />
   <input type="file" accept="image/*" @change="handleSelectFile" />
-  <canvas ref="canvas"></canvas>
   <div class="row" v-for="(row, x) in imageGrayscaleTable" :key="x">
     <div :key="y" class="column" v-for="(gray, y) in row">{{ renderText(gray) }}</div>
   </div>
@@ -14,11 +13,10 @@ const defaultCharacterList =
   '!"#$%&\'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~'
 
 const column = ref<number>(10)
+const image = ref<HTMLImageElement>()
 const characterList = ref<string>(defaultCharacterList)
 
-const result = ref<string>()
-const image = ref<HTMLImageElement>()
-const canvas = ref<HTMLCanvasElement>()
+
 
 const getGrayscale = (data: Uint8ClampedArray) => {
   const rgbaData = data.reduce(
@@ -60,14 +58,10 @@ const getCanvas2DContext = (width = 10, height = 10) => {
 const fontGrayscaleMap = computed(() => {
   const map = new Map<number, string>()
   if (!characterList.value) return { map, keys: [] }
-  if (canvas.value == null) return { map, keys: [] }
 
-  // const context = getCanvas2DContext()
   const size = 50
-  canvas.value.width = size
-  canvas.value.height = size
   const characters = characterList.value
-  const context = canvas.value.getContext('2d')!
+  const context = getCanvas2DContext(size, size)!
   const characterSet = new Set(characters.split(''))
   for (const character of characterSet) {
     context.fillStyle = '#FFFFFF'
@@ -87,6 +81,7 @@ const fontGrayscaleMap = computed(() => {
   return { map, keys: Array.from(map.keys()).sort() }
 })
 
+// TODO: 强化对比度
 const imageGrayscaleTable = computed(() => {
   const table: number[][] = []
   if (image.value == null) return table
