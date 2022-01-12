@@ -7,16 +7,14 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { ref, watch, computed } from 'vue'
+import { ref, computed } from 'vue'
 
 const defaultCharacterList =
-  '!"#$%&\'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~'
+  ' !"#$%&\'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~'
 
-const column = ref<number>(10)
+const column = ref<number>(160)
 const image = ref<HTMLImageElement>()
 const characterList = ref<string>(defaultCharacterList)
-
-
 
 const getGrayscale = (data: Uint8ClampedArray) => {
   const rgbaData = data.reduce(
@@ -112,12 +110,12 @@ const renderText = (gray: number) => {
       continue
     }
 
-    if (current - gray <= gray - result) {
+    if (Math.abs(gray - current) <= Math.abs(gray - result)) {
       result = current
     }
   }
-  
-  return fontGrayscaleMap.value.map.get(result!) 
+
+  return fontGrayscaleMap.value.map.get(result!)
 }
 </script>
 <style lang="less">
@@ -129,9 +127,12 @@ const renderText = (gray: number) => {
 }
 
 .column {
-  flex-shrink: 0;
   display: inline-block;
+  margin: 1px;
   width: 10px;
   height: 10px;
+  font-size: 10px;
+  line-height: 10px;
+  flex-shrink: 0;
 }
 </style>
