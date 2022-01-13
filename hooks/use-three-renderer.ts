@@ -25,7 +25,7 @@ export function useThreeRenderer(canvas: CanvasRef, options?: WebGLContextAttrib
   })
 
   const onRender = (func: RenderFunc) => {
-    context.onRender((_ctx, utils) => {
+    context.onRender((utils) => {
       if (camera.value == null) return
       func(scene, camera.value, utils)
       if (renderer.value == null) return

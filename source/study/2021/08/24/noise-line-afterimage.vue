@@ -13,7 +13,7 @@ const noiseOffset = ref<number>(0)
 const canvasRef = ref<HTMLCanvasElement>()
 const canvasRenderer = useCanvasRenderer(canvasRef, '2d')
 
-canvasRenderer.onRender(({context, size }) => {
+canvasRenderer.onRender(({ context, size }) => {
   noiseOffset.value += 0.01
   const { width, height } = size
   const maxLineLength = Math.min(width, height) / 2

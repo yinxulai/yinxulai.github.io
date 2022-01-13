@@ -12,7 +12,7 @@ import { ref, computed } from 'vue'
 const defaultCharacterList =
   ' !"#$%&\'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~'
 
-const column = ref<number>(160)
+const column = ref<number>(100)
 const image = ref<HTMLImageElement>()
 const characterList = ref<string>(defaultCharacterList)
 
@@ -128,11 +128,11 @@ const renderText = (gray: number) => {
 
 .column {
   display: inline-block;
-  margin: 1px;
   width: 10px;
   height: 10px;
   font-size: 10px;
   line-height: 10px;
   flex-shrink: 0;
+  transform: scale(0.8);
 }
 </style>
