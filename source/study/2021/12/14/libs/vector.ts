@@ -11,6 +11,26 @@ export class Vector2D {
   }
 
   /**
+   * 归零
+   */
+  zero() {
+    this.x = 0
+    this.y = 0
+    return this
+  }
+
+  /**
+  * 克隆
+  */
+  clone() {
+    return new Vector2D(
+      this.x,
+      this.y
+    )
+  }
+
+  /**
+   * 加
    * @param  {Vector2D} vector
    */
   add(vector: Vector2D) {
@@ -21,6 +41,18 @@ export class Vector2D {
   }
 
   /**
+   * 减
+   * @param  {Vector2D} vector
+   */
+  sub(vector: Vector2D) {
+    this.isFinite()
+    this.x -= vector.x
+    this.y -= vector.y
+    return this
+  }
+
+  /**
+   * 乘
    * @param  {number} num
    */
   mult(num: number) {
@@ -31,6 +63,7 @@ export class Vector2D {
   }
 
   /**
+   * 除
    * @param  {number} num
    */
   div(num: number) {
@@ -41,14 +74,6 @@ export class Vector2D {
     this.isFinite()
     this.x /= num;
     this.y /= num;
-    return this
-  }
-
-  /**
-   */
-  zero() {
-    this.x = 0
-    this.y = 0
     return this
   }
 
@@ -79,6 +104,7 @@ export class Vector2D {
   }
 
   limitHeading(max: number) {
+    // TODO: 考虑正反方向
     const heading = this.heading()
     if (heading <= max) return this
     const mag = this.mag()
