@@ -1,6 +1,6 @@
 import { Vector2D } from './vector'
 
-class Agent {
+class BaseAgent {
   static uuid: number
   public readonly uuid: number
 
@@ -11,10 +11,10 @@ class Agent {
     public position = new Vector2D(0, 0),
     public velocity = new Vector2D(0, 0),
     private acceleration = new Vector2D(0, 0),
-  ) { this.uuid = Agent.uuid += 1 }
+  ) { this.uuid = BaseAgent.uuid += 1 }
 
   // 应用加速度
-  public applyAcceleration(acceleration: Vector2D) {
+  protected applyAcceleration(acceleration: Vector2D) {
     if (acceleration.magSq() <= 0) return this
     acceleration.limitMag(this.maxForce)
     this.acceleration = acceleration
@@ -36,12 +36,7 @@ class Agent {
   }
 }
 
-export class Brain {
-  private agent: Agent
-  constructor(agent: Agent) {
-    this.agent = agent
-  }
-
+export class WithBrain extends BaseAgent {
   // 寻找（或追求静态目标）的作用是引导角色朝向全局空间中的指定位置。
   // 此行为会调整代理，使其速度与目标径向对齐。
   // 请注意，这与会在目标点周围产生轨道路径的吸引力（例如重力）不同。
@@ -53,30 +48,42 @@ export class Brain {
   //    加速度 = 转向力 / 质量
   // 如果一个角色继续寻找，它最终会穿过目标，然后转身再次接近。
   // 这会产生运动，有点像飞蛾在灯泡周围嗡嗡作响。
-  public seek(target: Agent) {
-    const targetVelocity = this.agent.position
+  public seek(target: BaseAgent) {
+    const targetVelocity = this.position
       .clone()
       .sub(target.position)
-      .limitMag(this.agent.maxSpeed)
+      .limitMag(this.maxSpeed)
 
     const acceleration = targetVelocity
-      .sub(this.agent.velocity)
-      .mult(this.agent.weight)
+      .sub(this.velocity)
+      .mult(this.weight)
 
-    this.agent.applyAcceleration(acceleration)
+    this.applyAcceleration(acceleration)
   }
 
   // 逃离静态目标
-  Flee(agent: Agent) { }
+  flee(target: BaseAgent) {
+    const targetVelocity = this.position
+      .clone()
+      .sub(target.position)
+      .limitHeading(Math.PI * 0.1)
+      .limitMag(this.maxSpeed)
+
+    const acceleration = targetVelocity
+      .sub(this.velocity)
+      .mult(this.weight)
+
+    this.applyAcceleration(acceleration)
+  }
 
   // 追踪动态目标
-  Pursuit(agent: Agent) { }
+  Pursuit(agent: BaseAgent) { }
 
   // 逃离动态目标
-  Evasion(agent: Agent) { }
+  Evasion(agent: BaseAgent) { }
 
   // 躲避障碍
-  ObstacleAvoidance(agents: Agent[]) { }
+  ObstacleAvoidance(agents: BaseAgent[]) { }
 
   // 漫步
   Wander() { }
@@ -103,12 +110,9 @@ export class Brain {
   Cohesion() { }
 }
 
-export class CarAgent extends Agent {
-  private brain: Brain
-
+export class CarAgent extends WithBrain {
   constructor(x = 0, y = 0) {
     super(1, 1, 1, new Vector2D(x, y))
-    this.brain = new Brain(this)
   }
 
   private renderSight(context: CanvasRenderingContext2D) {
@@ -145,5 +149,11 @@ export class CarAgent extends Agent {
   render(context: CanvasRenderingContext2D) {
     this.renderSight(context)
     this.renderBody(context)
+  }
+}
+
+export class TargetAgent extends BaseAgent {
+  constructor(x: number, y: number) {
+    super(1, 0, 0, new Vector2D(x, y))
   }
 }

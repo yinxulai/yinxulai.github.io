@@ -1,6 +1,6 @@
 {
     "extends": [
-        "plugin:vue/vue3-recommended"
+        "plugin:vue/vue3-strongly-recommended"
     ],
     "parserOptions": {
         "ecmaVersion": 2018,
@@ -16,7 +16,7 @@
         "@typescript-eslint"
     ],
     "rules": {
-        "vue/html-self-closing": false,
+        "vue/html-self-closing": "off",
         "vue/max-attributes-per-line": [
             "error",
             {

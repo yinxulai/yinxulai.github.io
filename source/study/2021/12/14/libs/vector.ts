@@ -104,12 +104,21 @@ export class Vector2D {
   }
 
   limitHeading(max: number) {
-    // TODO: 考虑正反方向
     const heading = this.heading()
-    if (heading <= max) return this
-    const mag = this.mag()
-    this.x = Math.cos(max) * mag
-    this.y = Math.sin(max) * mag
+    if (heading >= max) {
+      const mag = this.mag()
+      this.x = Math.cos(max) * mag
+      this.y = Math.sin(max) * mag
+      return this
+    }
+
+    if (heading >= Math.PI - max) {
+      const mag = this.mag()
+      this.x = Math.cos(Math.PI - max) * mag
+      this.y = Math.sin(Math.PI - max) * mag
+    }
+
+    console.log(this.heading())
     return this
   }
 }

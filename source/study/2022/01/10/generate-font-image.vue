@@ -3,7 +3,9 @@
   <input v-model.lazy="characterList" placeholder="请输入填充字符" />
   <input type="file" accept="image/*" @change="handleSelectFile" />
   <div class="row" v-for="(row, x) in imageGrayscaleTable" :key="x">
-    <div :key="y" class="column" v-for="(gray, y) in row">{{ renderText(gray) }}</div>
+    <div :key="y" class="column" v-for="(gray, y) in row">
+      {{ renderText(gray) }}
+    </div>
   </div>
 </template>
 <script lang="ts" setup>

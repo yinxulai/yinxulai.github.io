@@ -5,20 +5,22 @@
 </template>
 <script lang="ts" setup>
 import { ref } from 'vue'
-import { makeNoise3D } from 'fast-simplex-noise'
+import { useMousePosition } from '@hooks/use-mouse-position'
 import { useCanvasRenderer } from '@hooks/use-canvas-renderer'
-import { CarAgent } from './libs/agent'
-import { Vector2D } from './libs/vector'
+import { CarAgent, TargetAgent } from './libs/agent'
 
-const noise3D = makeNoise3D()
 const carAgent = ref<CarAgent>()
 const noiseOffset = ref<number>(0)
 const canvasRef = ref<HTMLCanvasElement>()
+const mousePosition = useMousePosition(canvasRef)
 const canvasRenderer = useCanvasRenderer(canvasRef, '2d')
 
 canvasRenderer.onRender(({ context, size }) => {
   if (carAgent.value == null) {
-    carAgent.value = new CarAgent(size.width / 2, size.height / 2)
+    carAgent.value = new CarAgent(
+      size.width / 2, 
+      size.height / 2
+    )
   }
 
   noiseOffset.value += 0.01
@@ -26,10 +28,13 @@ canvasRenderer.onRender(({ context, size }) => {
   context.fillStyle = 'rgb(255,255,255)'
   context.fillRect(0, 0, width, height)
 
-  const x = noise3D(0, 0, noiseOffset.value + 10)
-  const y = noise3D(100, 100, noiseOffset.value + 100)
+  const target = new TargetAgent(
+    mousePosition.value.offsetX, 
+    mousePosition.value.offsetY
+  )
 
-  carAgent.value.applyAcceleration(new Vector2D(x, y)).cycle().render(context)
+  carAgent.value.flee(target)
+  carAgent.value.cycle().render(context)
 })
 </script>
 <style lang="less">

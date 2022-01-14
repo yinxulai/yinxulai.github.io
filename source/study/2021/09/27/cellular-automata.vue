@@ -1,10 +1,22 @@
 <template>
-  <button @click="exportBlockState">导出当前状态</button>
-  <button @click="randomBlockState">随机生成状态</button>
-  <button @click="loadBlockState">加载状态</button>
-  <button @click="start">开始</button>
-  <button @click="stop">停止</button>
-  <button @click="next">步进</button>
+  <button @click="exportBlockState">
+    导出当前状态
+  </button>
+  <button @click="randomBlockState">
+    随机生成状态
+  </button>
+  <button @click="loadBlockState">
+    加载状态
+  </button>
+  <button @click="start">
+    开始
+  </button>
+  <button @click="stop">
+    停止
+  </button>
+  <button @click="next">
+    步进
+  </button>
   <div class="cellular-automata">
     <div class="row" :key="rowIndex" v-for="rowIndex in rowRef">
       <span
