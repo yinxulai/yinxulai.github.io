@@ -8,12 +8,23 @@ import { ref } from 'vue'
 import { useMousePosition } from '@hooks/use-mouse-position'
 import { useCanvasRenderer } from '@hooks/use-canvas-renderer'
 import { CarAgent, TargetAgent } from './libs/agent'
+import { Vector2D } from './libs/vector'
 
 const carAgent = ref<CarAgent>()
 const noiseOffset = ref<number>(0)
 const canvasRef = ref<HTMLCanvasElement>()
 const mousePosition = useMousePosition(canvasRef)
 const canvasRenderer = useCanvasRenderer(canvasRef, '2d')
+
+const target1 = new Vector2D(0,1)
+console.log('target1', target1.heading())
+console.log('target1.limitMag', target1.limitMag(1))
+
+const target5 = new Vector2D(3, 4)
+console.log('target5.limitMag', target5.limitMag(1))
+
+const target2 = new Vector2D(-1,0)
+console.log('target2.limitHeading', target2.limitHeading(Math.PI / 2))
 
 canvasRenderer.onRender(({ context, size }) => {
   if (carAgent.value == null) {
@@ -33,8 +44,7 @@ canvasRenderer.onRender(({ context, size }) => {
     mousePosition.value.offsetY
   )
 
-  carAgent.value.flee(target)
-  carAgent.value.cycle().render(context)
+  carAgent.value.seek(target).render(context)
 })
 </script>
 <style lang="less">

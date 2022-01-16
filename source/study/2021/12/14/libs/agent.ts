@@ -11,13 +11,16 @@ class BaseAgent {
     public position = new Vector2D(0, 0),
     public velocity = new Vector2D(0, 0),
     private acceleration = new Vector2D(0, 0),
-  ) { this.uuid = BaseAgent.uuid += 1 }
+  ) { this.uuid = BaseAgent.uuid += 1; }
 
   // 应用加速度
-  protected applyAcceleration(acceleration: Vector2D) {
+  public applyForce(acceleration: Vector2D) {
     if (acceleration.magSq() <= 0) return this
+    // acceleration.rotate(this.velocity.heading())
+    acceleration.limitHeading(Math.PI * 0.1)
     acceleration.limitMag(this.maxForce)
-    this.acceleration = acceleration
+    this.acceleration.add(acceleration)
+
     return this
   }
 
@@ -27,10 +30,7 @@ class BaseAgent {
       .limitMag(this.maxSpeed)
 
     this.acceleration.zero()
-
-    if (this.velocity.magSq() > 0) {
-      this.position.add(this.velocity)
-    }
+    this.position.add(this.velocity)
 
     return this
   }
@@ -49,31 +49,33 @@ export class WithBrain extends BaseAgent {
   // 如果一个角色继续寻找，它最终会穿过目标，然后转身再次接近。
   // 这会产生运动，有点像飞蛾在灯泡周围嗡嗡作响。
   public seek(target: BaseAgent) {
-    const targetVelocity = this.position
+    const targetVelocity = target.position
       .clone()
-      .sub(target.position)
+      .sub(this.position)
       .limitMag(this.maxSpeed)
 
     const acceleration = targetVelocity
       .sub(this.velocity)
       .mult(this.weight)
 
-    this.applyAcceleration(acceleration)
+    this.applyForce(acceleration)
+    return this
   }
 
   // 逃离静态目标
   flee(target: BaseAgent) {
-    const targetVelocity = this.position
-      .clone()
-      .sub(target.position)
-      .limitHeading(Math.PI * 0.1)
-      .limitMag(this.maxSpeed)
+    // const targetVelocity = this.position
+    //   .clone()
+    //   .sub(target.position)
+    //   .limitMag(this.maxSpeed)
+    //   .limitHeading(Math.PI * 0.25)
 
-    const acceleration = targetVelocity
-      .sub(this.velocity)
-      .mult(this.weight)
+    // const acceleration = targetVelocity
+    //   .sub(this.velocity)
+    //   .mult(this.weight)
 
-    this.applyAcceleration(acceleration)
+    // this.applyForce(acceleration)
+    return this
   }
 
   // 追踪动态目标
@@ -147,6 +149,7 @@ export class CarAgent extends WithBrain {
   }
 
   render(context: CanvasRenderingContext2D) {
+    this.cycle()
     this.renderSight(context)
     this.renderBody(context)
   }

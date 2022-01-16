@@ -55,10 +55,10 @@ export class Vector2D {
    * 乘
    * @param  {number} num
    */
-  mult(num: number) {
+  mult(target: number) {
     this.isFinite()
-    this.x *= num;
-    this.y *= num;
+    this.x *= target;
+    this.y *= target;
     return this
   }
 
@@ -66,23 +66,23 @@ export class Vector2D {
    * 除
    * @param  {number} num
    */
-  div(num: number) {
-    if (num == 0) {
+  div(target: number) {
+    if (target == 0) {
       throw new Error('0 不能作为被除数:')
     }
 
     this.isFinite()
-    this.x /= num;
-    this.y /= num;
+    this.x /= target;
+    this.y /= target;
     return this
-  }
-
-  mag(): number {
-    return Math.sqrt(this.magSq())
   }
 
   magSq(): number {
     return this.x * this.x + this.y * this.y
+  }
+
+  mag(): number {
+    return Math.sqrt(this.magSq())
   }
 
   /**
@@ -103,22 +103,32 @@ export class Vector2D {
     return Math.atan2(this.y, this.x)
   }
 
-  limitHeading(max: number) {
+  limitHeading(radian: number) {
+    const halfAngle = radian / 2
     const heading = this.heading()
-    if (heading >= max) {
-      const mag = this.mag()
-      this.x = Math.cos(max) * mag
-      this.y = Math.sin(max) * mag
-      return this
-    }
+    const isNegative = heading < 0
 
-    if (heading >= Math.PI - max) {
+    if (Math.abs(heading) > halfAngle) {
+      console.log('limitHeading radian', radian)
+      console.log('limitHeading before', heading)
       const mag = this.mag()
-      this.x = Math.cos(Math.PI - max) * mag
-      this.y = Math.sin(Math.PI - max) * mag
-    }
+      const absAngle = halfAngle * (180 / Math.PI)
+      const angle = isNegative ? -absAngle : absAngle
 
-    console.log(this.heading())
+      console.log('limitHeading angle', angle)
+      const x = Math.cos(angle) * mag
+      const y = Math.sin(angle) * mag
+      console.log('limitHeading after', new Vector2D(x, y).heading(), '\n\n')
+    }
+    return this
+  }
+
+  rotate(radian: number) {
+    const newHeading = this.heading() + radian;
+    const angle = newHeading * (180 / Math.PI)
+    const mag = this.mag()
+    this.x = Math.cos(angle) * mag
+    this.y = Math.sin(angle) * mag
     return this
   }
 }
