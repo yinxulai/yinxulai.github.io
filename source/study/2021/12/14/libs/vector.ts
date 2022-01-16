@@ -57,8 +57,8 @@ export class Vector2D {
    */
   mult(target: number) {
     this.isFinite()
-    this.x *= target;
-    this.y *= target;
+    this.x *= target
+    this.y *= target
     return this
   }
 
@@ -72,8 +72,17 @@ export class Vector2D {
     }
 
     this.isFinite()
-    this.x /= target;
-    this.y /= target;
+    this.x /= target
+    this.y /= target
+    return this
+  }
+
+  rotate(radian: number) {
+    const newHeading = this.heading() + radian
+    const mag = this.mag()
+
+    this.x = Math.cos(newHeading) * mag
+    this.y = Math.sin(newHeading) * mag
     return this
   }
 
@@ -104,31 +113,13 @@ export class Vector2D {
   }
 
   limitHeading(radian: number) {
-    const halfAngle = radian / 2
+    const halfRadian = radian / 2
     const heading = this.heading()
     const isNegative = heading < 0
-
-    if (Math.abs(heading) > halfAngle) {
-      console.log('limitHeading radian', radian)
-      console.log('limitHeading before', heading)
-      const mag = this.mag()
-      const absAngle = halfAngle * (180 / Math.PI)
-      const angle = isNegative ? -absAngle : absAngle
-
-      console.log('limitHeading angle', angle)
-      const x = Math.cos(angle) * mag
-      const y = Math.sin(angle) * mag
-      console.log('limitHeading after', new Vector2D(x, y).heading(), '\n\n')
+    if (Math.abs(heading) > halfRadian) {
+      const distance = heading - halfRadian
+      this.rotate(isNegative ? distance: -distance)
     }
-    return this
-  }
-
-  rotate(radian: number) {
-    const newHeading = this.heading() + radian;
-    const angle = newHeading * (180 / Math.PI)
-    const mag = this.mag()
-    this.x = Math.cos(angle) * mag
-    this.y = Math.sin(angle) * mag
     return this
   }
 }

@@ -4,47 +4,56 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import { useMousePosition } from '@hooks/use-mouse-position'
 import { useCanvasRenderer } from '@hooks/use-canvas-renderer'
 import { CarAgent, TargetAgent } from './libs/agent'
-import { Vector2D } from './libs/vector'
 
-const carAgent = ref<CarAgent>()
-const noiseOffset = ref<number>(0)
 const canvasRef = ref<HTMLCanvasElement>()
+const carAgent = ref<CarAgent | null>(null)
+const targetAgent = ref<TargetAgent | null>(null)
 const mousePosition = useMousePosition(canvasRef)
 const canvasRenderer = useCanvasRenderer(canvasRef, '2d')
 
-const target1 = new Vector2D(0,1)
-console.log('target1', target1.heading())
-console.log('target1.limitMag', target1.limitMag(1))
+watch(
+  canvasRef,
+  (_, __, onInvalidate) => {
+    if (canvasRef.value == null) return
+    const handleClick = (event: MouseEvent) => {
+      if (event.altKey) {
+        carAgent.value = new CarAgent(mousePosition.value.offsetX, mousePosition.value.offsetY)
+      } else {
+        targetAgent.value = new TargetAgent(
+          mousePosition.value.offsetX,
+          mousePosition.value.offsetY
+        )
+      }
+    }
 
-const target5 = new Vector2D(3, 4)
-console.log('target5.limitMag', target5.limitMag(1))
-
-const target2 = new Vector2D(-1,0)
-console.log('target2.limitHeading', target2.limitHeading(Math.PI / 2))
+    canvasRef.value.addEventListener('click', handleClick)
+    onInvalidate(() => {
+      if (canvasRef.value == null) return
+      canvasRef.value.removeEventListener('click', handleClick)
+    })
+  },
+  { flush: 'post' }
+)
 
 canvasRenderer.onRender(({ context, size }) => {
-  if (carAgent.value == null) {
-    carAgent.value = new CarAgent(
-      size.width / 2, 
-      size.height / 2
-    )
-  }
-
-  noiseOffset.value += 0.01
   const { width, height } = size
   context.fillStyle = 'rgb(255,255,255)'
   context.fillRect(0, 0, width, height)
+  if (targetAgent.value !== null) {
+    targetAgent.value.render(context)
+  }
 
-  const target = new TargetAgent(
-    mousePosition.value.offsetX, 
-    mousePosition.value.offsetY
-  )
+  if (carAgent.value !== null) {
+    carAgent.value.render(context)
+  }
 
-  carAgent.value.seek(target).render(context)
+  if (carAgent.value !== null && targetAgent.value !== null) {
+    carAgent.value.seek(targetAgent.value as any)
+  }
 })
 </script>
 <style lang="less">

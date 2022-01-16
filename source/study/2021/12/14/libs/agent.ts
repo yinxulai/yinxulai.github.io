@@ -1,6 +1,6 @@
 import { Vector2D } from './vector'
 
-class BaseAgent {
+export class BaseAgent {
   static uuid: number
   public readonly uuid: number
 
@@ -16,11 +16,8 @@ class BaseAgent {
   // 应用加速度
   public applyForce(acceleration: Vector2D) {
     if (acceleration.magSq() <= 0) return this
-    // acceleration.rotate(this.velocity.heading())
-    acceleration.limitHeading(Math.PI * 0.1)
     acceleration.limitMag(this.maxForce)
     this.acceleration.add(acceleration)
-
     return this
   }
 
@@ -53,10 +50,11 @@ export class WithBrain extends BaseAgent {
       .clone()
       .sub(this.position)
       .limitMag(this.maxSpeed)
+      // .limitHeading(Math.PI * 0.1)
 
     const acceleration = targetVelocity
       .sub(this.velocity)
-      .mult(this.weight)
+      .div(this.weight)
 
     this.applyForce(acceleration)
     return this
@@ -158,5 +156,20 @@ export class CarAgent extends WithBrain {
 export class TargetAgent extends BaseAgent {
   constructor(x: number, y: number) {
     super(1, 0, 0, new Vector2D(x, y))
+  }
+
+  render(context: CanvasRenderingContext2D) {
+    const size = 10
+    context.save()
+    context.beginPath()
+    context.lineWidth = 1
+    context.strokeStyle = 'rgba(0,0,0,.3)'
+    context.arc(this.position.x, this.position.y, size, 0, Math.PI * 2, false)
+    context.stroke()
+
+    context.fillStyle = 'rgba(0,255,0,.08)'
+    context.fill()
+    context.restore()
+    return this
   }
 }
