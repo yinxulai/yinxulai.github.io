@@ -8,19 +8,21 @@ type ReturnType<T> = {
 
 type StopFunc = () => void
 type Size = { width: number, height: number }
-type RenderFuncParams<T> = {context: T, size: Size, stop: StopFunc }
+type RenderFuncParams<T> = { context: T, size: Size, stop: StopFunc }
 type RenderFunc<T> = (params: RenderFuncParams<T>) => void
 type CanvasRef = Ref<HTMLCanvasElement | undefined>
+type Options<T> = { maxFPS: number } & T
 
-export function useCanvasRenderer(canvas: CanvasRef, contextId: 'webgl', options?: WebGLContextAttributes): ReturnType<WebGLRenderingContext>
-export function useCanvasRenderer(canvas: CanvasRef, contextId: 'webgl2', options?: WebGLContextAttributes): ReturnType<WebGL2RenderingContext>
-export function useCanvasRenderer(canvas: CanvasRef, contextId: '2d', options?: CanvasRenderingContext2DSettings): ReturnType<CanvasRenderingContext2D>
-export function useCanvasRenderer(canvas: CanvasRef, contextId: 'bitmaprenderer', options?: ImageBitmapRenderingContextSettings): ReturnType<ImageBitmapRenderingContext>
-export function useCanvasRenderer(canvas: CanvasRef, contextId: string, options?: any): ReturnType<RenderingContext> {
+export function useCanvasRenderer(canvas: CanvasRef, contextId: 'webgl', options?: Options<WebGLContextAttributes>): ReturnType<WebGLRenderingContext>
+export function useCanvasRenderer(canvas: CanvasRef, contextId: 'webgl2', options?: Options<WebGLContextAttributes>): ReturnType<WebGL2RenderingContext>
+export function useCanvasRenderer(canvas: CanvasRef, contextId: '2d', options?: Options<CanvasRenderingContext2DSettings>): ReturnType<CanvasRenderingContext2D>
+export function useCanvasRenderer(canvas: CanvasRef, contextId: 'bitmaprenderer', options?: Options<ImageBitmapRenderingContextSettings>): ReturnType<ImageBitmapRenderingContext>
+export function useCanvasRenderer(canvas: CanvasRef, contextId: string, options?: Options<any>): ReturnType<RenderingContext> {
 
   const scale = ref(1)
   const stop = ref(false)
   const isScrolling = ref(false)
+  const lastRenderTime = ref(Date.now())
   const canvasVisible = uesElementVisible(canvas)
   const context = ref<RenderingContext | null>(null)
   const drawFrame = ref<null | RenderFunc<RenderingContext>>(null)
@@ -56,15 +58,23 @@ export function useCanvasRenderer(canvas: CanvasRef, contextId: string, options?
 
   const startRequestFrame = () => {
     if (stop.value === true) return
-    if (canvasVisible.value != true) return
-    requestAnimationFrame(() => startRequestFrame())
+    requestAnimationFrame(() => (
+      startRequestFrame()
+    ))
 
-    if (isScrolling.value === true) return
-    if (drawFrame.value == null) return
     if (context.value == null) return
+    if (drawFrame.value == null) return
+    if (isScrolling.value === true) return
+    if (canvasVisible.value != true) return
+    if (options?.maxFPS != null && Number.isFinite(options.maxFPS)) {
+      const now = Date.now()
+      const gapTime = now - lastRenderTime.value
+      if (gapTime <= (1000 / options.maxFPS)) return
+      lastRenderTime.value = Date.now()
+    }
 
     const { width, height } = context.value.canvas
-    const params = {context: context.value,  size: { width, height }, stop: stopRender }
+    const params = { context: context.value, size: { width, height }, stop: stopRender }
     drawFrame.value(params)
   }
 
