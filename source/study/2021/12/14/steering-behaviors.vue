@@ -13,7 +13,9 @@ const canvasRef = ref<HTMLCanvasElement>()
 const carAgent = ref<CarAgent | null>(null)
 const targetAgent = ref<TargetAgent | null>(null)
 const mousePosition = useMousePosition(canvasRef)
-const canvasRenderer = useCanvasRenderer(canvasRef, '2d')
+const canvasRenderer = useCanvasRenderer(canvasRef, '2d', {
+  maxFPS: 0.5,
+})
 
 watch(
   canvasRef,
@@ -40,6 +42,7 @@ watch(
 )
 
 canvasRenderer.onRender(({ context, size }) => {
+  console.log('render')
   const { width, height } = size
   context.fillStyle = 'rgb(255,255,255)'
   context.fillRect(0, 0, width, height)
