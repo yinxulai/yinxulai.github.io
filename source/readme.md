@@ -3,7 +3,6 @@ lang: zh-CN
 title: Alain 的博客
 description: Alain 的博客
 ---
-## Alain 的博客
 
 明日复明日，明日何其多，我欲待明日，万事成蹉跎。
 
