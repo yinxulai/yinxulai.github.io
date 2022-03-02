@@ -22,7 +22,12 @@ export function useThreeRenderer(canvas: CanvasRef, options?: Options<WebGLConte
   const camera = computed(() => {
     if (canvas.value == null) return null
     const { width, height } = canvas.value
-    return new THREE.PerspectiveCamera(30, width / height, 0.1, 1000)
+    const camera = new THREE.PerspectiveCamera(30, width / height, 0.1, 1000)
+    camera.position.y = height / 2
+    camera.position.z = height / 2
+    camera.position.x = 0
+    camera.lookAt(0,0,0)
+    return camera
   })
 
   const onRender = (func: RenderFunc) => {
@@ -78,6 +83,13 @@ export function useThreeRenderer(canvas: CanvasRef, options?: Options<WebGLConte
       camera.value.focus -= 1
     }
   }
+
+  watchPostEffect(() => {
+    if (canvas.value == null) return
+    if (camera.value == null) return
+    const { width } = canvas.value
+    camera.value.position.x = width / 2
+  })
 
   watchPostEffect((onInvalidate) => {
     if (canvas.value == null) return
