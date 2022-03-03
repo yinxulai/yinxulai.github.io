@@ -1,6 +1,9 @@
 <template>
   <div class="layout">
     <navbar />
+    <h1 class="title">
+      {{ $page.title }}
+    </h1>
     <div class="content">
       <Content />
     </div>

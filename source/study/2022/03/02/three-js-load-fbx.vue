@@ -1,19 +1,25 @@
 <template>
   <div class="three-js-load-fbx">
-    <input type="file" accept="image/*" @change="handleSelectFile" />
+    <input type="file" @change="handleSelectFile" />
     <canvas ref="canvasRef" class="canvas" />
   </div>
 </template>
 <script lang="ts" setup>
-import { ref, computed } from 'vue'
-import { AnimationMixer } from 'three'
+import { ref, watch, toRaw } from 'vue'
+import { AnimationMixer, Group, Clock, HemisphereLight, DirectionalLight } from 'three'
 import { useThreeRenderer } from '@hooks/use-three-renderer'
 import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader'
 
-const loader = new FBXLoader()
+const clock = new Clock()
 const fileRef = ref<File>()
 const canvasRef = ref<HTMLCanvasElement>()
 const threeRenderer = useThreeRenderer(canvasRef)
+
+const fbxGroupRef = ref<Group>()
+const animationMixer = ref<AnimationMixer>()
+
+const dirLight = new DirectionalLight(0xffffff)
+const hemiLight = new HemisphereLight(0xffffff, 0x444444)
 
 const handleSelectFile = (event: InputEvent) => {
   const target = event.target as HTMLInputElement
@@ -21,29 +27,45 @@ const handleSelectFile = (event: InputEvent) => {
   fileRef.value = target.files[0]
 }
 
-const fbxObject = computed(() => {
+watch(fileRef, async () => {
   if (fileRef.value == null) return null
+
+  const loader = new FBXLoader()
   const buffer = await fileRef.value.arrayBuffer()
-  return loader.parse(buffer, '')
+
+  fbxGroupRef.value = loader.parse(buffer, 'root')
+  animationMixer.value = new AnimationMixer(fbxGroupRef.value)
+  animationMixer.value.clipAction(fbxGroupRef.value.animations[0]).play()
 })
 
 threeRenderer.onRender((scene, camera, { size }) => {
-  if (fbxObject.value != null) {
-    const mixer = new AnimationMixer(fbxObject.value)
-    const action = mixer.clipAction(fbxObject.value.animations[0])
-    fbxObject.value.traverse((child) => {
-      // if (child.isMesh) {
-      //   child.castShadow = true
-      //   child.receiveShadow = true
-      // }
-    })
+  if (fbxGroupRef.value == null) return
+  if (animationMixer.value == null) return
+
+  if (scene.getObjectById(hemiLight.id) == null) {
+    hemiLight.position.set(0, 200, 0)
+    scene.add(hemiLight)
   }
 
-  // action.play();
+  if (scene.getObjectById(dirLight.id) == null) {
+    dirLight.position.set(0, 200, 100)
+    dirLight.castShadow = true
+    dirLight.shadow.camera.top = 180
+    dirLight.shadow.camera.bottom = -100
+    dirLight.shadow.camera.left = -120
+    dirLight.shadow.camera.right = 120
+    scene.add(dirLight)
+  }
 
-  // scene.add( object );
+  if (scene.getObjectById(fbxGroupRef.value.id) == null) {
+    const obj = toRaw(fbxGroupRef.value)
+    camera.position.set(0, 150, 550)
+    camera.lookAt(obj.position)
+    camera.rotation.x = -Math.PI / 20
+    scene.add(obj)
+  }
 
-  // }
+  animationMixer.value.update(clock.getDelta())
 })
 </script>
 <style lang="less" scoped>
