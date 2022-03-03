@@ -35,7 +35,9 @@ watch(fileRef, async () => {
 
   fbxGroupRef.value = loader.parse(buffer, 'root')
   animationMixer.value = new AnimationMixer(fbxGroupRef.value)
-  animationMixer.value.clipAction(fbxGroupRef.value.animations[0]).play()
+  if (fbxGroupRef.value.animations.length > 0) {
+    animationMixer.value.clipAction(fbxGroupRef.value.animations[0]).play()
+  }
 })
 
 threeRenderer.onRender((scene, camera, { size }) => {
@@ -72,7 +74,7 @@ threeRenderer.onRender((scene, camera, { size }) => {
 .three-js-load-fbx {
   .canvas {
     width: 50rem;
-    height: 16rem;
+    height: 50rem;
     overflow: hidden;
     border-radius: 10px;
   }

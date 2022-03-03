@@ -1,5 +1,6 @@
 ---
 lang: zh-CN
+draft: true
 title: 思维概念
 description: 思维概念
 ---

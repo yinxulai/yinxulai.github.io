@@ -1,5 +1,6 @@
 ---
 lang: zh-CN
+draft: true
 title: 人为什么一定要学习
 description: 人为什么一定要学习
 ---

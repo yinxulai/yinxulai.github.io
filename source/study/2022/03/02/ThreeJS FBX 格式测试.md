@@ -1,5 +1,6 @@
 ---
 lang: zh-CN
+draft: true
 title: ThreeJS FBX 格式测试
 description: ThreeJS FBX 格式测试
 ---

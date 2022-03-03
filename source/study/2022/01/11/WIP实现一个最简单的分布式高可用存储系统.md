@@ -1,5 +1,6 @@
 ---
 lang: zh-CN
+draft: true
 title: 实现一个最简单的分布式高可用存储系统
 description: 实现一个最简单的分布式高可用存储系统
 ---

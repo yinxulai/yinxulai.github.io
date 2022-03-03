@@ -48,13 +48,7 @@ watchEffect(async () => {
   const loadPagePromiseList = Object.values(pagesData).map((load) => load())
 
   viewData.pageList = (await Promise.all(loadPagePromiseList))
-    .filter((page: any) => {
-      // 过滤掉 WIP 的页面
-      if (page.filePath != null && page.filePath !== '') {
-        return !setting?.showWIP ? page.filePath.indexOf('WIP') === -1 : true
-      }
-      return true
-    })
+    .filter(page => !page.frontmatter.private)
     .sort((f, l) => {
       // 处理排序
       const fDate = f.frontmatter.date ? new Date(f.frontmatter.date).valueOf() : 0

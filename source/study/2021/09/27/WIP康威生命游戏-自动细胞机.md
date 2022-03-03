@@ -1,5 +1,6 @@
 ---
 lang: zh-CN
+draft: true
 title: 康威生命游戏-自动细胞机
 description: 康威生命游戏-自动细胞机
 ---

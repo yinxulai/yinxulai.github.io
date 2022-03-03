@@ -4,6 +4,9 @@
     <h1 class="title">
       {{ $page.title }}
     </h1>
+    <h4 v-show="$frontmatter.draft">
+      目前这只是一个草稿，这意味着它有一些内容正在编写，但尚未做好准备。
+    </h4>
     <div class="content">
       <Content />
     </div>

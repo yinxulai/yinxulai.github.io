@@ -1,5 +1,6 @@
 ---
 lang: zh-CN
+draft: true
 title: 实现 Craig Reynolds 转向
 description: 实现 Craig Reynolds 转向
 reference: http://www.red3d.com/cwr/steer/gdc99/
