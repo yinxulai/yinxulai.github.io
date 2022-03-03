@@ -10,6 +10,7 @@
 <script lang="ts" setup>
 import { watchEffect, reactive } from 'vue'
 import { PageData, usePagesData } from '@vuepress/client'
+import { useUserSetting } from '../../hooks/use-user-setting'
 
 interface Props {
   category?: string
@@ -39,6 +40,7 @@ const viewData = reactive<ViewData>({
 ///////////////// 处理数据 ///////////////////
 
 watchEffect(async () => {
+  const setting = useUserSetting()
   const pagesDataRef = usePagesData()
   const pagesData = pagesDataRef.value
 
@@ -46,13 +48,7 @@ watchEffect(async () => {
   const loadPagePromiseList = Object.values(pagesData).map((load) => load())
 
   viewData.pageList = (await Promise.all(loadPagePromiseList))
-    .filter((page: any) => {
-      // 过滤掉 WIP 的页面
-      if (page.filePath != null && page.filePath !== '') {
-        return page.filePath.indexOf('WIP') === -1
-      }
-      return true
-    })
+    .filter(page => !page.frontmatter.private)
     .sort((f, l) => {
       // 处理排序
       const fDate = f.frontmatter.date ? new Date(f.frontmatter.date).valueOf() : 0

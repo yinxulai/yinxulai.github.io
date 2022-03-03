@@ -8,15 +8,12 @@ import { ref } from 'vue'
 import { makeNoise3D } from 'fast-simplex-noise'
 import { useCanvasRenderer } from '@hooks/use-canvas-renderer'
 
-const gridSize = 20
-const lineLength = 10
-const canvasPadding = 20
 const noise3D = makeNoise3D()
 const noiseOffset = ref<number>(0)
 const canvasRef = ref<HTMLCanvasElement>()
 const canvasRenderer = useCanvasRenderer(canvasRef, '2d')
 
-canvasRenderer.setRender((ctx, { size }) => {
+canvasRenderer.onRender(({ context, size }) => {
   noiseOffset.value += 0.01
   const { width, height } = size
   const maxLineLength = Math.min(width, height) / 2
@@ -31,24 +28,25 @@ canvasRenderer.setRender((ctx, { size }) => {
   const toX = centerPointX + Math.cos(lineAngle) * lineLength
   const toY = centerPointY + Math.sin(lineAngle) * lineLength
 
-  ctx.fillStyle = 'rgba(0,0,0,0.1)'
-  ctx.fillRect(0, 0, width, height)
+  context.fillStyle = 'rgba(0,0,0,0.1)'
+  context.fillRect(0, 0, width, height)
 
-  ctx.strokeStyle = '#ffffff'
-  ctx.lineCap = 'round'
-  ctx.lineWidth = 1
-  ctx.beginPath()
-  ctx.moveTo(formX, formY)
-  ctx.lineTo(toX, toY)
-  ctx.stroke()
+  context.strokeStyle = '#ffffff'
+  context.lineCap = 'round'
+  context.lineWidth = 1
+  context.beginPath()
+  context.moveTo(formX, formY)
+  context.lineTo(toX, toY)
+  context.stroke()
 })
 </script>
 <style lang="less" scoped>
-.noise-line-afterimage,
-.canvas {
-  width: 50rem;
-  height: 16rem;
-  overflow: hidden;
-  border-radius: 10px;
+.noise-line-afterimage {
+  .canvas {
+    width: 50rem;
+    height: 16rem;
+    overflow: hidden;
+    border-radius: 10px;
+  }
 }
 </style>

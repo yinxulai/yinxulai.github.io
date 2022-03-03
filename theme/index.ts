@@ -1,6 +1,6 @@
 import { path } from '@vuepress/utils'
-import type { ThemeFunction, ThemeObject } from '@vuepress/core'
 import { PluginFunction, PluginObject } from 'vuepress'
+import type { ThemeFunction, ThemeObject } from '@vuepress/core'
 
 function getComponentName(file: string) {
   // 支持 {ComponentName}/index.vue 的形式
