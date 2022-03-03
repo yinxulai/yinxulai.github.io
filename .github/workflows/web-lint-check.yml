@@ -21,9 +21,9 @@ jobs:
       - name: Run lint
         run: npm run lint --quiet
 
-      - name: Cache npm
-        uses: actions/cache@v2
-        with:
-          path: ~/.npm
-          restore-keys: node-npm-cache@
-          key: node-npm-cache@${{ hashFiles('**/package-lock.json') }}
+#       - name: Cache npm
+#         uses: actions/cache@v2
+#         with:
+#           path: ~/.npm
+#           restore-keys: node-npm-cache@
+#           key: node-npm-cache@${{ hashFiles('**/package-lock.json') }}
