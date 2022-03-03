@@ -34,9 +34,9 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Cache npm
-        uses: actions/cache@v2
-        with:
-          path: ~/.npm
-          restore-keys: node-npm-cache@
-          key: node-npm-cache@${{ hashFiles('**/package-lock.json') }}
+      # - name: Cache npm
+      #   uses: actions/cache@v2
+      #   with:
+      #     path: ~/.npm
+      #     restore-keys: node-npm-cache@
+      #     key: node-npm-cache@${{ hashFiles('**/package-lock.json') }}

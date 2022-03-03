@@ -2,8 +2,8 @@
   <input v-model.lazy="column" placeholder="请输入填充字符" />
   <input v-model.lazy="characterList" placeholder="请输入填充字符" />
   <input type="file" accept="image/*" @change="handleSelectFile" />
-  <div class="row" v-for="(row, x) in imageGrayscaleTable" :key="x">
-    <div :key="y" class="column" v-for="(gray, y) in row">
+  <div v-for="(row, x) in imageGrayscaleTable" :key="x" class="row">
+    <div v-for="(gray, y) in row" :key="y" class="column">
       {{ renderText(gray) }}
     </div>
   </div>

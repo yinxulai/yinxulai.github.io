@@ -18,11 +18,11 @@
     步进
   </button>
   <div class="cellular-automata">
-    <div class="row" :key="rowIndex" v-for="rowIndex in rowRef">
+    <div v-for="rowIndex in rowRef" :key="rowIndex" class="row">
       <span
-        class="block"
-        :key="columnIndex"
         v-for="columnIndex in columnRef"
+        :key="columnIndex"
+        class="block"
         :class="getBlockState(rowIndex, columnIndex)"
         @click="() => switchBlockState(rowIndex, columnIndex)"
       />
