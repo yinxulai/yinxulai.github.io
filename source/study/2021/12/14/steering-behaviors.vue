@@ -1,6 +1,6 @@
 <template>
   <div class="steering-behaviors">
-    <canvas ref="canvasRef" class="canvas" />
+    <canvas ref="canvasRef" class="canvas"></canvas>
   </div>
 </template>
 <script lang="ts" setup>
@@ -10,39 +10,44 @@ import { useCanvasRenderer } from '@hooks/use-canvas-renderer'
 import { CarAgent, TargetAgent } from './libs/agent'
 
 const canvasRef = ref<HTMLCanvasElement>()
-const carAgent = ref<CarAgent | null>(null)
+
+const carAgent = ref<CarAgent[]>([])
 const targetAgent = ref<TargetAgent | null>(null)
 const mousePosition = useMousePosition(canvasRef)
 const canvasRenderer = useCanvasRenderer(canvasRef, '2d', {
-  maxFPS: 0.5,
+  maxFPS: 60,
 })
 
-watch(
-  canvasRef,
-  (_, __, onInvalidate) => {
-    if (canvasRef.value == null) return
-    const handleClick = (event: MouseEvent) => {
-      if (event.altKey) {
-        carAgent.value = new CarAgent(mousePosition.value.offsetX, mousePosition.value.offsetY)
-      } else {
-        targetAgent.value = new TargetAgent(
+// 
+watch(canvasRef, (_, __, onInvalidate) => {
+  if (canvasRef.value == null) return
+  const handleClick = (event: MouseEvent) => {
+    if (event.altKey) {
+      carAgent.value.push(
+        new CarAgent(
           mousePosition.value.offsetX,
           mousePosition.value.offsetY
         )
-      }
+      )
+      return
     }
 
-    canvasRef.value.addEventListener('click', handleClick)
-    onInvalidate(() => {
-      if (canvasRef.value == null) return
-      canvasRef.value.removeEventListener('click', handleClick)
-    })
-  },
+    targetAgent.value = new TargetAgent(
+      mousePosition.value.offsetX,
+      mousePosition.value.offsetY
+    )
+  }
+
+  canvasRef.value.addEventListener('click', handleClick)
+  onInvalidate(() => {
+    if (canvasRef.value == null) return
+    canvasRef.value.removeEventListener('click', handleClick)
+  })
+},
   { flush: 'post' }
 )
 
 canvasRenderer.onRender(({ context, size }) => {
-  console.log('render')
   const { width, height } = size
   context.fillStyle = 'rgb(255,255,255)'
   context.fillRect(0, 0, width, height)
@@ -50,12 +55,12 @@ canvasRenderer.onRender(({ context, size }) => {
     targetAgent.value.render(context)
   }
 
-  if (carAgent.value !== null) {
-    carAgent.value.render(context)
+  if (carAgent.value.length > 0) {
+    carAgent.value.forEach(agent => agent.render(context))
   }
 
   if (carAgent.value !== null && targetAgent.value !== null) {
-    carAgent.value.seek(targetAgent.value as any)
+    carAgent.value.forEach(agent => agent.seek(targetAgent.value as any))
   }
 })
 </script>

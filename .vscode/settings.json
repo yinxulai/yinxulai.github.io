@@ -1,14 +1,6 @@
 {
   "cSpell.words": [
-    "CNAME",
-    "footbar",
-    "frontmatter",
     "mult",
-    "shiki",
-    "vuepress"
-  ],
-  "files.exclude": {
-    ".git*": true,
-    ".github": true
-  }
+    "shiki"
+  ]
 }

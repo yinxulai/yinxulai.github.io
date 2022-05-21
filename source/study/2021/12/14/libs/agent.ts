@@ -5,30 +5,38 @@ export class BaseAgent {
   public readonly uuid: number
 
   constructor(
+    public readonly mass = 1,
     public readonly weight = 1,
     public readonly maxSpeed = 0,
     public readonly maxForce = 0,
     public position = new Vector2D(0, 0),
     public velocity = new Vector2D(0, 0),
     private acceleration = new Vector2D(0, 0),
-  ) { this.uuid = BaseAgent.uuid += 1; }
+  ) { this.uuid = BaseAgent.uuid += 1 }
 
-  // 应用加速度
+  /**
+   * @param  {Vector2D} acceleration
+   * @description 向 Agent 添加加速度
+   */
   public applyForce(acceleration: Vector2D) {
+    // 将所有的加速度先添加到 Agent 
     if (acceleration.magSq() <= 0) return this
     acceleration.limitMag(this.maxForce)
     this.acceleration.add(acceleration)
     return this
   }
 
+  /**
+   * @description 计算 Agent 的一次生命周期
+   */
   public cycle() {
-    this.velocity
-      .add(this.acceleration)
-      .limitMag(this.maxSpeed)
-
-    this.acceleration.zero()
+    // 速度 = 加速度 / 质量
+    const velocity = this.acceleration.div(this.mass)
+    this.velocity.add(velocity).limitMag(this.maxSpeed)
     this.position.add(this.velocity)
 
+    // 清除加速度
+    this.acceleration.zero()
     return this
   }
 }
@@ -50,7 +58,7 @@ export class WithBrain extends BaseAgent {
       .clone()
       .sub(this.position)
       .limitMag(this.maxSpeed)
-      // .limitHeading(Math.PI * 0.1)
+    // .limitHeading(Math.PI * 0.1)
 
     const acceleration = targetVelocity
       .sub(this.velocity)
@@ -112,11 +120,15 @@ export class WithBrain extends BaseAgent {
 
 export class CarAgent extends WithBrain {
   constructor(x = 0, y = 0) {
-    super(1, 1, 1, new Vector2D(x, y))
+    super(1, 1, 1, 1, new Vector2D(x, y))
   }
 
+  /**
+   * @param  {CanvasRenderingContext2D} context
+   * @description 渲染边框
+   */
   private renderSight(context: CanvasRenderingContext2D) {
-    const size = 10
+    const size = 10 + this.mass
     const angle = this.velocity.heading()
     const toX = this.position.x + Math.cos(angle) * size
     const toY = this.position.y + Math.sin(angle) * size
@@ -131,8 +143,12 @@ export class CarAgent extends WithBrain {
     context.restore()
   }
 
+  /**
+   * @param  {CanvasRenderingContext2D} context
+   * @description 渲染身体
+   */
   private renderBody(context: CanvasRenderingContext2D) {
-    const size = 10
+    const size = 10 + this.mass
     context.save()
     context.beginPath()
     context.lineWidth = 1
@@ -146,6 +162,10 @@ export class CarAgent extends WithBrain {
     return this
   }
 
+  /**
+   * @param  {CanvasRenderingContext2D} context
+   * @description 渲染当前的 Agent 到指定对象
+   */
   render(context: CanvasRenderingContext2D) {
     this.cycle()
     this.renderSight(context)
@@ -155,7 +175,7 @@ export class CarAgent extends WithBrain {
 
 export class TargetAgent extends BaseAgent {
   constructor(x: number, y: number) {
-    super(1, 0, 0, new Vector2D(x, y))
+    super(1, 1, 0, 0, new Vector2D(x, y))
   }
 
   render(context: CanvasRenderingContext2D) {
