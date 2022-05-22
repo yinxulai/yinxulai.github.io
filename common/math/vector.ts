@@ -107,6 +107,13 @@ export class Vector2D {
 
     return this
   }
+  
+  /**
+   * 归一化
+   */
+  normalize() {
+    this.div(this.mag())
+  }
 
   heading() {
     return Math.atan2(this.y, this.x)

@@ -31,7 +31,10 @@ export default defineUserConfig({
   temp: path.resolve(__dirname, '.output/temp'),
   cache: path.resolve(__dirname, '.output/cache'),
   head: [['style', { type: 'text/css' }, globalStyle]],
-  alias: { '@hooks': path.resolve(__dirname, 'hooks') },
+  alias: { 
+    '@hooks': path.resolve(__dirname, 'common/hooks'),
+    '@math': path.resolve(__dirname, 'common/math'),
+  },
   plugins: [
     registerComponentsPlugin(registerComponentsOptions),
     googleAnalyticsPlugin({ id: 'G-PPVXN8YZWL' }),
