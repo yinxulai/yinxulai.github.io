@@ -1,6 +1,3 @@
-<script lang="ts" setup>
-</script>
-
 <template>
   <div class="footer">
     <div class="left">
@@ -22,7 +19,8 @@
     </div>
   </div>
 </template>
-
+<script lang="ts" setup>
+</script>
 <style lang="less" scoped>
 .footer {
   display: flex;

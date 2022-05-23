@@ -1,4 +1,4 @@
-CircleAgent<template>
+<template>
   <div class="steering-behaviors">
     <canvas ref="canvasRef" class="canvas"></canvas>
   </div>
