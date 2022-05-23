@@ -36,6 +36,7 @@ const parsePageDatePlugin: PluginFunction = (_app): PluginObject => {
     extendsPage: page => {
       const words = page.path.split('/')
       if (words.length >= 7) {
+        // FIXME: 这里有问题
         const [year, month, day] = words.slice(3, 6)
         page.frontmatter.date = new Date(+year, +month, +day);
       }
