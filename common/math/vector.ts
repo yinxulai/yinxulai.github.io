@@ -30,6 +30,14 @@ export class Vector2D {
   }
 
   /**
+  * 两个向量是否相等
+  */
+  equal(vector: Vector2D) {
+    return this.x === vector.x
+      && this.y === vector.y
+  }
+
+  /**
    * 加
    * @param  {Vector2D} vector
    */
@@ -107,12 +115,13 @@ export class Vector2D {
 
     return this
   }
-  
+
   /**
    * 归一化
    */
   normalize() {
     this.div(this.mag())
+    return this
   }
 
   heading() {
@@ -125,7 +134,7 @@ export class Vector2D {
     const isNegative = heading < 0
     if (Math.abs(heading) > halfRadian) {
       const distance = heading - halfRadian
-      this.rotate(isNegative ? distance: -distance)
+      this.rotate(isNegative ? distance : -distance)
     }
     return this
   }

@@ -1,5 +1,5 @@
 import { Vector2D } from '@math/vector'
-import { Agent, VisibleAgent } from './agent'
+import { Agent, CollidableAgent, VisibleAgent } from './agent'
 
 
 export class World<T extends Agent = Agent> {
@@ -88,26 +88,46 @@ export class World<T extends Agent = Agent> {
    */
   private applyAttractor(a: T, b: T) {
     const force = a.position.clone().sub(b.position)
+    const force2 = b.position.clone().sub(a.position)
     const distanceSq = force.magSq() // 距离平方
-    if (distanceSq <= 1) return // 小于 1 则退出
+    if (distanceSq === 0) return
     const f = (this.attraction * a.mass * b.mass) / distanceSq
+
     force.normalize()
     force.mult(f)
     b.applyForce(force)
+
+    force2.normalize()
+    force2.mult(f)
+    a.applyForce(force2)
   }
 
   /**
    * @param  {T} agent
    * @description 应用相互作用力
    */
-  private appleInteraction(agent: T) {
-    this.forEachAgent(secondaryAgent => {
-      if (agent.uuid === secondaryAgent.uuid) return
-      this.applyAttractor(agent, secondaryAgent) // 引力
+  private applyInteraction(agent: T) {
+    const reactedSet = new Set<string>()
+    this.forEachAgent(targetAgent => {
+      if (agent.uuid === targetAgent.uuid) return
+      // 确保两两之间只进行一次计算
+      const key = `${agent.uuid}:${targetAgent.uuid}`
+      const rKey = `${targetAgent.uuid}:${agent.uuid}`
+      if (reactedSet.has(key) || reactedSet.has(rKey)) return
+
+      this.applyAttractor(agent, targetAgent) // 基本的万有引力
       // 摩檫力
       // 吸引力
-      // 等等
-      // console.log('appleInteraction', agent, secondaryAgent)
+
+      // 碰撞检查
+      if (agent instanceof CollidableAgent) {
+        if (targetAgent instanceof CollidableAgent) {
+          agent.impact(targetAgent)
+        }
+      }
+
+      reactedSet.add(key)
+      reactedSet.add(rKey)
     })
   }
 
@@ -115,9 +135,9 @@ export class World<T extends Agent = Agent> {
     * @description 使这个世界向前运行进一个周期
     */
   private cycle(agent: T) {
-    this.appleInteraction(agent)
-    this.applyGravity(agent)
     this.checkEdges(agent)
+    this.applyGravity(agent)
+    this.applyInteraction(agent)
   }
 
   /**
@@ -153,8 +173,8 @@ export class World<T extends Agent = Agent> {
     this.renderInfo(context)
 
     this.forEachAgent(agent => {
-      this.cycle(agent) // 执行一个周期
-
+      this.cycle(agent)
+      agent.cycle()
       if (agent instanceof VisibleAgent) {
         agent.render(context)
       }

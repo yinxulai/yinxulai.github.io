@@ -4,7 +4,7 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { ref, watch } from 'vue'
+import { ref, toRaw, watch } from 'vue'
 import { useMousePosition } from '@hooks/use-mouse-position'
 import { useCanvasRenderer } from '@hooks/use-canvas-renderer'
 
@@ -38,13 +38,15 @@ watch(canvasRef, (_, __, onInvalidate) => {
       return
     }
 
-    agentWorldRef.value.addAgent(
-      new CircleAgent(
-        Math.random() * 5,
-        mousePosition.value.offsetX,
-        mousePosition.value.offsetY
+    for (let index = 0; index < 1; index++) {
+      agentWorldRef.value.addAgent(
+        new CircleAgent(
+          Math.random() * 5,
+          mousePosition.value.offsetX,
+          mousePosition.value.offsetY
+        )
       )
-    )
+    }
   }
 
   canvasRef.value.addEventListener('click', handleClick)
@@ -64,12 +66,13 @@ canvasRenderer.onRender(({ context, size }) => {
     agentWorldRef.value = new World(
       width,
       height,
-      new Vector2D(0, 0.1), // 重力
-      0.3
+      new Vector2D(0.0, 0.01), // 重力
+      0.1
     )
   }
 
-  agentWorldRef.value.render(context)
+  const world = toRaw(agentWorldRef.value)
+  world.render(context)
 })
 </script>
 <style lang="less" scoped>
