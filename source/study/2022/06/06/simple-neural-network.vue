@@ -17,6 +17,7 @@ const weightList: Vector3D = new Array(3)
   .fill(0)
   .map(() => Math.random() * 2 - 1) as Vector3D
 
+// 正向传播
 function fp(input: Vector3D, weight: Vector3D) {
   // 向量的点乘
   const value = input.reduce((acc, current, index) => {
@@ -28,14 +29,15 @@ function fp(input: Vector3D, weight: Vector3D) {
   return 1 / (1 + Math.exp(-value))
 }
 
+// 反向传播
 function bp(target: number, output: number) {
   // 误差
   const error = target - output
-  // sigmoid 求导
+  // sigmoid 在 output 的导数
   const slope = output * (1 - output)
+
   // 误差 * 偏导
-  const result = error * slope
-  return result
+  return error * slope
 }
 
 for (let index = 0; index < 10000; index++) {
