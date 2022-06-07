@@ -40,7 +40,7 @@ function bp(target: number, output: number) {
   return error * slope
 }
 
-for (let index = 0; index < 10000; index++) {
+for (let index = 0; index < 4000; index++) {
   // 随机从训练数据里取出数据
   const trainingDataIndex = Math.floor(Math.random() * 4)
   const trainingData = trainingDataList[trainingDataIndex]
@@ -57,7 +57,7 @@ for (let index = 0; index < 10000; index++) {
   }
 }
 
-console.log(weightList)
+console.log(fp([1, 0, 0], weightList))
 
 </script>
 <style lang="less" scoped>
