@@ -6,12 +6,10 @@
 </template>
 <script lang="ts" setup>
 
-type Vector2D = [number, number, number]
 type Vector3D = [number, number, number]
-type Vector4D = [number, number, number, number]
 
-const trainingDataList: Vector3D[] = [[0, 0, 1], [1, 1, 1], [1, 0, 1], [0, 1, 1]]
-const trainingTargetList: Vector4D = [0, 1, 1, 0]
+const trainingDataList: Vector3D[] = [[0, 0, 0], [0, 0, 1], [1, 1, 1], [1, 0, 1], [0, 1, 1]]
+const trainingTargetList: number[] = [0, 0, 1, 1, 0]
 
 const weightList: Vector3D = new Array(3)
   .fill(0)
@@ -40,7 +38,8 @@ function bp(target: number, output: number) {
   return error * slope
 }
 
-for (let index = 0; index < 4000; index++) {
+console.log(weightList)
+for (let index = 0; index < 80000; index++) {
   // 随机从训练数据里取出数据
   const trainingDataIndex = Math.floor(Math.random() * 4)
   const trainingData = trainingDataList[trainingDataIndex]
@@ -52,11 +51,13 @@ for (let index = 0; index < 4000; index++) {
   // 更新权重
   for (let index = 0; index < weightList.length; index++) {
     const weight = weightList[index]
-    const newWeight = weight + weight * delta
+    const input =  trainingData[index]
+    const newWeight = weight + input * delta
     weightList[index] = +newWeight.toFixed(8)
   }
 }
 
+console.log(weightList)
 console.log(fp([1, 0, 0], weightList))
 
 </script>
