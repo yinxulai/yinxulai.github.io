@@ -40,7 +40,7 @@ const handleSelectFile = (event: Event) => {
 //   }
 // })
 
-threeRenderer.onRender((scene, camera, { size }) => {
+threeRenderer.onRender(({ scene, camera, size }) => {
   if (fbxGroupRef.value == null) return
   if (animationMixer.value == null) return
 

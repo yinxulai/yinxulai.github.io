@@ -28,7 +28,7 @@ const plane = computed(() => {
   return new THREE.Mesh(geometry, material)
 })
 
-threeRenderer.onRender((scene, camera, { size }) => {
+threeRenderer.onRender(({ scene, camera, size }) => {
   noiseOffset.value += 0.01
 
   camera.rotation.x = Math.PI * 0.42

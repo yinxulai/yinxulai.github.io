@@ -32,6 +32,7 @@ export default defineUserConfig({
   cache: path.resolve(__dirname, '.output/cache'),
   head: [['style', { type: 'text/css' }, globalStyle]],
   alias: { 
+    '@components': path.resolve(__dirname, 'common/components'),
     '@hooks': path.resolve(__dirname, 'common/hooks'),
     '@math': path.resolve(__dirname, 'common/math'),
   },

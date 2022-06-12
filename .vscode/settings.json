@@ -4,6 +4,7 @@
     "mult",
     "plotly",
     "relu",
-    "shiki"
+    "shiki",
+    "wireframe"
   ]
 }

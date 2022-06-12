@@ -1,12 +1,14 @@
 <template>
   <div class="simple-neural-network">
-    simple-neural-network
-    <canvas ref="canvasRef" class="canvas"></canvas>
+    <Chart3d type="scatter-chart" :data="testChartData" />
   </div>
 </template>
 <script lang="ts" setup>
+import Chart3d from '@components/chart-3d/index.vue'
 
 type Vector3D = [number, number, number]
+
+const testChartData: Array<[number, number, number]> = [[0, 0, 0], [1, 1, 1]]
 
 const trainingDataList: Vector3D[] = [[0, 0, 0], [0, 0, 1], [1, 1, 1], [1, 0, 1], [0, 1, 1]]
 const trainingTargetList: number[] = [0, 0, 1, 1, 0]
@@ -31,6 +33,7 @@ function fp(input: Vector3D, weight: Vector3D) {
 function bp(target: number, output: number) {
   // 误差
   const error = target - output
+
   // sigmoid 在 output 的导数
   const slope = output * (1 - output)
 
@@ -39,7 +42,7 @@ function bp(target: number, output: number) {
 }
 
 console.log(weightList)
-for (let index = 0; index < 80000; index++) {
+for (let index = 0; index < 4000; index++) {
   // 随机从训练数据里取出数据
   const trainingDataIndex = Math.floor(Math.random() * 4)
   const trainingData = trainingDataList[trainingDataIndex]
@@ -51,7 +54,7 @@ for (let index = 0; index < 80000; index++) {
   // 更新权重
   for (let index = 0; index < weightList.length; index++) {
     const weight = weightList[index]
-    const input =  trainingData[index]
+    const input = trainingData[index]
     const newWeight = weight + input * delta
     weightList[index] = +newWeight.toFixed(8)
   }
