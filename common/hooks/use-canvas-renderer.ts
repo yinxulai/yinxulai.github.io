@@ -3,16 +3,15 @@ import { uesElementVisible } from '@hooks/ues-element-visible'
 
 type ReturnType<T> = {
   setScale: (v: number) => void
-  onSetup: (func: RenderFunc<T>) => void
   onRender: (func: RenderFunc<T>) => void
 }
 
-export type StopFunc = () => void
-export type Size = { width: number, height: number }
+type StopFunc = () => void
+type Size = { width: number, height: number }
 export type RenderFuncParams<T> = { context: T, size: Size, stop: StopFunc }
 export type RenderFunc<T> = (params: RenderFuncParams<T>) => void
-export type CanvasRef = Ref<HTMLCanvasElement | undefined>
-export type Options<T> = { maxFPS: number } & T
+type CanvasRef = Ref<HTMLCanvasElement | undefined>
+type Options<T> = { maxFPS: number } & T
 
 export function useCanvasRenderer(canvas: CanvasRef, contextId: 'webgl', options?: Options<WebGLContextAttributes>): ReturnType<WebGLRenderingContext>
 export function useCanvasRenderer(canvas: CanvasRef, contextId: 'webgl2', options?: Options<WebGLContextAttributes>): ReturnType<WebGL2RenderingContext>
@@ -20,76 +19,63 @@ export function useCanvasRenderer(canvas: CanvasRef, contextId: '2d', options?: 
 export function useCanvasRenderer(canvas: CanvasRef, contextId: 'bitmaprenderer', options?: Options<ImageBitmapRenderingContextSettings>): ReturnType<ImageBitmapRenderingContext>
 export function useCanvasRenderer(canvas: CanvasRef, contextId: string, options?: Options<any>): ReturnType<RenderingContext> {
 
-  const scaleRef = ref(1)
-  const stopRef = ref(false)
-  const isMountedRef = ref(false)
-  const isScrollingRef = ref(false)
-  const isAlreadySetup = ref(false)
-  const lastRenderTimeRef = ref(Date.now())
-  const canvasVisibleRef = uesElementVisible(canvas)
-  const contextRef = ref<RenderingContext | null>(null)
-  const drawFrameRef = ref<null | RenderFunc<RenderingContext>>(null)
-  const drawSetupRef = ref<null | RenderFunc<RenderingContext>>(null)
+  const scale = ref(1)
+  const stop = ref(false)
+  const isScrolling = ref(false)
+  const lastRenderTime = ref(Date.now())
+  const canvasVisible = uesElementVisible(canvas)
+  const context = ref<RenderingContext | null>(null)
+  const drawFrame = ref<null | RenderFunc<RenderingContext>>(null)
 
   const updateCanvasSize = () => {
     if (canvas.value == null) return
 
     const clientRect = canvas.value.getBoundingClientRect()
-    canvas.value.height = Math.fround(clientRect.height * scaleRef.value)
-    canvas.value.width = Math.fround(clientRect.width * scaleRef.value)
+    canvas.value.height = Math.fround(clientRect.height * scale.value)
+    canvas.value.width = Math.fround(clientRect.width * scale.value)
   }
 
   const updateContext = () => {
     if (canvas.value == null) {
-      contextRef.value = null
+      context.value = null
       return
     }
 
-    contextRef.value = canvas.value.getContext(contextId, options)
+    context.value = canvas.value.getContext(contextId, options)
   }
 
   const setScale = (ratio = 1) => {
-    scaleRef.value = ratio
+    scale.value = ratio
   }
 
   const stopRender = () => {
-    stopRef.value = true
-  }
-
-  const onSetup = (newDraw: RenderFunc<RenderingContext>) => {
-    drawSetupRef.value = newDraw
+    stop.value = true
   }
 
   const onRender = (newDraw: RenderFunc<RenderingContext>) => {
-    drawFrameRef.value = newDraw
+    drawFrame.value = newDraw
   }
 
   const startRequestFrame = () => {
-    if (!isMountedRef.value) return
-    if (stopRef.value === true) return
+    if (stop.value === true) return
     requestAnimationFrame(() => (
       startRequestFrame()
     ))
 
-    if (contextRef.value == null) return
-    if (isScrollingRef.value === true) return
-    if (canvasVisibleRef.value != true) return
+    if (context.value == null) return
+    if (drawFrame.value == null) return
+    if (isScrolling.value === true) return
+    if (canvasVisible.value != true) return
     if (options?.maxFPS != null && Number.isFinite(options.maxFPS)) {
       const now = Date.now()
-      const gapTime = now - lastRenderTimeRef.value
+      const gapTime = now - lastRenderTime.value
       if (gapTime <= (1000 / options.maxFPS)) return
-      lastRenderTimeRef.value = Date.now()
+      lastRenderTime.value = Date.now()
     }
 
-    const { width, height } = contextRef.value.canvas
-    const params = { context: contextRef.value, size: { width, height }, stop: stopRender }
-
-    if (isAlreadySetup.value === false) {
-      drawSetupRef.value?.(params)
-      isAlreadySetup.value = true
-    } 
-
-    drawFrameRef.value?.(params)
+    const { width, height } = context.value.canvas
+    const params = { context: context.value, size: { width, height }, stop: stopRender }
+    drawFrame.value(params)
   }
 
   const upgradeTabIndex = () => {
@@ -101,29 +87,27 @@ export function useCanvasRenderer(canvas: CanvasRef, contextId: string, options?
   }
 
   const handleWheel = () => {
-    isScrollingRef.value = true
-    setTimeout(() => { isScrollingRef.value = false }, 1000)
+    isScrolling.value = true
+    setTimeout(() => { isScrolling.value = false }, 1000)
   }
 
   onMounted(() => {
-    isMountedRef.value = true
     window.addEventListener('wheel', handleWheel)
   })
 
   onUnmounted(() => {
-    isMountedRef.value = false
     window.removeEventListener('wheel', handleWheel)
   })
 
 
-  watch(canvasVisibleRef, () => {
+  watch(canvasVisible, () => {
     startRequestFrame()
   }, {
     flush: 'post',
     immediate: true
   })
 
-  watch(scaleRef, () => {
+  watch(scale, () => {
     updateCanvasSize()
   }, {
     flush: 'post',
@@ -139,5 +123,5 @@ export function useCanvasRenderer(canvas: CanvasRef, contextId: string, options?
     immediate: true
   })
 
-  return { onRender, onSetup, setScale }
+  return { onRender, setScale }
 }

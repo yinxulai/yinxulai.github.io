@@ -1,18 +1,73 @@
-import { ref, Ref, watch } from 'vue'
+import { ref, Ref, watch, onMounted, onUnmounted } from 'vue'
+import { useWindowsSize } from '@hooks/use-window-size'
 
-export function uesElementVisible(elementRef: Ref<Element | undefined>) {
-  const visibleRef = ref<boolean>(false)
+export function uesElementVisible(element: Ref<Element | undefined>) {
 
-  watch(elementRef, () => {
-    if (elementRef.value == null) return
+  const windowSize = useWindowsSize()
+  const visible = ref<boolean>(false)
+  const rect = ref<DOMRect | null>(null)
 
-    const observer = new IntersectionObserver((entry) => {
-      visibleRef.value = entry[0].isIntersecting
-    }, { rootMargin: '0px', threshold: 0.5 })
-    observer.observe(elementRef.value)
-    return () => observer.disconnect()
-  }, { flush: 'post', immediate: true }
-  )
+  const updateRect = () => {
+    if (element.value == null) {
+      rect.value = null
+      return
+    }
 
-  return visibleRef
+    // 性能损耗大，推荐使用 IntersectionObserver
+    rect.value = element.value.getBoundingClientRect()
+  }
+
+  const updateVisible = () => {
+    if (rect.value == null) {
+      visible.value = false
+      return
+    }
+
+    if (rect.value.right < 0) {
+      visible.value = false
+      return
+    }
+
+    if (rect.value.bottom < 0) {
+      visible.value = false
+      return
+    }
+
+    if (rect.value.left > windowSize.value.clientWidth) {
+      visible.value = false
+      return
+    }
+
+    if ((rect.value.top - window.scrollY) > windowSize.value.innerHeight) {
+      visible.value = false
+      return
+    }
+
+    visible.value = true
+  }
+
+  onMounted(() => {
+    // TODO: 每掉用一次就添加一系列 Listener 有待优化
+    window.addEventListener('load', updateVisible)
+    window.addEventListener('scroll', updateVisible)
+    window.addEventListener('scroll', updateVisible)
+    window.addEventListener('resize', updateVisible)
+  })
+
+  onUnmounted(() => {
+    window.removeEventListener('load', updateVisible)
+    window.removeEventListener('scroll', updateVisible)
+    window.removeEventListener('scroll', updateVisible)
+    window.removeEventListener('resize', updateVisible)
+  })
+
+  watch(element, () => {
+    updateRect()
+    updateVisible()
+  }, {
+    flush: 'post',
+    immediate: true
+  })
+
+  return visible
 }

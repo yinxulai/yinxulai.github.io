@@ -1,20 +1,19 @@
 import * as THREE from 'three'
-import { ref, Ref, computed, watchPostEffect } from 'vue'
-import { useCanvasRenderer, RenderFuncParams } from './use-canvas-renderer'
+import { Ref, computed, watchPostEffect } from 'vue'
+import { RenderFuncParams, useCanvasRenderer } from './use-canvas-renderer'
 
 type Options<T> = { maxFPS: number } & T
 type CanvasRef = Ref<HTMLCanvasElement | undefined>
-export type ThreeRenderFuncParams = RenderFuncParams<WebGLRenderingContext> & {
-  scene: THREE.Scene,
-  camera: THREE.Camera
-}
-type RenderFunc = (params: ThreeRenderFuncParams) => void
+type RenderFunc = (
+  params: { scene: THREE.Scene, camera: THREE.Camera }
+  & RenderFuncParams<WebGLRenderingContext>
+) => void
 
 export function useThreeRenderer(canvas: CanvasRef, options?: Options<WebGLContextAttributes>) {
-  const canvasRenderRef = useCanvasRenderer(canvas, 'webgl', options)
+  const context = useCanvasRenderer(canvas, 'webgl', options)
   const scene = new THREE.Scene()
 
-  const rendererRef = computed(() => {
+  const renderer = computed(() => {
     if (canvas.value == null) return null
     const { width, height } = canvas.value
     const renderer = new THREE.WebGLRenderer({ canvas: canvas.value })
@@ -22,7 +21,7 @@ export function useThreeRenderer(canvas: CanvasRef, options?: Options<WebGLConte
     return renderer
   })
 
-  const cameraRef = computed(() => {
+  const camera = computed(() => {
     if (canvas.value == null) return null
     const { width, height } = canvas.value
     const camera = new THREE.PerspectiveCamera(30, width / height, 0.1, 1000)
@@ -33,74 +32,65 @@ export function useThreeRenderer(canvas: CanvasRef, options?: Options<WebGLConte
     return camera
   })
 
-  const onSetup = (func: RenderFunc) => {
-    canvasRenderRef.onSetup((params) => {
-      if (cameraRef.value == null) return
-      const camera = cameraRef.value
-      func({ ...params, scene, camera })
-    })
-  }
-
   const onRender = (func: RenderFunc) => {
-    canvasRenderRef.onRender((params) => {
-      if (cameraRef.value == null) return
-      const camera = cameraRef.value
-      func({ ...params, scene, camera })
-      if (rendererRef.value == null) return
-      rendererRef.value.render(scene, camera)
+    context.onRender((baseParams) => {
+      if (camera.value == null) return
+      func({...baseParams, scene, camera: camera.value})
+      if (renderer.value == null) return
+      renderer.value.render(scene, camera.value)
     })
   }
 
   const handleKeyboard = (event: KeyboardEvent) => {
-    if (cameraRef.value == null) return
+    if (camera.value == null) return
     event.preventDefault()
 
     if (event.code === 'KeyW') {
-      cameraRef.value.translateZ(-10)
+      camera.value.translateZ(-10)
     }
 
     if (event.code === 'KeyS') {
-      cameraRef.value.translateZ(10)
+      camera.value.translateZ(10)
     }
 
     if (event.code === 'KeyA') {
-      cameraRef.value.translateX(-10)
+      camera.value.translateX(-10)
     }
 
     if (event.code === 'KeyD') {
-      cameraRef.value.translateX(10)
+      camera.value.translateX(10)
     }
 
     if (event.code === 'ArrowUp') {
-      cameraRef.value.rotateX(Math.PI * 0.1)
+      camera.value.rotateX(Math.PI * 0.1)
     }
 
     if (event.code === 'ArrowDown') {
-      cameraRef.value.rotateX(-Math.PI * 0.1)
+      camera.value.rotateX(-Math.PI * 0.1)
     }
 
     if (event.code === 'ArrowLeft') {
-      cameraRef.value.rotateY(-Math.PI * 0.1)
+      camera.value.rotateY(-Math.PI * 0.1)
     }
 
     if (event.code === 'ArrowRight') {
-      cameraRef.value.rotateY(Math.PI * 0.1)
+      camera.value.rotateY(Math.PI * 0.1)
     }
 
     if (event.code === 'KeyQ') {
-      cameraRef.value.focus += 1
+      camera.value.focus += 1
     }
 
     if (event.code === 'KeyE') {
-      cameraRef.value.focus -= 1
+      camera.value.focus -= 1
     }
   }
 
   watchPostEffect(() => {
     if (canvas.value == null) return
-    if (cameraRef.value == null) return
+    if (camera.value == null) return
     const { width } = canvas.value
-    cameraRef.value.position.x = width / 2
+    camera.value.position.x = width / 2
   })
 
   watchPostEffect((onInvalidate) => {
@@ -112,5 +102,5 @@ export function useThreeRenderer(canvas: CanvasRef, options?: Options<WebGLConte
     })
   })
 
-  return { ...canvasRenderRef, onSetup, onRender }
+  return { ...context, onRender }
 }

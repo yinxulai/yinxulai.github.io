@@ -10,6 +10,7 @@
 <script lang="ts" setup>
 import { watchEffect, reactive } from 'vue'
 import { PageData, usePagesData } from '@vuepress/client'
+import { useUserSetting } from '../../hooks/use-user-setting'
 
 interface Props {
   category?: string
@@ -39,6 +40,7 @@ const viewData = reactive<ViewData>({
 ///////////////// 处理数据 ///////////////////
 
 watchEffect(async () => {
+  const setting = useUserSetting()
   const pagesDataRef = usePagesData()
   const pagesData = pagesDataRef.value
 
