@@ -12,9 +12,6 @@ const globalStyle = `
   html {
     background-color: #181818;
   }
-  body {
-    opacity: 0;
-  }
 `
 
 const registerComponentsOptions = {
