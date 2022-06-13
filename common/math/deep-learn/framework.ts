@@ -28,7 +28,7 @@ class Linear implements Activation {
 
 // 神经元
 // 每个神经元计算之后将结果通过 outputLinks 传递给后面的神经元
-class Neuron {
+export class Neuron {
   static id: number = 0
   private id: number = 0 // 神经元 ID
 
@@ -61,7 +61,7 @@ class Neuron {
 }
 
 // 神经元连接
-class NeuronLink {
+export class NeuronLink {
   private value: number = 0
   constructor(private weight: number = 0) { }
 
@@ -75,7 +75,7 @@ class NeuronLink {
 }
 
 // 神经元层
-class NeuronLayer {
+export class NeuronLayer {
   private neurons: Neuron[] = []
   get neuronSize() { return this.neurons.length }
 
@@ -97,7 +97,7 @@ class NeuronLayer {
 
 // 神经网络
 // 针对可视化优化了结构设计
-class NeuronNetwork {
+export class NeuronNetwork {
   private layers: NeuronLayer[] = []
   private inputLinks: NeuronLink[] = []
   private outputLinks: NeuronLink[] = []

@@ -1,3 +1,5 @@
+import { Neuron, NeuronLayer, NeuronLink, NeuronNetwork } from './framework'
+
 describe('Neuron', () => {
   test('default', () => {
     const neuron = new Neuron()
