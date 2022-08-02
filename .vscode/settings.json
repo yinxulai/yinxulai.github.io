@@ -1,14 +1,10 @@
 {
   "cSpell.words": [
-    "CNAME",
-    "footbar",
-    "frontmatter",
+    "Collidable",
     "mult",
+    "plotly",
+    "relu",
     "shiki",
-    "vuepress"
-  ],
-  "files.exclude": {
-    ".git*": true,
-    ".github": true
-  }
+    "wireframe"
+  ]
 }

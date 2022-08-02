@@ -7,8 +7,10 @@
     <h4 v-show="$frontmatter.draft">
       目前这只是一个草稿，这意味着它有一些内容正在编写，但尚未做好准备。
     </h4>
-    <div class="content">
-      <Content />
+    <div :class="['content', { 'draft': $frontmatter.draft }]">
+      <div class="content-wrap">
+        <Content />
+      </div>
     </div>
     <footbar />
   </div>
@@ -45,6 +47,23 @@ a {
 
   .content {
     flex: 1;
+
+    &.draft {
+      background-color: rgba(255, 255, 255, 0.1);
+      border: 1px dashed rgba(255, 255, 255, 0.1);
+
+      &::before {
+        content: '-- 隐藏内容 --';
+        min-height: 100px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      > .content-wrap {
+        opacity: 0 !important;
+      }
+    }
   }
 }
 </style>

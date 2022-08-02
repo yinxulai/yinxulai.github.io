@@ -130,6 +130,7 @@ const update = () => {
 
 const start = () => {
   update()
+  if (__VUEPRESS_SSR__) return null
   requestAnimationIdRef.value = requestAnimationFrame(start)
 }
 

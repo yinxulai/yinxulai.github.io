@@ -2,6 +2,10 @@ import { path } from '@vuepress/utils'
 import { PluginFunction, PluginObject } from 'vuepress'
 import type { ThemeFunction, ThemeObject } from '@vuepress/core'
 
+// 插件
+import { registerComponentsPlugin } from '@vuepress/plugin-register-components'
+import { palettePlugin } from '@vuepress/plugin-palette'
+
 function getComponentName(file: string) {
   // 支持 {ComponentName}/index.vue 的形式
   if (path.basename(file) === 'index.vue') {
@@ -13,48 +17,47 @@ function getComponentName(file: string) {
 }
 
 // 将页面的第一级目录作为页面的 category 数据
-const parsePageCategoryPlugin: PluginFunction = (_config, _app): PluginObject => {
+const parsePageCategoryPlugin: PluginFunction = (_app): PluginObject => {
   return {
     multiple: true,
     name: 'categoryPlugin',
-    extendsPageData: page => {
+    extendsPage: page => {
       const words = page.path.split('/')
       if (words.length >= 3) page.frontmatter.category = words[1]
-      return page
     }
   }
 }
 
 // 将页面的第二、三、四级目录作为页面的 date 数据
-const parsePageDatePlugin: PluginFunction = (_config, _app): PluginObject => {
+const parsePageDatePlugin: PluginFunction = (_app): PluginObject => {
   return {
     multiple: true,
     name: 'checkPageDate',
-    extendsPageData: page => {
+    extendsPage: page => {
       const words = page.path.split('/')
       if (words.length >= 7) {
+        // FIXME: 这里有问题
         const [year, month, day] = words.slice(3, 6)
         page.frontmatter.date = new Date(+year, +month, +day);
       }
-      return page
     }
   }
 }
 
-const theme: ThemeFunction = () => {
+export const theme: ThemeFunction = () => {
   const plugins: ThemeObject['plugins'] = [
     parsePageDatePlugin,
     parsePageCategoryPlugin,
-    ['@vuepress/plugin-palette', {
+    palettePlugin({
       preset: 'less',
       userStyleFile: path.resolve(__dirname, './styles/global.less'),
       userPaletteFile: path.resolve(__dirname, './styles/palette.less')
-    }],
-    ['@vuepress/register-components', {
+    }),
+    registerComponentsPlugin({
       getComponentName,
       componentsDir: path.resolve(__dirname, './'),
       componentsPatterns: ['common/**/*.vue', 'pages/**/*.vue']
-    }],
+    })
   ]
 
   const layouts: ThemeObject['layouts'] = {
@@ -68,5 +71,3 @@ const theme: ThemeFunction = () => {
     name: 'vuepress-theme-yinxulai'
   }
 }
-
-export default theme

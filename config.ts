@@ -1,40 +1,42 @@
 import path from 'path'
 import { defineUserConfig } from 'vuepress'
-import type { DefaultThemeOptions, PluginConfig } from 'vuepress'
+
+// 插件
+import { registerComponentsPlugin } from '@vuepress/plugin-register-components'
+import { googleAnalyticsPlugin } from '@vuepress/plugin-google-analytics'
+import { shikiPlugin } from '@vuepress/plugin-shiki'
+
+// 主题
+import { theme } from './theme'
 
 const globalStyle = `
   html {
     background-color: #181818;
   }
-  body {
-    opacity: 0;
-  }
 `
 
-function googleAnalyticsPlugin(id: string): PluginConfig {
-  return ['@vuepress/plugin-google-analytics', { id }]
+const registerComponentsOptions = {
+  componentsDir: path.resolve(__dirname, './source'),
+  getComponentName: (file: string) => path.basename(file, '.vue')
 }
 
-function registerComponentsPlugin(dir: string): PluginConfig {
-  return ['@vuepress/register-components', {
-    componentsDir: path.resolve(__dirname, dir),
-    getComponentName: (file: string) => path.basename(file, '.vue')
-  }]
-}
-
-function syntaxHighlightPlugin(): PluginConfig {
-  return ['@vuepress/plugin-shiki', { theme: 'dracula' }]
-}
-
-export default defineUserConfig<DefaultThemeOptions>({
+export default defineUserConfig({
+  theme: theme,
   lang: 'zh-CN',
   title: 'Alain Blog',
   description: 'Alain Blog',
-  theme: path.resolve(__dirname, 'theme'),
   dest: path.resolve(__dirname, '.output/dest'),
   temp: path.resolve(__dirname, '.output/temp'),
   cache: path.resolve(__dirname, '.output/cache'),
   head: [['style', { type: 'text/css' }, globalStyle]],
-  alias: { '@hooks':  path.resolve(__dirname, './common/hooks') },
-  plugins: [googleAnalyticsPlugin('G-PPVXN8YZWL'), registerComponentsPlugin('./source'), syntaxHighlightPlugin()]
+  alias: { 
+    '@components': path.resolve(__dirname, 'common/components'),
+    '@hooks': path.resolve(__dirname, 'common/hooks'),
+    '@math': path.resolve(__dirname, 'common/math'),
+  },
+  plugins: [
+    registerComponentsPlugin(registerComponentsOptions),
+    googleAnalyticsPlugin({ id: 'G-PPVXN8YZWL' }),
+    shikiPlugin({ theme: 'dracula' })
+  ]
 })

@@ -26,11 +26,13 @@ export function useFPS() {
   }
 
   onMounted(() => {
+    if (__VUEPRESS_SSR__) return
     onFrame()
     computedFPS()
   })
   
   onUnmounted(() => {
+    if (__VUEPRESS_SSR__) return
     cancelAnimationFrame(frameRequest.value)
   })
 

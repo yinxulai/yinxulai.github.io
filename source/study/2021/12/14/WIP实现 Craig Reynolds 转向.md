@@ -31,5 +31,4 @@ reference: http://www.red3d.com/cwr/steer/gdc99/
 
 ## 群体行为
 
-<p5 />
 <steering-behaviors />

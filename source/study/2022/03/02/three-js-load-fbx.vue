@@ -1,14 +1,14 @@
 <template>
   <div class="three-js-load-fbx">
     <input type="file" @change="handleSelectFile" />
-    <canvas ref="canvasRef" class="canvas" />
+    <canvas ref="canvasRef" class="canvas"></canvas>
   </div>
 </template>
 <script lang="ts" setup>
 import { ref, watch, toRaw } from 'vue'
 import { AnimationMixer, Group, Clock, HemisphereLight, DirectionalLight } from 'three'
 import { useThreeRenderer } from '@hooks/use-three-renderer'
-import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader'
+// import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader'
 
 const clock = new Clock()
 const fileRef = ref<File>()
@@ -21,26 +21,26 @@ const animationMixer = ref<AnimationMixer>()
 const dirLight = new DirectionalLight(0xffffff)
 const hemiLight = new HemisphereLight(0xffffff, 0x444444)
 
-const handleSelectFile = (event: InputEvent) => {
+const handleSelectFile = (event: Event) => {
   const target = event.target as HTMLInputElement
   if (target == null || target.files == null) return
   fileRef.value = target.files[0]
 }
 
-watch(fileRef, async () => {
-  if (fileRef.value == null) return null
+// watch(fileRef, async () => {
+//   if (fileRef.value == null) return null
 
-  const loader = new FBXLoader()
-  const buffer = await fileRef.value.arrayBuffer()
+//   const loader = new FBXLoader()
+//   const buffer = await fileRef.value.arrayBuffer()
 
-  fbxGroupRef.value = loader.parse(buffer, 'root')
-  animationMixer.value = new AnimationMixer(fbxGroupRef.value)
-  if (fbxGroupRef.value.animations.length > 0) {
-    animationMixer.value.clipAction(fbxGroupRef.value.animations[0]).play()
-  }
-})
+//   fbxGroupRef.value = loader.parse(buffer, 'root')
+//   animationMixer.value = new AnimationMixer(fbxGroupRef.value)
+//   if (fbxGroupRef.value.animations.length > 0) {
+//     animationMixer.value.clipAction(fbxGroupRef.value.animations[0]).play()
+//   }
+// })
 
-threeRenderer.onRender((scene, camera, { size }) => {
+threeRenderer.onRender(({ scene, camera, size }) => {
   if (fbxGroupRef.value == null) return
   if (animationMixer.value == null) return
 

@@ -1,12 +1,14 @@
 import * as THREE from 'three'
 import { Ref, computed, watchPostEffect } from 'vue'
-import { useCanvasRenderer } from './use-canvas-renderer'
+import { RenderFuncParams, useCanvasRenderer } from './use-canvas-renderer'
 
-type Size = { width: number, height: number }
-type RenderFuncUtils = { size: Size }
 type Options<T> = { maxFPS: number } & T
 type CanvasRef = Ref<HTMLCanvasElement | undefined>
-type RenderFunc = (scene: THREE.Scene, camera: THREE.Camera, utils: RenderFuncUtils) => void
+type RenderFunc = (
+  params: { scene: THREE.Scene, camera: THREE.Camera }
+  & RenderFuncParams<WebGLRenderingContext>
+) => void
+
 export function useThreeRenderer(canvas: CanvasRef, options?: Options<WebGLContextAttributes>) {
   const context = useCanvasRenderer(canvas, 'webgl', options)
   const scene = new THREE.Scene()
@@ -26,14 +28,14 @@ export function useThreeRenderer(canvas: CanvasRef, options?: Options<WebGLConte
     camera.position.y = height / 2
     camera.position.z = height / 2
     camera.position.x = 0
-    camera.lookAt(0,0,0)
+    camera.lookAt(0, 0, 0)
     return camera
   })
 
   const onRender = (func: RenderFunc) => {
-    context.onRender((utils) => {
+    context.onRender((baseParams) => {
       if (camera.value == null) return
-      func(scene, camera.value, utils)
+      func({...baseParams, scene, camera: camera.value})
       if (renderer.value == null) return
       renderer.value.render(scene, camera.value)
     })

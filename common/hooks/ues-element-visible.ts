@@ -47,6 +47,7 @@ export function uesElementVisible(element: Ref<Element | undefined>) {
   }
 
   onMounted(() => {
+    if (__VUEPRESS_SSR__) return null
     // TODO: 每掉用一次就添加一系列 Listener 有待优化
     window.addEventListener('load', updateVisible)
     window.addEventListener('scroll', updateVisible)
@@ -55,6 +56,7 @@ export function uesElementVisible(element: Ref<Element | undefined>) {
   })
 
   onUnmounted(() => {
+    if (__VUEPRESS_SSR__) return null
     window.removeEventListener('load', updateVisible)
     window.removeEventListener('scroll', updateVisible)
     window.removeEventListener('scroll', updateVisible)

@@ -1,4 +1,4 @@
-name: Web lint check
+name: Web unit test
 
 on: [push, pull_request]
 
@@ -18,8 +18,8 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Run lint
-        run: npm run lint --quiet
+      - name: Run test
+        run: npm run test --quiet
 
       - name: Cache npm
         uses: actions/cache@v2

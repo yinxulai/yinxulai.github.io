@@ -18,7 +18,7 @@ const maxLineWidth = 4
 const maxLineLength = 30
 const canvasPadding = 0 // maxLineLength + maxLineWidth / 2
 
-canvasRenderer.onRender(( {context, size }) => {
+canvasRenderer.onRender(({ context, size }) => {
   zOffset.value += 0.0003
   context.clearRect(0, 0, size.width, size.height)
 
