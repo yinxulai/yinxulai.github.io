@@ -26,11 +26,13 @@ export function useWindowsSize() {
   }
 
   onMounted(() => {
+    if (__VUEPRESS_SSR__) return null
     window.addEventListener('load', updateSize)
     window.addEventListener('resize', updateSize)
   })
 
   onUnmounted(() => {
+    if (__VUEPRESS_SSR__) return null
     window.removeEventListener('load', updateSize)
     window.removeEventListener('resize', updateSize)
   })

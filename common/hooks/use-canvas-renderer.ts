@@ -57,6 +57,7 @@ export function useCanvasRenderer(canvas: CanvasRef, contextId: string, options?
   }
 
   const startRequestFrame = () => {
+    if (__VUEPRESS_SSR__) return
     if (stop.value === true) return
     requestAnimationFrame(() => (
       startRequestFrame()
@@ -92,10 +93,12 @@ export function useCanvasRenderer(canvas: CanvasRef, contextId: string, options?
   }
 
   onMounted(() => {
+    if (__VUEPRESS_SSR__) return null
     window.addEventListener('wheel', handleWheel)
   })
 
   onUnmounted(() => {
+    if (__VUEPRESS_SSR__) return null
     window.removeEventListener('wheel', handleWheel)
   })
 
