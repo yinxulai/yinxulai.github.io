@@ -1,0 +1,27 @@
+.layout {
+  display: flex;
+  flex-direction: column;
+
+  box-sizing: border-box;
+  min-height: 100%;
+  padding: 0 1rem;
+  margin: 0 auto;
+  width: 50rem;
+
+  .content {
+    flex: 1;
+
+    &.draft {
+      background-color: rgba(255, 255, 255, 0.1);
+      border: 1px dashed rgba(255, 255, 255, 0.1);
+
+      &::before {
+        content: '-- 隐藏内容 --';
+        min-height: 100px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+    }
+  }
+}

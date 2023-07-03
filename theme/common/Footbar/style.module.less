@@ -1,0 +1,21 @@
+.footer {
+  display: flex;
+  flex-wrap: nowrap;
+  flex-direction: row;
+  justify-content: space-between;
+
+  width: 100%;
+  font-size: 12px;
+  padding-top: 20px;
+  line-height: 40px;
+  padding-bottom: 20px;
+  font-family: "Menlo", monospace;
+  color: rgba(255, 255, 255, 0.5);
+
+  .left,
+  .right {
+    > * {
+      margin-right: 0.5rem;
+    }
+  }
+}
