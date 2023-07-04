@@ -1,4 +1,4 @@
-import { ref, Ref, watch, computed } from 'vue'
+import { createRef, Ref, watch } from 'airx'
 export interface Position {
   x: number
   y: number
@@ -8,15 +8,9 @@ export interface Position {
 export type DrawCallback = (record: Position) => void
 export type DrawStroke = (line: [Position, Position]) => void
 export function useDraw(canvas: Ref<HTMLCanvasElement | undefined>) {
-
-  const canvasContext = computed(() => {
-    if (canvas.value == null) return null
-    return canvas.value.getContext('2d')
-  })
-
-  const isStartDraw = ref<boolean>(false)
-  const drawCallbackList = ref<DrawCallback[]>([])
-  const lastDrawPosition = ref<Position>({ x: 0, y: 0, time: 0 })
+  const isStartDraw = createRef<boolean>(false)
+  const drawCallbackList = createRef<DrawCallback[]>([])
+  const lastDrawPosition = createRef<Position>({ x: 0, y: 0, time: 0 })
 
   // 转换为相对 Canvas 的坐标
   const toRelativePosition = (point: Position): Position => {
@@ -63,16 +57,15 @@ export function useDraw(canvas: Ref<HTMLCanvasElement | undefined>) {
 
   const clear = (alpha = 1) => {
     if (canvas.value == null) return
-    if (canvasContext.value == null) return
-    canvasContext.value.fillStyle = `rgba(255,255,255,${alpha})`
-    canvasContext.value.fillRect(0, 0, canvas.value.width, canvas.value.height)
+    const canvasContext = canvas.value.getContext('2d')!
+    canvasContext.fillStyle = `rgba(255,255,255,${alpha})`
+    canvasContext.fillRect(0, 0, canvas.value.width, canvas.value.height)
   }
 
   const drawStroke: DrawStroke = (record) => {
     if (canvas.value == null) return
-    if (canvasContext.value == null) return
 
-    const context = canvasContext.value!
+    const context = canvas.value.getContext('2d')!
     const [startPosition, endPosition] = record
 
     //设置画笔粗细
@@ -92,10 +85,8 @@ export function useDraw(canvas: Ref<HTMLCanvasElement | undefined>) {
     clear(0.01)
   }
 
-  watch([canvas, canvasContext], () => {
+  watch(canvas, () => {
     if (canvas.value == null) return
-    if (canvasContext.value == null) return
-
     resetSize()
 
     canvas.value.addEventListener('mouseup', close, { passive: true })

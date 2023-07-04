@@ -1,5 +1,5 @@
-import { createWorkerPool } from '@hooks/use-worker'
-import { Vector2D } from '@math/vector'
+import { Vector2D } from '../../../math/vector'
+import { createWorkerPool } from '../../../hooks/use-worker'
 
 interface Size {
   width: number
@@ -108,16 +108,16 @@ export abstract class Collidable2DAgent extends VisibleAgent {
     return sumPoint
   })
 
-  private static getPaintedOffscreenCanvas<T extends Collidable2DAgent>(size: Size, agent: T): OffscreenCanvas | null {
-    const canvas = document.createElement('canvas')
-    canvas.height = size.height
-    canvas.width = size.width
-    const context = canvas.getContext('2d')
-    if (context == null) return null
-    agent.render(context)
+  // private static getPaintedOffscreenCanvas<T extends Collidable2DAgent>(size: Size, agent: T): OffscreenCanvas | null {
+  //   const canvas = document.createElement('canvas')
+  //   canvas.height = size.height
+  //   canvas.width = size.width
+  //   const context = canvas.getContext('2d')
+  //   if (context == null) return null
+  //   agent.render(context)
     
-    return canvas.transferControlToOffscreen()
-  }
+  //   return canvas.transferControlToOffscreen()
+  // }
 
   /**
    * @returns Block
@@ -130,7 +130,7 @@ export abstract class Collidable2DAgent extends VisibleAgent {
    * @returns void
    * @description 发生碰撞时的处理逻辑
    */
-  protected async impact<T extends Collidable2DAgent>(target: T): Promise<Point | false> {
+  public async impact<T extends Collidable2DAgent>(target: T): Promise<Point | false> {
     // 先用方块做粗检测
     const selfBlock = this.getOutsideBlock()
     const targetBlock = target.getOutsideBlock()
@@ -159,10 +159,10 @@ export abstract class Collidable2DAgent extends VisibleAgent {
     const maxDy = Math.max(selfDy, targetDy)
     const outsideWidth = maxDx - minX
     const outsideHeight = maxDy - minY
-    const canvasSize: Size = {
-      height: maxDy,
-      width: maxDx
-    }
+    // const canvasSize: Size = {
+    //   height: maxDy,
+    //   width: maxDx
+    // }
 
     // 创建 OffscreenCanvas 绘制像素
     const selfCanvas = new OffscreenCanvas(maxDx, maxDy)

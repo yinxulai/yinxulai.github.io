@@ -22,5 +22,6 @@
     /* Jsx */
     "jsx": "preserve"
   },
-  "include": ["source/**/*", "theme/**/*" , "vite-env.d.ts"]
+  "include": ["source/**/*", "theme/**/*" , "vite-env.d.ts"],
+  "exclude": ["**/*.test.ts"]
 }

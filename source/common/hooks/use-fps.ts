@@ -1,5 +1,5 @@
 
-import { onMounted, onUnmounted, createRef } from 'airx'
+import { onMounted, createRef } from 'airx'
 
 export function useFPS() {
   const fps = createRef<string>('0')
@@ -28,10 +28,8 @@ export function useFPS() {
   onMounted(() => {
     onFrame()
     computedFPS()
-  })
-  
-  onUnmounted(() => {
-    cancelAnimationFrame(frameRequest.value)
+
+    return () => cancelAnimationFrame(frameRequest.value)
   })
 
   return fps

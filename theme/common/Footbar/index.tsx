@@ -27,7 +27,7 @@ export function Footbar() {
           <a target="_black" href="https://beian.miit.gov.cn">皖ICP备19004644号-1</a>
         </span>
         <span>
-          Power by <a target="_black" href="https://github.com/airxjs/airx">Airx</a>
+          Power by <a target="_black" href="https://github.com/airxjs/airx">💪Airx</a>
         </span>
       </div>
       <div class={style.right}>

@@ -1,4 +1,4 @@
-import { createRef, Ref, watch, onMounted, onUnmounted } from 'airx'
+import { createRef, Ref, watch, onMounted } from 'airx'
 
 export function uesElementVisible(element: Ref<Element | undefined>) {
 
@@ -28,13 +28,13 @@ export function uesElementVisible(element: Ref<Element | undefined>) {
     observerRef.value.observe(element.value)
   }
 
-
   onMounted(() => {
     createIntersectionObserver()
-  })
-
-  onUnmounted(() => {
-    if (observerRef.value != null) observerRef.value.disconnect()
+    return () => {
+      if (observerRef.value != null) {
+        observerRef.value.disconnect()
+      }
+    }
   })
 
   watch(element, () => createIntersectionObserver())

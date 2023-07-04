@@ -1,4 +1,4 @@
-import { Ref, createRef, watch, onMounted, onUnmounted } from 'airx'
+import { Ref, createRef, watch, onMounted } from 'airx'
 import { uesElementVisible } from './ues-element-visible'
 
 type ReturnType<T> = {
@@ -86,17 +86,14 @@ export function useCanvasRenderer(canvas: CanvasRef, contextId: string, options?
     canvas.value.tabIndex = -1
   }
 
-  const handleWheel = () => {
-    isScrolling.value = true
-    setTimeout(() => { isScrolling.value = false }, 1000)
-  }
-
   onMounted(() => {
-    window.addEventListener('wheel', handleWheel, { passive: true })
-  })
+    const handleWheel = () => {
+      isScrolling.value = true
+      setTimeout(() => { isScrolling.value = false }, 1000)
+    }
 
-  onUnmounted(() => {
-    window.removeEventListener('wheel', handleWheel)
+    window.addEventListener('wheel', handleWheel, { passive: true })
+    return () => window.removeEventListener('wheel', handleWheel)
   })
 
   watch(canvasVisible, () => {

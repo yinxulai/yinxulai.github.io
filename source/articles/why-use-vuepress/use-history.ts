@@ -1,15 +1,15 @@
-import { ref, toRaw } from 'vue'
+import { createRef } from 'airx'
 import defaultHistory from './history.json'
 import type { Position, DrawCallback, DrawStroke } from './use-draw'
 
 export function useHistory(draw: DrawStroke) {
   type History = Array<Position>
-  const isPlaying = ref<boolean>(false)
-  const history = ref<History>(defaultHistory)
+  const isPlaying = createRef<boolean>(false)
+  const history = createRef<History>(defaultHistory)
 
   const drawCallback: DrawCallback = (record) => {
     history.value.push(record);
-    (window as any).drawHistory = toRaw(history.value)
+    (window as any).drawHistory = history.value
   }
 
   const clear = () => {

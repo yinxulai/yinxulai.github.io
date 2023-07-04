@@ -12,7 +12,7 @@ const intermezzo = new Uint8Array([
 const RCM_PAYLOAD_ADDRESS = 0x40010000
 const INTERMEZZO_LOCATION = 0x4001F000
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-const PAYLOAD_LOAD_BLOCK = 0x40020000
+// const PAYLOAD_LOAD_BLOCK = 0x40020000
 
 function createRCMPayload(intermezzo: Uint8Array, payload: Uint8Array) {
   const rcmLength = 0x30298

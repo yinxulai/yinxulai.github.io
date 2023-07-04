@@ -1,4 +1,4 @@
-import { ref, onMounted, onUnmounted } from 'vue'
+import { createRef, onMounted } from 'airx'
 
 interface WindowSize {
   innerWidth: number
@@ -8,8 +8,7 @@ interface WindowSize {
 }
 
 export function useWindowsSize() {
-
-  const size = ref<WindowSize>({
+  const size = createRef<WindowSize>({
     innerWidth: 0,
     innerHeight: 0,
     clientWidth: 0,
@@ -28,11 +27,11 @@ export function useWindowsSize() {
   onMounted(() => {
     window.addEventListener('load', updateSize, { passive: true })
     window.addEventListener('resize', updateSize, { passive: true })
-  })
 
-  onUnmounted(() => {
-    window.removeEventListener('load', updateSize)
-    window.removeEventListener('resize', updateSize)
+    return () => {
+      window.removeEventListener('load', updateSize)
+      window.removeEventListener('resize', updateSize)
+    }
   })
 
   return size

@@ -8,7 +8,7 @@ export const upload: BootLoader = {
     return new Promise<Uint8Array>((resolve, reject) => {
       const element = document.createElement('input', {})
       element.type = 'file'
-      element.addEventListener('change', event => {
+      element.addEventListener('change', () => {
         const reader = new FileReader()
         reader.onload = e => {
           element.value = ''

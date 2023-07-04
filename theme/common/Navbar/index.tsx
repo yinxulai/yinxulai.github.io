@@ -1,5 +1,8 @@
+import { createRef } from 'airx'
 import style from './style.module.less'
 
 export function Navbar() {
-  return () => (<div class={style.navbar}></div>)
+  const htmlRef = createRef<HTMLElement | null>(null)
+
+  return () => (<div ref={htmlRef} class={style.navbar}></div>)
 }

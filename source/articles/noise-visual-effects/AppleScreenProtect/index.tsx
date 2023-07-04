@@ -1,28 +1,29 @@
-<script lang="tsx">
-import { ref } from 'vue'
-import { defineComponent } from '@utils/vue'
+import { createRef } from 'airx'
 import { makeNoise3D } from 'fast-simplex-noise'
-import { useCanvasRenderer } from '@hooks/use-canvas-renderer'
+import { useCanvasRenderer } from '../../../common/hooks/use-canvas-renderer'
 
-export default defineComponent(() => {
-  let zOffset = ref(0.01)
+import styles from './style.module.less'
+
+export function AppleScreenProtect() {
   const angleNoise = makeNoise3D()
   const colorNoise = makeNoise3D()
-  const canvasRef = ref<HTMLCanvasElement>()
-  const canvasRenderer = useCanvasRenderer(canvasRef, '2d')
+  const zOffsetRef = createRef(0.01)
+  const canvasRef = createRef<HTMLCanvasElement | undefined>(undefined)
+
+  const canvasRenderer = useCanvasRenderer(canvasRef,  '2d')
 
   const maxLineWidth = 4
   const maxLineLength = 30
   const canvasPadding = 0 // maxLineLength + maxLineWidth / 2
 
   canvasRenderer.onRender(({ context, size }) => {
-    zOffset.value += 0.0003
+    zOffsetRef.value += 0.00005
     context.clearRect(0, 0, size.width, size.height)
 
     for (let x = canvasPadding; x <= size.width - canvasPadding; x += 20) {
       for (let y = canvasPadding; y <= size.height - canvasPadding; y += 20) {
-        const angle = angleNoise(x * 0.001, y * 0.001, zOffset.value * 10) * 5
-        const color = colorNoise(x * 0.001, y * 0.001, zOffset.value) * 300
+        const angle = angleNoise(x * 0.001, y * 0.001, zOffsetRef.value * 10) * 5
+        const color = colorNoise(x * 0.001, y * 0.001, zOffsetRef.value) * 300
         const toX = x + Math.cos(angle) * maxLineLength
         const toY = y + Math.sin(angle) * maxLineLength
 
@@ -41,19 +42,9 @@ export default defineComponent(() => {
       }
     }
   })
-
-  return () => (<canvas ref={canvasRef} class="canvas" />)
-})
-
-</script>
-<style lang="less" scoped>
-.screen-protect {
-  .canvas {
-    width: 50rem;
-    height: 30rem;
-    overflow: hidden;
-    border-radius: 10px;
-    background-color: black;
-  }
+  return () => (
+    <div class={styles.root}>
+      <canvas ref={canvasRef} class={styles.canvas} />
+    </div>
+  )
 }
-</style>

@@ -9,7 +9,7 @@ import hljs from 'highlight.js'
 import { markedXhtml } from 'marked-xhtml'
 import { markedHighlight } from 'marked-highlight'
 
-interface MdMate {
+interface MdMeta {
   key: string
   value: string
 }
@@ -17,7 +17,7 @@ interface MdMate {
 export interface RawPost {
   path: string
   fullPath: string
-  meta: MdMate[]
+  meta: MdMeta[]
 }
 
 /**
@@ -81,22 +81,22 @@ interface CodeLanguage {
 
 interface Post {
   html: string
-  meta: MdMate[]
+  meta: MdMeta[]
   codes: MarkdownInlineCode[]
 }
 
 export async function parseMarkdown(post: string): Promise<Post> {
   const marked = new Marked()
-  const meta: MdMate[] = []
+  const meta: MdMeta[] = []
   const codes: MarkdownInlineCode[] = []
 
   marked.use({
     extensions: [{
       name: 'md-meta',
       level: 'block',
-      start: () => 0,
       renderer: () => '',
-      tokenizer(src): MdMateToken | void {
+      start: src => src.indexOf('---\n'),
+      tokenizer: (src): MdMateToken | void => {
         const regexp = /^-{3}\n((?:(?!-{3}).|\n)*)?-{3}\n?/
         const match = regexp.exec(src)
         if (match != null) {
@@ -152,7 +152,7 @@ export async function parseMarkdown(post: string): Promise<Post> {
   interface MdMateToken {
     type: 'md-meta'
     raw: string
-    data: MdMate[]
+    data: MdMeta[]
   }
 
   marked.use({ renderer: { code } })

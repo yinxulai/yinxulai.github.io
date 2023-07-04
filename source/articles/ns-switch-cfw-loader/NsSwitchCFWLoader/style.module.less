@@ -1,0 +1,230 @@
+
+.nsSwitch {
+  @borderRadius: 30px;
+
+  width: 100%;
+  margin: 20px 0;
+  aspect-ratio: 239 / 102;
+  background-color: black;
+  border-radius: @borderRadius;
+  box-shadow: 10px 20px 20px -10px rgba(0, 0, 0, 0.5);
+
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
+  .joyConBase() {
+    flex: 4;
+    height: 100%;
+    box-shadow: 0 0 0 6px rgba(0, 0, 0, .1) inset;
+  }
+
+  .leftJoyCon {
+    .joyConBase();
+    background-color: #36A8C6;
+    border-radius: @borderRadius 0 0 @borderRadius;
+  }
+
+  .rightJoyCon {
+    .joyConBase();
+    background-color: #EC5044;
+    border-radius: 0 @borderRadius @borderRadius 0;
+  }
+
+  .centerScreenWrap {
+    flex: 21;
+    height: 100%;
+    padding: 10px;
+    box-sizing: border-box;
+    background-color: #242729;
+  }
+
+  .screen {
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: #000000;
+  }
+}
+
+.clearButton() {
+  border: none;
+  outline: none;
+  border-radius: 0;
+}
+
+.scaffold {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+
+  .navbar {
+    display: flex;
+    flex-shrink: 0;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+
+    width: 100%;
+    padding: 10px 20px;
+    box-sizing: border-box;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+
+    .title {
+      width: 100%;
+      color: white;
+      font-size: 18px;
+      text-align: left;
+      font-weight: bold;
+    }
+
+    .button {
+      .clearButton();
+      padding: 6px 20px;
+
+      color: white;
+      font-size: 16px;
+      background-color: #EC5044;
+
+      &:disabled {
+        opacity: 0.2;
+      }
+    }
+  }
+
+  .content {
+    flex: 1;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+}
+
+.selectBootLoader {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
+  .bootLoader {
+    margin: 4px;
+    width: 100px;
+    aspect-ratio: 1;
+
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+
+    box-shadow: 0 10px 10px rgba(0, 0, 0, .1);
+
+    &:active {
+      transition: .3s;
+      transform: scale(0.96);
+    }
+
+    .cover {
+      width: 100%;
+      aspect-ratio: 1;
+      outline: 2px solid rgba(255, 255, 255, 0);
+
+      &.selected {
+        transition: .2s;
+        transform: scale(1.1);
+        outline: 2px solid rgba(255, 255, 255, 1);
+      }
+    }
+
+    .name {
+      font-size: 14px;
+      font-weight: bold;
+    }
+  }
+}
+
+.selectDevice {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+
+  margin-top: 1rem;
+
+  .button {
+    .clearButton();
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 4px 20px;
+
+    .usbDeviceIcon {
+      width: 20px;
+      margin-right: 0.5rem;
+    }
+  }
+
+  .device {
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+
+    margin-top: 0.5rem;
+
+    .productName,
+    .manufacturerName {
+      font-size: 12px
+    }
+
+    .manufacturerName {
+      margin-left: 1rem;
+    }
+  }
+}
+
+.booting {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+
+  .logList {
+    height: 100%;
+    overflow: auto;
+    list-style: none;
+    box-sizing: border-box;
+
+    margin: 0;
+    padding: 0 0 50px 10px;
+
+    .log {
+      font-size: 12px;
+      color: #9fef00;
+    }
+  }
+}
+
+.unsupported {
+  height: 100%;
+  width: 100%;
+  padding: 10px;
+  font-size: 14px;
+  text-align: center;
+  box-sizing: border-box;
+
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+
+  .button {
+      .clearButton();
+      padding: 6px 20px;
+
+      color: white;
+      font-size: 16px;
+      background-color: #EC5044;
+    }
+}

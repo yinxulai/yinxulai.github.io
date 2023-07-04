@@ -1,4 +1,4 @@
-import { onMounted, onUnmounted } from 'vue'
+import { onMounted, onUnmounted } from 'airx'
 
 type WorkerFunction<T, R> = (params: T) => R
 type Transfer = Array<Transferable | OffscreenCanvas>

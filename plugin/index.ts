@@ -71,9 +71,11 @@ export function VitePluginAirxPress(options: VitePluginAirxPressOptions): Plugin
         const postList = Array.from(ctx.postMap.values())
         for (let index = 0; index < postList.length; index++) {
           const post = postList[index]
-          const importedName = `Post${index}`
-          importCodes.push(`import ${importedName} from '${post.fullPath}';`)
-          routesCodes.push(`{ path: '${post.path}', component: ${importedName} }`)
+          const importedDefaultName = `Post${index}`
+          const importedMetaName = `PostMeta${index}`
+          importCodes.push(`import ${importedDefaultName} from '${post.fullPath}';`)
+          importCodes.push(`import { meta as ${importedMetaName} } from '${post.fullPath}';`)
+          routesCodes.push(`{ path: '${post.path}', meta: ${importedMetaName}, component: ${importedDefaultName} }`)
         }
 
         const entryCode = `const app = __airx__.createElement(ThemeApp, {posts: [${routesCodes.join(',')}]})`

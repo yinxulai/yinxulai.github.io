@@ -25,16 +25,16 @@ interface SingleTokenizer {
 }
 
 // 特殊的保留字符
-const specialCharacter: SingleTokenizer = (source, ctx) => {
-  const character = source[0]
-  const tokenType: TokenType | null = null
-  const isMatched = ["[", "]", "(", ")", "[", "|", ".", "^", "$", "?", "+", "*"].includes(character)
-  return {}
-}
+// const specialCharacter: SingleTokenizer = (source, ctx) => {
+//   const character = source[0]
+//   const tokenType: TokenType | null = null
+//   const isMatched = ["[", "]", "(", ")", "[", "|", ".", "^", "$", "?", "+", "*"].includes(character)
+//   return {}
+// }
 
 export function tokenizer(regexp: string): Tokenizer {
   const singleTokenizers: SingleTokenizer[] = [
-    specialCharacter
+    // specialCharacter
   ]
 
   const self: Tokenizer = {

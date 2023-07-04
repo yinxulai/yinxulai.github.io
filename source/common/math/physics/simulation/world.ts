@@ -1,4 +1,4 @@
-import { Vector2D } from '@math/vector'
+import { Vector2D } from '../../vector'
 import { Agent2D, Collidable2DAgent, VisibleAgent } from './agent'
 
 

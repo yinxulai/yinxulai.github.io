@@ -1,17 +1,15 @@
 ---
 lang: zh-CN
 date: 2021-08-24
-title: 利用（noise）自然噪波生成有趣的视觉效果
 description: 利用（noise）自然噪波生成有趣的视觉效果
 ---
+# 利用（noise）自然噪波生成有趣的视觉效果
 
 本文只是讨论如何利用自然噪波生成一些有趣的视觉效果，针对各种不同的噪波生成算法不做细致的讨论。
 
 本文所有的 自然噪波 实现均使用 `simplex-noise` 算法，这是一种专门对性能进行过优化的生成算法，可以比较快速的在浏览器上执行。
 
-
-
-### 🌲自然噪波 是啥
+## 🌲自然噪波 是啥
 
 自然噪波其实就是一种生成随机数的算法，可能大家会立即联想到 `Math.random`，大体上其实也差不太多，
 唯一不一样的点在于：`Math.random` 是'一定程度上的'纯随机，每一个连续生成的数据之间没有任何的关系，生成出来的数据呈均匀分布，
@@ -28,7 +26,11 @@ description: 利用（noise）自然噪波生成有趣的视觉效果
 
 通过 `simplex-noise` 生成随机且连续的 `z` 轴数值。
 
-<noise-3d-plane-terrain />
+```ts:inject
+import { Noise3DPlaneTerrain } from './Noise3dPlaneTerrain'
+```
+
+<Noise3DPlaneTerrain />
 
 ### 角度变化
 
@@ -36,17 +38,29 @@ description: 利用（noise）自然噪波生成有趣的视觉效果
 
 一定程度上，这就像一个流场，在这个基础上可以实现很多有趣的效果。
 
-<noise-angle-field />
+```ts:inject
+import { NoiseAngleField } from './NoiseAngleField'
+```
+
+<NoiseAngleField />
 
 ### 随机线条
 
 使用一个随机的点和随机的线条长度、随机的角度，再加上残影，我们还可以生成这种效果：
 
-<noise-line-afterimage />
+```ts:inject
+import { NoiseLineAfterimage } from './NoiseLineAfterimage'
+```
+
+<NoiseLineAfterimage />
 
 ### 更多复杂的组合
 
-<apple-screen-protect />
+```ts:inject
+import { AppleScreenProtect } from './AppleScreenProtect'
+```
+
+<AppleScreenProtect />
 
 ### 总结
 
