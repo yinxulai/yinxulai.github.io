@@ -32,6 +32,11 @@ import { Noise3DPlaneTerrain } from './Noise3dPlaneTerrain'
 
 <Noise3DPlaneTerrain />
 
+```ts:inject
+import { Noise3dBoxTerrain } from './Noise3dBoxTerrain'
+// <Noise3dBoxTerrain />
+```
+
 ### 角度变化
 
 按照固定的间距来生成线段，并使用 `simplex-noise` 来生成随机连续的角度。
@@ -39,20 +44,18 @@ import { Noise3DPlaneTerrain } from './Noise3dPlaneTerrain'
 一定程度上，这就像一个流场，在这个基础上可以实现很多有趣的效果。
 
 ```ts:inject
-import { NoiseAngleField } from './NoiseAngleField'
+// import { NoiseAngleField } from './NoiseAngleField'
+// <NoiseAngleField />
 ```
-
-<NoiseAngleField />
 
 ### 随机线条
 
 使用一个随机的点和随机的线条长度、随机的角度，再加上残影，我们还可以生成这种效果：
 
 ```ts:inject
-import { NoiseLineAfterimage } from './NoiseLineAfterimage'
+// import { NoiseLineAfterimage } from './NoiseLineAfterimage'
+// <NoiseLineAfterimage />
 ```
-
-<NoiseLineAfterimage />
 
 ### 更多复杂的组合
 

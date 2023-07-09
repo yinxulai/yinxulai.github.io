@@ -30,16 +30,15 @@ export function Noise3DPlaneTerrain() {
   threeRenderer.onRender(({ scene, camera, size }) => {
     noiseOffsetRef.value += 0.003
 
-    camera.rotation.x = Math.PI * 0.42
-    camera.position.x = -380
-    camera.position.y = -315
-    camera.position.z = 80
-
     if (threePlaneRef.value == null) return
     if (scene.getObjectById(threePlaneRef.value.id) == null) {
       threePlaneRef.value.position.x = -size.width / 2
-      threePlaneRef.value.position.y = -size.height / 2
+      // threePlaneRef.value.position.y = -size.height / 2
       scene.add(threePlaneRef.value)
+      camera.rotation.x = Math.PI * 0.42
+      camera.position.x = -380
+      camera.position.y = -315
+      camera.position.z = 80  
     }
 
     const positions = threePlaneRef.value.geometry.getAttribute('position')
