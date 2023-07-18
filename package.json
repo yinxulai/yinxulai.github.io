@@ -9,6 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@babylonjs/core": "^6.12.3",
     "@types/offscreencanvas": "^2019.7.0",
     "@types/three": "^0.152.1",
     "airx": "*",

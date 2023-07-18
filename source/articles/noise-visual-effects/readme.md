@@ -44,9 +44,10 @@ import { Noise3dBoxTerrain } from './Noise3dBoxTerrain'
 一定程度上，这就像一个流场，在这个基础上可以实现很多有趣的效果。
 
 ```ts:inject
-// import { NoiseAngleField } from './NoiseAngleField'
-// <NoiseAngleField />
+import { NoiseAngleField } from './NoiseAngleField'
 ```
+
+<NoiseAngleField />
 
 ### 随机线条
 
