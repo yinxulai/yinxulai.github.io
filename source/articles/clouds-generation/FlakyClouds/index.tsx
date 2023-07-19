@@ -114,17 +114,9 @@ import styles from './style.module.less'
 //     fragColor.a = 1.0;
 // }
 
-interface CloudProps {
-
-}
-
 // 基本的面片云
-export function FlakyClouds(props: CloudProps) {
+export function FlakyClouds() {
   const canvasRef = createRef<HTMLCanvasElement | undefined>(undefined)
-
-  function createClouds() {
-    // BABYLON.MeshBuilder.CreatePlane()
-  }
 
   onMounted(() => {
     if (canvasRef.value == null) return
@@ -140,19 +132,14 @@ export function FlakyClouds(props: CloudProps) {
     camera.setTarget(BABYLON.Vector3.Zero())
     camera.attachControl(canvasRef, true)
 
-    const light = new BABYLON.HemisphericLight(
-      "light",
-      new BABYLON.Vector3(0, 1, 0),
-      scene
-    )
-  
-    light.intensity = 0.7
+    // const light = new BABYLON.HemisphericLight(
+    //   "light",
+    //   new BABYLON.Vector3(0, 1, 0),
+    //   scene
+    // )
 
-    BABYLON.MeshBuilder.CreateBox("skyBox", { size: 1000.0 }, scene)
-    const skyBoxMaterial = new BABYLON.StandardMaterial("skyBox", scene)
-    skyBoxMaterial.backFaceCulling = false
+    // light.intensity = 0.7
 
-    
     engine.runRenderLoop(() => scene.render())
 
     const listener = () => engine!.resize()
@@ -170,8 +157,3 @@ export function FlakyClouds(props: CloudProps) {
 
 // n 多面片交叉组成的伪体积云
 export function StaggeredFlakyClouds() {}
-
-// 多层渲染模拟的伪体积云
-export function VolumeClouds() {
-
-}

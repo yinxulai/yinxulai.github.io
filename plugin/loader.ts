@@ -119,7 +119,25 @@ export async function parseMarkdown(post: string): Promise<Post> {
           } satisfies MdMateToken
         }
       }
-    }]
+    },
+      // {
+      //   name: 'html-comment',
+      //   level: 'block',
+      //   renderer: () => '',
+      //   start: src => src.indexOf('<!--'),
+      //   tokenizer: src => {
+      //     const regexp = /<!--((?:(?!-{2}>).|\n)*)?-->/
+      //     const match = regexp.exec(src)
+      //     if (match != null) {
+      //       console.log(match)
+      //       return {
+      //         raw: match[0],
+      //         type: 'html-comment'
+      //       }
+      //     }
+      //   }
+      // }
+    ]
   })
   marked.use(markedXhtml())
   marked.use(markedHighlight({
