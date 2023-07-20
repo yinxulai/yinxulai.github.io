@@ -16,7 +16,6 @@ import { Noise3dCartoonTerrain, Noise3dTerrain } from './Noise3dTerrain'
 <Noise3dCartoonTerrain />
 
 ```ts:inject
-import { Earth } from './Earth'
+// import { Earth } from './Earth'
+// <Earth />
 ```
-
-<Earth />
