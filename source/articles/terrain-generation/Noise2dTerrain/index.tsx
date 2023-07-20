@@ -10,13 +10,13 @@ export function generateTextureImageData(map: number[], width: number, height: n
   function getAltitudeColor(altitude: number) {
     if (altitude < 0.1) {
       return [18, 174, 194, 255]
-    } else if (altitude < 0.2) {
+    } else if (altitude < 0.18) {
       return [247, 183, 159, 255]
     } else if (altitude < 0.5) {
       return [92, 181, 96, 255]
     } else if (altitude < 0.6) {
       return [31, 136, 117, 255]
-    } else if (altitude < 0.8) {
+    } else if (altitude < 0.7) {
       return [94, 109, 129, 255]
     }
 
@@ -51,14 +51,16 @@ export function Noise2dTerrain() {
     for (let y = 0; y < height; y++) {
       for (let x = 0; x < width; x++) {
         let baseAltitude = (noise2D(x * frequency, y * frequency) + 1) / 2 // 值区间 [0,1]
+        const newZ1 = (noise2D(x * 0.04, y * 0.04) + 1) / 2 // 高频细节
 
         // 根据点与画布中心的距离调整权重
         const distanceX = x - width / 2
         const distanceY = y - height / 2
-        const distance = Math.sqrt(distanceX * distanceX + distanceY * distanceY)
+        const attenuationOffset = noise2D(x * 0.04, y * 0.04) // 距离衰减偏移
+        const distance = Math.sqrt(distanceX * distanceX + distanceY * distanceY) + (attenuationOffset * width / 10)
         const distanceRatio = distance / (width / 2) * 1.6
         const altitude = (1 - distanceRatio) * baseAltitude
-        altitudeData.push(altitude)
+        altitudeData.push(altitude * 0.8 + newZ1 * 0.1)
       }
     }
 

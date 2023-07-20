@@ -1,10 +1,13 @@
 {
   "cSpell.words": [
+    "babylonjs",
     "Collidable",
     "mult",
     "plotly",
     "relu",
     "shiki",
-    "wireframe"
+    "wireframe",
+    "Worley",
+    "xorshift"
   ]
 }
