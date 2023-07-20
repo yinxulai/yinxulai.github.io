@@ -34,9 +34,9 @@ export function FogClouds() {
     ground.rotation = new BABYLON.Vector3(Math.PI / 2, 0, 0)
 
     const material = new BABYLON.StandardMaterial("groundMat", scene)
-    material.backFaceCulling = false
     material.diffuseColor = new BABYLON.Color3(0.3, 0.3, 0.3)
-    material.diffuseColor = new BABYLON.Color3(0.3, 0.3, 0.3)
+    material.backFaceCulling = true
+    material.alpha = 1
     ground.material = material
 
     // use noise generation texture

@@ -19,3 +19,7 @@ import { Noise3dCartoonTerrain, Noise3dTerrain } from './Noise3dTerrain'
 // import { Earth } from './Earth'
 // <Earth />
 ```
+
+# 草地
+
+- https://playground.babylonjs.com/#MA9WWQ#32
