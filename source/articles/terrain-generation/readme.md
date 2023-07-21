@@ -2,6 +2,8 @@
 
 ## 基础版本
 
+- https://www.shadertoy.com/view/mtSSDd
+
 ```ts:inject
 import { Noise2dTerrain } from './Noise2dTerrain'
 ```
