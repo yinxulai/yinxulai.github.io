@@ -9,12 +9,6 @@
 - https://playground.babylonjs.com/#ATDL99#128
 - https://playground.babylonjs.com/#0LDDEZ#12
 - https://playground.babylonjs.com/#VMSEL8#0
-  
-```ts:inject
-import { FlakyClouds } from './FlakyClouds'
-```
-
-<FlakyClouds />
 
 ## 雾状云
 
