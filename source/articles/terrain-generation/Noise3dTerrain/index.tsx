@@ -1,5 +1,5 @@
 import * as THREE from 'three'
-import { createRef, onMounted } from 'airx'
+import { createRef } from 'airx'
 import { makeNoise3D } from 'fast-simplex-noise'
 import { useThreeRenderer } from '../../../common/hooks/use-three-renderer'
 
@@ -9,7 +9,7 @@ import styles from './style.module.less'
 
 
 export function Noise3dTerrain() {
-  let frequency = 0.01
+  // let frequency = 0.01
   const noise3D = makeNoise3D()
   const threeCanvasRef = createRef<HTMLCanvasElement | undefined>(undefined)
 
@@ -95,7 +95,7 @@ export function Noise3dCartoonTerrain() {
   let frequency = 0.01
   const noise3D = makeNoise3D()
   const threeCanvasRef = createRef<HTMLCanvasElement | undefined>(undefined)
-  const textureCanvasRef = createRef<HTMLCanvasElement | undefined>(undefined)
+  // const textureCanvasRef = createRef<HTMLCanvasElement | undefined>(undefined)
 
   const threeRenderer = useThreeRenderer(threeCanvasRef)
 

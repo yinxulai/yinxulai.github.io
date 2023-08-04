@@ -1,4 +1,3 @@
-import he from 'he'
 import * as path from 'path'
 import { Plugin } from 'vite'
 import { RawPost, readPostFile, parseMarkdown, resolvePosts } from './loader'
@@ -36,7 +35,11 @@ export function VitePluginAirxPress(options: VitePluginAirxPressOptions): Plugin
         jsx: 'transform',
         jsxFragment: '__airx__.Fragment',
         jsxFactory: '__airx__.createElement',
-        jsxInject: 'import * as __airx__ from \'airx\''
+        jsxInject: 'import * as __airx__ from \'airx\'',
+      }
+
+      config.build = {
+        outDir: 'output'
       }
 
       return config
@@ -60,6 +63,9 @@ export function VitePluginAirxPress(options: VitePluginAirxPressOptions): Plugin
           return id + fakeSuffix
         }
       }
+
+      // 使这条请求不使用内部默认的 resolve 来处理
+      if (id === '/index.tsx') return '/index.tsx'
     },
     async load(id) {
       if (id === '/index.tsx') {

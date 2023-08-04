@@ -250,7 +250,6 @@ vec3 rotate_x(vec3 v, float angle)
 vec4 generate(in vec2 uv, in vec2 fragCoord, in vec2 sunpos, in float t)
 {
 
-    // 月亮
     float att = 1.0;
     float staratt = 0.0;
     if (sunpos.y < -0.20)

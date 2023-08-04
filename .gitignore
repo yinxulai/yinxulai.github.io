@@ -134,3 +134,4 @@ vite.config.js.timestamp*
 
 # macos
 .DS_Store
+output/*

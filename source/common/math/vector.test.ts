@@ -1,4 +1,4 @@
-import { Vector2D } from './vector'
+import { Vector2D, Vector } from './vector'
 
 describe('vector', () => {
   test('zero', () => {
@@ -79,6 +79,7 @@ describe('vector', () => {
     const vector4 = new Vector2D(0, -1)
     expect(vector4.heading()).toBe(-Math.PI / 2)
   })
+
   test('limitHeading', () => {
     const vector1 = new Vector2D(0, 1)
     expect(vector1.limitHeading(Math.PI / 2).heading()).toBe(Math.PI / 4)
