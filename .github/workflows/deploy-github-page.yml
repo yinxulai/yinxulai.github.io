@@ -24,19 +24,12 @@ jobs:
         run: npm run build
 
       - name: Create CNAME
-        run: echo -e 'www.yinxulai.com\nyinxulai.com\nyinxulai.dalaji.vip' > .output/dest/CNAME
+        run: echo -e 'www.yinxulai.com\nyinxulai.com\nyinxulai.dalaji.vip' > output/CNAME
 
       - name: Push branch
         uses: crazy-max/ghaction-github-pages@v2
         with:
           target_branch: gh-pages
-          build_dir: .output/dest
+          build_dir: .output
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      # - name: Cache npm
-      #   uses: actions/cache@v2
-      #   with:
-      #     path: ~/.npm
-      #     restore-keys: node-npm-cache@
-      #     key: node-npm-cache@${{ hashFiles('**/package-lock.json') }}

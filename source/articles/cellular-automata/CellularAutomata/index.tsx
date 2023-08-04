@@ -59,6 +59,8 @@ export function CellularAutomata() {
     const stateTable = stateTableRef.value
     if (!Array.isArray(stateTable[row])) stateTable[row] = []
     stateTable[row][column] = getBlockState(row, column) === 'die' ? 'live' : 'die'
+
+    stateTableRef.value = stateTable
   }
 
   const update = () => {

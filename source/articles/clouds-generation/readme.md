@@ -1,3 +1,11 @@
+---
+lang: zh-CN
+draft: true
+date: 2023-07-01
+title: shader 尝试：云效果
+description: shader 尝试：云效果
+---
+
 # 云朵生成
 
 ## 参考文档

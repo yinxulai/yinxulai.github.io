@@ -89,6 +89,8 @@ export function VolumeClouds() {
     window.addEventListener("resize", () => {
       engine.resize()
     })
+
+    return () => engine.dispose()
   })
 
   return () => (

@@ -1,6 +1,7 @@
 ---
 lang: zh-CN
 date: 2022-09-16
+title: 通过 Web USB 给 Nintendo Switch 注入并执行引导程序 
 description: 通过 Web USB 给 Nintendo Switch 注入并执行引导程序 
 ---
 # 通过 Web USB 给 Nintendo Switch 注入并执行引导程序 

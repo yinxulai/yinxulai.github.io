@@ -2,7 +2,7 @@
 lang: zh-CN
 draft: true
 date: 2021-09-27
-description: 康威生命游戏-自动细胞机
+title: 康威生命游戏-自动细胞机
 ---
 # 康威生命游戏-自动细胞机
 
