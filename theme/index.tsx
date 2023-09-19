@@ -2,7 +2,7 @@ import * as path from 'path-browserify'
 import { Route, Router, createHashHistory } from 'airx-router'
 
 import { Post, providePosts } from './hooks/post'
-import { Layout } from './common/Layout'
+import { Layout } from './components/Layout'
 
 import './global.less'
 
