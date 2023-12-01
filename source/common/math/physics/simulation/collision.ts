@@ -1,4 +1,12 @@
-function checkCollision(rectangles) {
+interface Rect {
+  x: number
+  y: number
+  width: number
+  height: number
+  angle: number
+}
+
+function checkCollision(rectangles: Rect[]) {
   const collisions = []
 
   for (let i = 0; i < rectangles.length; i++) {
@@ -16,7 +24,7 @@ function checkCollision(rectangles) {
   return collisions
 }
 
-function isCollision(rectA, rectB) {
+function isCollision(rectA: Rect, rectB: Rect) {
   const radiansA = rectA.angle * (Math.PI / 180) // 角度转为弧度
   const radiansB = rectB.angle * (Math.PI / 180)
 
@@ -45,7 +53,7 @@ function isCollision(rectA, rectB) {
   return false
 }
 
-function getRectanglePoints(rectangle, cos, sin) {
+function getRectanglePoints(rectangle: Rect, cos: number, sin: number) {
   const x = rectangle.x
   const y = rectangle.y
   const width = rectangle.width
@@ -70,13 +78,13 @@ function getRectanglePoints(rectangle, cos, sin) {
   return points.map(point => [point[0] + x, point[1] + y])
 }
 
-function rotatePoint(x, y, cos, sin) {
+function rotatePoint(x: number, y: number, cos: number, sin: number) {
   const newX = x * cos - y * sin
   const newY = x * sin + y * cos
   return [newX, newY]
 }
 
-function isPointInsideRectangle(point, rectanglePoints) {
+function isPointInsideRectangle(point: number[], rectanglePoints: number[][]) {
   const x = point[0]
   const y = point[1]
 
