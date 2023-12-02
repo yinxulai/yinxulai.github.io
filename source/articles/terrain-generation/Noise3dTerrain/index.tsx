@@ -3,7 +3,7 @@ import { createRef } from 'airx'
 import { makeNoise3D } from 'fast-simplex-noise'
 import { useThreeRenderer } from '../../../common/hooks/use-three-renderer'
 
-import { generateTextureImageData } from '../Noise2dTerrain'
+import { generateTextureImageData } from '../Noise2dTerrain/'
 
 import styles from './style.module.less'
 

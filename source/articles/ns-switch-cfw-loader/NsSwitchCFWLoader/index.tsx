@@ -1,8 +1,8 @@
-import dayjs from 'dayjs'
+import * as dayjs from 'dayjs'
 import { createRef, onMounted } from 'airx'
 import './bootLoader/use-device.d.ts'
 import usbDeviceIcon from './usb-device.png'
-import { BootLoader, bootLoader, bootLoaders } from './bootLoader/index.ts'
+import { BootLoader, bootLoader, bootLoaders } from './bootLoader'
 
 import styles from './style.module.less'
 

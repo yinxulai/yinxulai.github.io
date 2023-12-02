@@ -1,5 +1,5 @@
 import { createRef } from 'airx'
-import defaultHistory from './history.json'
+import * as defaultHistory from './history.json'
 import type { Position, DrawCallback, DrawStroke } from './use-draw'
 
 export function useHistory(draw: DrawStroke) {
