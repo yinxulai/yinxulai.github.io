@@ -1,14 +1,13 @@
 import { Vector2D } from '../../vector'
-import { Agent2D, Collidable2DAgent, VisibleAgent } from './agent'
+import { Agent, CollidableAgent, VisibleAgent } from './agent'
 
-
-export class World<T extends Agent2D = Agent2D> {
+export class PhysicsWorld<T extends Agent = Agent> {
   constructor(
     public readonly width: number = Infinity,
     public readonly height: number = Infinity,
     public readonly gravity = new Vector2D(0, 0.1),
     public readonly attraction: number = 6.67428e-11 // 万有引力常数
-  ) { }
+  ) {}
 
   private agentMap = new Map<number, T>()
 
@@ -21,10 +20,10 @@ export class World<T extends Agent2D = Agent2D> {
       throw new Error(`agent has existed: ${agent.uuid}`)
     }
 
-    // if (this.agentMap.size >= 300) {
-    //   console.warn('the world is too crowded.')
-    //   return
-    // }
+    if (this.agentMap.size >= 1000) {
+      console.warn('the world is too crowded.')
+      return
+    }
 
     this.agentMap.set(agent.uuid, agent)
   }
@@ -45,7 +44,7 @@ export class World<T extends Agent2D = Agent2D> {
    * @param  {(agent:T)=>void} callback
    * @description 遍历世界中的代理对象
    */
-  forEachAgent(callback: (agent: T) => void) {
+  private forEachAgent(callback: (agent: T) => void) {
     this.agentMap.forEach(item => callback(item))
   }
 
@@ -121,10 +120,10 @@ export class World<T extends Agent2D = Agent2D> {
       // 吸引力 TODO
 
       // 碰撞检查
-      if (agent instanceof Collidable2DAgent) {
-        if (targetAgent instanceof Collidable2DAgent) {
+      if (agent instanceof CollidableAgent) {
+        if (targetAgent instanceof CollidableAgent) {
           agent.impact(targetAgent)
-            // .then(data => console.log('impact result', data))
+          .then(data => console.log('impact result', data))
         }
       }
 

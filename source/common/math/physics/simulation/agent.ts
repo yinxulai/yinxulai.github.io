@@ -1,5 +1,4 @@
 import { Vector2D } from '../../../math/vector'
-import { createWorkerPool } from '../../../hooks/use-worker'
 
 interface Size {
   width: number
@@ -11,42 +10,54 @@ interface Block extends Size {
   y: number
 }
 
-interface WorkerParams extends Block {
-  selfCanvas: OffscreenCanvas
-  targetCanvas: OffscreenCanvas
-}
-
 interface Point {
   x: number
   y: number
 }
 
-export abstract class Agent2D {
+interface AgentOptions {
+  mass?: number //  = 1, // 质量
+  maxSpeed?: number //  = 0, // 最大速度
+  maxForce?: number //  = 0, // 最大力
+  friction?: number //  = 1, // 摩擦系数
+  elasticity?: number //  = 1, // 弹性
+  position?: Vector2D //  = new Vector2D(0, 0), // 位置
+  velocity?: Vector2D //  = new Vector2D(0, 0), // 速度
+}
+
+export abstract class Agent {
   protected static uuid: number = 0
   public readonly uuid: number = 0
+  public mass: number = 1 // 质量
+  public maxSpeed: number = Infinity // 最大速度
+  public maxForce: number = Infinity // 最大力
+  public friction: number = 1 // 摩擦系数
+  public elasticity: number = 1 // 弹性
+  public position: Vector2D = new Vector2D(0, 0) // 位置
+  public velocity: Vector2D = new Vector2D(0, 0) // 速度
 
-  constructor(
-    public readonly mass = 1, // 质量
-    public readonly maxSpeed = 0, // 最大速度
-    public readonly maxForce = 0, // 最大力
-    // public readonly friction = 1, // 摩擦系数
-    public readonly elasticity = 1, // 弹性
-    public position = new Vector2D(0, 0), // 位置
-    public velocity = new Vector2D(0, 0), // 速度
-  ) { this.uuid = Agent2D.uuid++ }
+  constructor(options?: AgentOptions) {
+    this.uuid = Agent.uuid++
+    this.mass = options?.mass || this.mass
+    this.maxSpeed = options?.maxSpeed || this.maxSpeed
+    this.maxForce = options?.maxForce || this.maxForce
+    this.friction = options?.friction || this.friction
+    this.elasticity = options?.elasticity || this.elasticity
+    this.position = options?.position || this.position
+    this.velocity = options?.velocity || this.velocity
+  }
 
   /**
    * @param  {Vector2D} acceleration
    * @description 向 Agent 添加加速度
    */
   public applyForce(acceleration: Vector2D) {
-    // 将所有的加速度先添加到 Agent 
-    if (acceleration.magSq() <= 0) return this
-    acceleration.limitMag(this.maxForce)
+    if (acceleration.magSq() === 0) return this
+    if (this.maxForce !== Infinity) acceleration.limitMag(this.maxForce)
 
     // 速度 = 加速度 / 质量
-    const velocity = acceleration.div(this.mass)
-    this.velocity.add(velocity).limitMag(this.maxSpeed)
+    this.velocity.add(acceleration.div(this.mass))
+    if (this.maxSpeed !== Infinity) this.velocity.limitMag(this.maxSpeed)
     return this
   }
 
@@ -59,7 +70,7 @@ export abstract class Agent2D {
   }
 }
 
-export abstract class VisibleAgent extends Agent2D {
+export abstract class VisibleAgent extends Agent {
   /**
    * @param  {RenderingContext} context
    * @returns void
@@ -68,72 +79,22 @@ export abstract class VisibleAgent extends Agent2D {
   abstract render(context: RenderingContext): void
 }
 
-export abstract class Collidable2DAgent extends VisibleAgent {
-
-  protected static workerPool = createWorkerPool((params: WorkerParams): Point | false => {
-    // 这个函数必须是确保可以在 webworker 运行的纯函数
-
-    if (params == null) return false
-    const { selfCanvas, targetCanvas } = params
-    if (!(selfCanvas instanceof OffscreenCanvas)) return false
-    if (!(targetCanvas instanceof OffscreenCanvas)) return false
-    const selfContext = selfCanvas.getContext('2d')
-    const targetContext = targetCanvas.getContext('2d')
-    if (selfContext == null) return false
-    if (targetContext == null) return false
-
-    const imageDataParams = [0, 0, params.width, params.height] as const
-    const selfImageData = selfContext.getImageData(...imageDataParams)
-    const targetImageData = targetContext.getImageData(...imageDataParams)
-
-    const conflictPoints: Point[] = []
-    for (let x = 0; x < selfImageData.width; x++) {
-      for (let y = 0; y < selfImageData.height; y++) {
-        const selfAlphaValue = selfImageData.data[((y * selfImageData.width) + x) * 4]
-        const targetAlphaValue = targetImageData.data[((y * selfImageData.width) + x) * 4]
-        if (selfAlphaValue > 0 && targetAlphaValue > 0) {
-          conflictPoints.push({ x, y })
-        }
-      }
-    }
-
-    const sumPoint = conflictPoints.reduce((a, b) => {
-      a.x += b.x
-      a.y += b.y
-      return a
-    }, { x: params.x, y: params.y })
-  
-    sumPoint.x = Math.floor(sumPoint.x / conflictPoints.length)
-    sumPoint.y = Math.floor(sumPoint.y / conflictPoints.length)
-    return sumPoint
-  })
-
-  // private static getPaintedOffscreenCanvas<T extends Collidable2DAgent>(size: Size, agent: T): OffscreenCanvas | null {
-  //   const canvas = document.createElement('canvas')
-  //   canvas.height = size.height
-  //   canvas.width = size.width
-  //   const context = canvas.getContext('2d')
-  //   if (context == null) return null
-  //   agent.render(context)
-    
-  //   return canvas.transferControlToOffscreen()
-  // }
-
+export abstract class CollidableAgent extends VisibleAgent {
   /**
    * @returns Block
    * @description 用于粗检测
    */
-  protected abstract getOutsideBlock(): Block
+  protected abstract getPolygonPoints(): Block
 
   /**
    * @param  target
    * @returns void
    * @description 发生碰撞时的处理逻辑
    */
-  public async impact<T extends Collidable2DAgent>(target: T): Promise<Point | false> {
+  public async impact<T extends CollidableAgent>(target: T): Promise<boolean> {
     // 先用方块做粗检测
-    const selfBlock = this.getOutsideBlock()
-    const targetBlock = target.getOutsideBlock()
+    const selfBlock = this.getPolygonPoints()
+    const targetBlock = target.getPolygonPoints()
 
     const selfX = selfBlock.x
     const selfY = selfBlock.y
@@ -152,53 +113,25 @@ export abstract class Collidable2DAgent extends VisibleAgent {
     // 1、分别在两块 canvas 绘制图形
     // 2、交给 web worker 去计算相交点
 
-    // 寻找最大外切矩形
-    const minX = Math.min(selfX, targetX)
-    const minY = Math.min(selfY, targetY)
-    const maxDx = Math.max(selfDx, targetDx)
-    const maxDy = Math.max(selfDy, targetDy)
-    const outsideWidth = maxDx - minX
-    const outsideHeight = maxDy - minY
-    // const canvasSize: Size = {
-    //   height: maxDy,
-    //   width: maxDx
-    // }
-
-    // 创建 OffscreenCanvas 绘制像素
-    const selfCanvas = new OffscreenCanvas(maxDx, maxDy)
-    const selfContext = selfCanvas.getContext('2d', { willReadFrequently: true })
-
-    const targetCanvas = new OffscreenCanvas(maxDx, maxDy)
-    const targetContext = targetCanvas.getContext('2d', { willReadFrequently: true })
-
-    if (selfContext == null || targetContext == null) return false
-    // 继续向下进行像素粒度的碰撞检测
-    // TODO targetContext、selfContext 被引用无法传递给 worker
-    // https://github.com/whatwg/html/issues/6615
-
-    const worker = await Collidable2DAgent.workerPool.getWorker()
-
-    return worker.exec({
-      x: minX,
-      y: minY,
-      width: outsideWidth,
-      height: outsideHeight,
-      selfCanvas: selfCanvas,
-      targetCanvas: targetCanvas
-    }, [selfCanvas, targetCanvas])
+    return true
   }
 }
 
-export class CircleAgent extends Collidable2DAgent {
+interface CircleAgentOptions extends AgentOptions {
+  radius?: number
+}
+
+export class CircleAgent extends CollidableAgent {
 
   private radius: number = 0
 
-  constructor(mass = 1, x = 0, y = 0) {
-    super(mass, 5, 5, 0.9, new Vector2D(x, y))
-    this.radius = Math.round(8 + this.mass)
+  constructor(options?: CircleAgentOptions) {
+    const { radius, ...rest } = options || {}
+    super(rest)
+    this.radius = radius || Math.round(8 + this.mass)
   }
 
-  getOutsideBlock(): Block {
+  getPolygonPoints(): Block {
     return {
       x: this.position.x - this.radius,
       y: this.position.y - this.radius,
@@ -210,30 +143,6 @@ export class CircleAgent extends Collidable2DAgent {
   protected renderPixel(context: CanvasRenderingContext2D): void {
     this.renderSight(context)
     this.renderBody(context)
-  }
-
-  /**
- * @param  {CanvasRenderingContext2D} context
- * @description 渲染边框
- */
-  private renderBlocks(context: CanvasRenderingContext2D) {
-    const blocks = [this.getOutsideBlock()]
-    for (let index = 0; index < blocks.length; index++) {
-      const block = blocks[index]
-      const x = block.x
-      const y = block.y
-      const dx = block.x + block.width
-      const dy = block.y + block.height
-
-      context.beginPath()
-      context.lineWidth = 1
-      context.strokeStyle = 'rgba(255,0,0,.1)'
-      context.rect(x, y, dx - x, dy - y)
-      context.stroke()
-
-      context.fillStyle = 'rgba(255,0,0,.08)'
-      context.fill()
-    }
   }
 
   /**
@@ -274,38 +183,7 @@ export class CircleAgent extends Collidable2DAgent {
    * @description 渲染当前的 Agent 到指定对象
    */
   render(context: CanvasRenderingContext2D) {
-    this.renderBlocks(context)
     this.renderSight(context)
     this.renderBody(context)
-  }
-}
-
-export class TargetAgent extends Collidable2DAgent {
-  private radius: number = 10
-
-  constructor(mass = 1, x = 0, y = 0) {
-    super(mass, 0, 0, 0, new Vector2D(x, y))
-  }
-
-  getOutsideBlock(): Block {
-    return {
-      width: this.radius * 2,
-      height: this.radius * 2,
-      x: this.position.x - this.radius,
-      y: this.position.y - this.radius
-    }
-  }
-
-  render(context: CanvasRenderingContext2D) {
-    context.save()
-    context.beginPath()
-    context.lineWidth = 1
-    context.strokeStyle = 'rgba(0,0,0,.3)'
-    context.arc(this.position.x, this.position.y, this.radius, 0, Math.PI * 2, false)
-    context.stroke()
-
-    context.fillStyle = 'rgba(0,255,0,.08)'
-    context.fill()
-    return this
   }
 }
