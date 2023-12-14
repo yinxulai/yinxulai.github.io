@@ -10,7 +10,7 @@ interface Props {
   posts: Post[]
 }
 
-export default function App(props: Props) {
+export function ThemeApp(props: Props) {
   providePosts(props.posts)
 
   const route: Route = {

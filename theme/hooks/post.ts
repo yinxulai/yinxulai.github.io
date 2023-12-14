@@ -1,4 +1,4 @@
-import { AirxComponent, inject, provide, Ref } from 'airx'
+import { Component, inject, provide, Ref } from 'airx'
 
 interface MdMeta {
   key: string
@@ -8,7 +8,7 @@ interface MdMeta {
 export interface Post {
   path: string
   meta: MdMeta[]
-  component: AirxComponent
+  component: Component
 }
 
 export function providePosts(posts: Post[]) {
