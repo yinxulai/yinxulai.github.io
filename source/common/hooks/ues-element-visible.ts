@@ -1,7 +1,6 @@
 import { createRef, Ref, watch, onMounted } from 'airx'
 
 export function uesElementVisible(element: Ref<Element | undefined>) {
-
   const visibleRef = createRef<boolean>(false)
   const observerRef = createRef<IntersectionObserver | null>(null)
 
