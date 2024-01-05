@@ -1,6 +1,5 @@
 import he from 'he'
 import * as fs from 'fs'
-import * as path from 'path'
 
 // @ts-ignore 等 @types/marked 更新
 import { Marked } from 'marked'
@@ -9,64 +8,9 @@ import hljs from 'highlight.js'
 import { markedXhtml } from 'marked-xhtml'
 import { markedHighlight } from 'marked-highlight'
 
-interface MdMeta {
+export interface MdMeta {
   key: string
   value: string
-}
-
-export interface RawPost {
-  path: string
-  fullPath: string
-  meta: MdMeta[]
-}
-
-/**
- * 加载博客文件
- * @param targetPath 
- * @returns 
- */
-export async function resolvePosts(startPath: string, targetPath?: string): Promise<RawPost[]> {
-  if (!targetPath) targetPath = startPath
-
-  const targetPathStat = await fs.promises.stat(targetPath)
-
-  if (targetPathStat.isFile() && /mdx?$/.test(targetPath)) {
-    const relativePath = startPath !== targetPath
-      ? path.relative(startPath, targetPath)
-      : path.basename(targetPath)
-
-    const fileContext = await readPostFile(targetPath)
-    const markdown = fileContext ? await parseMarkdown(fileContext) : null
-
-    return [{
-      path: relativePath,
-      fullPath: targetPath,
-      meta: markdown?.meta || [],
-    }]
-  }
-
-  if (targetPathStat.isDirectory()) {
-    const posts: RawPost[] = []
-    const paths = await fs.promises.readdir(targetPath)
-    for (let index = 0; index < paths.length; index++) {
-      const nextPath = path.join(targetPath, paths[index])
-      const nextPost = await resolvePosts(startPath, nextPath)
-      posts.push(...nextPost)
-    }
-
-    return posts
-  }
-
-  return []
-}
-
-/**
- * 读取 post 文件内容
- * @param path 
- * @returns 
- */
-export async function readPostFile(path: string): Promise<string | null> {
-  return await fs.promises.readFile(path, 'utf-8')
 }
 
 interface MarkdownInlineCode {
@@ -79,13 +23,13 @@ interface CodeLanguage {
   commands: string[]
 }
 
-interface Post {
+interface MarkdownResult {
   html: string
   meta: MdMeta[]
   codes: MarkdownInlineCode[]
 }
 
-export async function parseMarkdown(post: string): Promise<Post> {
+export async function parseMarkdown(content: string): Promise<MarkdownResult> {
   const marked = new Marked()
   const meta: MdMeta[] = []
   const codes: MarkdownInlineCode[] = []
@@ -148,6 +92,12 @@ export async function parseMarkdown(post: string): Promise<Post> {
     }
   }))
 
+  interface MdMateToken {
+    type: 'md-meta'
+    raw: string
+    data: MdMeta[]
+  }
+
   function parseLanguage(language: string | undefined): CodeLanguage {
     if (!language || !language.includes(':')) return { language, commands: [] }
     const languageStmt = language.split(':')
@@ -167,15 +117,9 @@ export async function parseMarkdown(post: string): Promise<Post> {
     return false
   }
 
-  interface MdMateToken {
-    type: 'md-meta'
-    raw: string
-    data: MdMeta[]
-  }
-
   marked.use({ renderer: { code } })
 
-  const html = marked.parse(post, {
+  const html = marked.parse(content, {
     silent: true,
     walkTokens(token) {
       const asToken = token as unknown as MdMateToken
@@ -186,4 +130,9 @@ export async function parseMarkdown(post: string): Promise<Post> {
   })
 
   return { html, meta, codes }
+}
+
+export async function parseMarkdownFile(filePath: string): Promise<MarkdownResult> {
+  const content = await fs.promises.readFile(filePath, 'utf-8')
+  return parseMarkdown(content)
 }

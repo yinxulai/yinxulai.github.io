@@ -1,5 +1,5 @@
 import * as path from 'path-browserify'
-import { Route, Router, createHashHistory } from 'airx-router'
+import { Route, Router, createBrowserHistory, createHashHistory } from 'airx-router'
 
 import { Post, providePosts } from './hooks/post'
 import { Layout } from './components/Layout'
@@ -10,7 +10,7 @@ interface Props {
   posts: Post[]
 }
 
-export default function App(props: Props) {
+export function ThemeApp(props: Props) {
   providePosts(props.posts)
 
   const route: Route = {
@@ -54,6 +54,6 @@ export default function App(props: Props) {
     })
   }
 
-  const history = createHashHistory()
+  const history = createBrowserHistory()
   return () => (<Router history={history} routes={[route]} />)
 }

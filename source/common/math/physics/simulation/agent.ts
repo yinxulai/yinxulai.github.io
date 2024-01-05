@@ -10,11 +10,6 @@ interface Block extends Size {
   y: number
 }
 
-interface Point {
-  x: number
-  y: number
-}
-
 interface AgentOptions {
   mass?: number //  = 1, // 质量
   maxSpeed?: number //  = 0, // 最大速度

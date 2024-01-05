@@ -7,11 +7,18 @@ import style from './style.module.less'
 export function Layout(props: RouteComponentProps) {
   return () => (
     <div class={style.layout}>
-      <Navbar />
-      <div class={style.content}>
-        {props.children}
+      <div class="fixed inset-0 flex justify-center">
+        <div class="flex w-full">
+          <div class="w-full bg-white ring-1 ring-zinc-100 dark:bg-zinc-900 dark:ring-zinc-300/20" />
+        </div>
       </div>
-      <Footbar />
+      <div class="relative flex w-full flex-col">
+        <Navbar />
+        <main class="flex-auto">
+          {props.children}
+        </main>
+        <Footbar />
+      </div>
     </div>
   )
 }
