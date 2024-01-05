@@ -1,8 +1,10 @@
 import { createRef } from 'airx'
-import style from './style.module.less'
+import { useRouter } from 'airx-router'
+import { ThemeToggle } from './theme-toggle'
 
 export function Navbar() {
+  const router = useRouter()
   const htmlRef = createRef<HTMLElement | null>(null)
 
-  return () => (<div ref={htmlRef} class={style.navbar}></div>)
+  return () => (<ThemeToggle />)
 }
